@@ -1,5 +1,99 @@
 package jkql
 
+import (
+	"maps"
+	"regexp"
+	"slices"
+	"strings"
+)
+
+// MapAccessRegExp parses a keyed map-field access, Field('key'), into (field, key). In jKQL this
+// syntax means a map access and nothing else, so we match the shape rather than enumerate field
+// names: there are many map-type fields (Properties, Quota, Statistics, and more, varying by item
+// type), and a whitelist would always be incomplete. The key is optional — a bare field name (the
+// whole map) matches with an empty key.
+//
+// usage example:
+// "Properties"           -> ["Properties", "Properties", ""]
+// "Statistics('MyStat')" -> ["Statistics('MyStat')", "Statistics", "MyStat"]
+var MapAccessRegExp = regexp.MustCompile(`^([A-Za-z0-9_.]+)(?:\('(.+)'\))?$`)
+
+// parseMapAccess splits a keyed map-field access like Statistics('MyStat') into its field and key
+// (key is "" for a bare field name — the whole map). ok is false when s is not a map access. That
+// includes a function call such as Round('x'), which shares the Field('key') shape: a name that is
+// a known jKQL function is treated as a call, not a field, so we never misread one as the other.
+func parseMapAccess(s string, cat *FunctionCatalog) (field, key string, ok bool) {
+	m := MapAccessRegExp.FindStringSubmatch(s)
+	if m == nil || cat.names[m[1]] {
+		return "", "", false
+	}
+	return m[1], m[2], true
+}
+
+// neverExplodeMapFields lists map fields whose WHOLE-map access stays a single raw JSON column —
+// every other map field's whole-map access explodes per key by default; a field lands here only
+// when it's been found not to work well exploded. A named-key access (Quota('a'), Quota('a','b'))
+// still explodes regardless: naming a key means the caller wants that key's value, not a JSON
+// blob containing it. Keyed by FieldType constants so every special-cased field is findable in
+// one place.
+var neverExplodeMapFields = map[string]bool{
+	QUOTA:                    true,
+	EFFECTIVE_QUOTAS:         true,
+	STATISTICS:               true,
+	META_DATA:                true,
+	WGS_CUSTOM_PROPERTIES:    true,
+	WGS_KAFKA_CONFIGS:        true,
+	WGS_KAFKA_CONFIG_LOGGERS: true,
+}
+
+// alwaysRawMapFields lists map fields that stay a single raw JSON column no matter the access
+// shape — unlike neverExplodeMapFields, a named key does NOT override this.
+var alwaysRawMapFields = map[string]bool{
+	OBJECTIVES: true,
+	RULES:      true,
+	OPTIONS:    true,
+	LICENSE:    true,
+}
+
+// A named request must always yield a column per key, even when every row is null (the key is
+// unset on these rows, or was mistyped); a whole-map request keeps dropping empty exploded columns.
+func namedMapKeys(hdr string, cat *FunctionCatalog) []string {
+	_, rawKey, ok := parseMapAccess(hdr, cat)
+	if !ok || rawKey == "" {
+		return nil
+	}
+	var keys []string
+	// parseMapAccess strips the OUTER quotes from the key blob ('A','B' -> A','B), so re-wrap
+	// them before the quote-aware split — otherwise the interior quotes read as openings and
+	// nothing splits.
+	for _, k := range splitArgs("'" + rawKey + "'") {
+		if k = strings.Trim(strings.TrimSpace(k), "'"); k != "" {
+			keys = append(keys, k)
+		}
+	}
+	return keys
+}
+
+// splitArgs splits a function/key argument list on commas, ignoring commas inside '...' quotes —
+// a quoted map key can itself contain a comma (Dimensions('a,b')), and a bare split would turn
+// it into phantom keys or garble the rebuilt header.
+func splitArgs(s string) []string {
+	var parts []string
+	start, quoted := 0, false
+	for i := 0; i < len(s); i++ {
+		switch s[i] {
+		case '\'':
+			quoted = !quoted
+		case ',':
+			if !quoted {
+				parts = append(parts, s[start:i])
+				start = i + 1
+			}
+		}
+	}
+	return append(parts, s[start:])
+}
+
 // addColumn registers one output column's metadata: its header, display label and jKQL data
 // type. Row values are filled separately by the caller.
 func (dataModel *DataModel) addColumn(header, label, typ string) {
@@ -8,13 +102,38 @@ func (dataModel *DataModel) addColumn(header, label, typ string) {
 	dataModel.DataTypes[header] = typ
 }
 
+// rowObject casts one wire row to an object, recording an issue against column hdr when it is
+// not one.
+func (dataModel *DataModel) rowObject(r interface{}, hdr string) (map[string]interface{}, bool) {
+	row, ok := r.(map[string]interface{})
+	if !ok {
+		dataModel.Issues.Add("column " + hdr + ": row is not an object")
+	}
+	return row, ok
+}
+
+// mapValue reads column hdr of one row as a map, recording an issue when the value is present
+// but not a map. A nil/absent value returns ok=false with no issue — null map cells are normal.
+func (dataModel *DataModel) mapValue(row map[string]interface{}, hdr string) (map[string]interface{}, bool) {
+	value := row[hdr]
+	if value == nil {
+		return nil, false
+	}
+	valueMap, ok := value.(map[string]interface{})
+	if !ok {
+		dataModel.Issues.Add("column " + hdr + ": value is not a map")
+	}
+	return valueMap, ok
+}
+
 // addRawColumn adds a field as a single column holding each row's value as-is. Used for plain
-// scalar columns.
+// scalar columns, and as the fallback for coltypes the converter doesn't otherwise special-case
+// (exception-listed map fields, unknown types).
 func (dataModel *DataModel) addRawColumn(hdr string, typ string, lbl string, rows []interface{}) {
 	dataModel.addColumn(hdr, lbl, typ)
 
 	for i, r := range rows {
-		row, ok := r.(map[string]interface{})
+		row, ok := dataModel.rowObject(r, hdr)
 		if !ok {
 			dataModel.Rows[i][hdr] = nil
 			continue
@@ -30,7 +149,7 @@ func (dataModel *DataModel) addArrayColumn(hdr string, typ string, lbl string, r
 	dataModel.addColumn(hdr, lbl, typ)
 
 	for i, r := range rows {
-		row, ok := r.(map[string]interface{})
+		row, ok := dataModel.rowObject(r, hdr)
 		if !ok {
 			dataModel.Rows[i][hdr] = make([]interface{}, 0)
 			continue
@@ -47,18 +166,344 @@ func (dataModel *DataModel) addArrayColumn(hdr string, typ string, lbl string, r
 	}
 }
 
-// BuildDataModel converts a parsed dataservice result set into the column-oriented DataModel
-// used to build Grafana data frames. model.Issues is plumbed through every builder function
-// (see ParseIssues) but nothing populates it yet.
-func BuildDataModel(parsedResultSet map[string]interface{}) DataModel {
-	model := newDataModel(parsedResultSet)
+// Every map explode below runs the same two phases. Scan: walk the rows once to learn the map's
+// key set and each key's value type(s) — that is the whole shape discovery, and the only place
+// shape violations are recorded. Emit: for each key (and type), decide the column's header and
+// label — the naming policy, which is what makes each explode function different — then register
+// the column and copy the values with a fill helper.
 
-	rows, _ := parsedResultSet["rows"].([]interface{})
-	if model.RowCount > 0 {
-		for _, col := range model.resultColumns(parsedResultSet) {
-			model.buildColumn(col, rows)
+// scanMixedMapKeys is the scan phase for a plain MAP column, where each key's type varies and is
+// reported per row by the column's :_ValueTypes sibling. Returns key -> value types (more than
+// one when a key changes type across rows). Violating rows/keys are recorded and skipped here;
+// the fill phase nulls them silently.
+func (dataModel *DataModel) scanMixedMapKeys(hdr string, rows []interface{}) map[string][]string {
+	hdrVT := hdr + SUFIX_VALUETYPES
+	columnMap := make(map[string][]string)
+	for _, r := range rows {
+		row, ok := dataModel.rowObject(r, hdr)
+		if !ok {
+			continue
+		}
+		valueMap, ok := dataModel.mapValue(row, hdr)
+		if !ok {
+			continue
+		}
+		rowVT, ok := row[hdrVT].(map[string]interface{})
+		if !ok {
+			dataModel.Issues.Add("column " + hdr + ": missing or invalid " + hdrVT + " sibling")
+			continue
+		}
+		for key := range valueMap {
+			dt, ok := rowVT[key].(string)
+			if !ok {
+				dataModel.Issues.Add("column " + hdr + ": no value type for key " + key)
+				continue
+			}
+			if !Contains(columnMap[key], dt) {
+				columnMap[key] = append(columnMap[key], dt)
+			}
 		}
 	}
+	return columnMap
+}
+
+// scanTypedMapKeys is the scan phase for a typed map column MAP(dt): every key has the map's
+// single element type, so no :_ValueTypes sibling is involved.
+func (dataModel *DataModel) scanTypedMapKeys(hdr string, dt string, rows []interface{}) map[string][]string {
+	columnMap := make(map[string][]string)
+	for _, r := range rows {
+		row, ok := dataModel.rowObject(r, hdr)
+		if !ok {
+			continue
+		}
+		valueMap, ok := dataModel.mapValue(row, hdr)
+		if !ok {
+			continue
+		}
+		for key := range valueMap {
+			columnMap[key] = []string{dt}
+		}
+	}
+	return columnMap
+}
+
+// fillMapColumn is the fill phase for one exploded key of a typed map: copy the key's value from
+// each row's map into the output column, leaving null where the row has no usable value. Shape
+// violations were already recorded by the scan phase.
+func (dataModel *DataModel) fillMapColumn(header, hdr, key string, rows []interface{}) {
+	for index, r := range rows {
+		dataModel.Rows[index][header] = nil
+		row, ok := r.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		if valueMap, ok := row[hdr].(map[string]interface{}); ok {
+			dataModel.Rows[index][header] = valueMap[key]
+		}
+	}
+}
+
+// fillMixedMapColumn is the fill phase for one exploded key+type of a mixed map: a value is
+// copied only when the row's :_ValueTypes sibling confirms it has this column's type (the same
+// key can hold different types on different rows, one output column each).
+func (dataModel *DataModel) fillMixedMapColumn(header, hdr, key, typ string, rows []interface{}) {
+	hdrVT := hdr + SUFIX_VALUETYPES
+	for index, r := range rows {
+		dataModel.Rows[index][header] = nil
+		row, ok := r.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		valueMap, okValue := row[hdr].(map[string]interface{})
+		rowVT, okVT := row[hdrVT].(map[string]interface{})
+		if !okValue || !okVT {
+			continue
+		}
+		value := valueMap[key]
+		if value == nil || rowVT[key] != typ {
+			continue
+		}
+		dataModel.Rows[index][header] = value
+	}
+}
+
+// explodeMixedMap explodes a plain MAP field (one requested directly, e.g. Properties or
+// Properties('a','b')) into one column per key and type. Naming: a single-key access keeps the
+// server's label; a whole-map access labels each column by its key and appends the key to the
+// header. A " (Type)" suffix disambiguates keys that hold several types.
+func (dataModel *DataModel) explodeMixedMap(hdr string, lbl string, rows []interface{}, cat *FunctionCatalog) {
+	columnMap := dataModel.scanMixedMapKeys(hdr, rows)
+
+	// A named access must yield a column for every key it lists, even ones with no data in any row
+	// (unset, or mistyped) — this also covers the single multi-key field props('A','B','C'). Add any
+	// named key the rows did not supply, defaulting its type to STRING; keys with data keep the type
+	// resolved from :_ValueTypes above. Whole-map requests name no keys, so they still drop empties.
+	for _, key := range namedMapKeys(hdr, cat) {
+		if _, ok := columnMap[key]; !ok {
+			columnMap[key] = []string{STRING}
+		}
+	}
+
+	for _, column := range slices.Sorted(maps.Keys(columnMap)) {
+		types := columnMap[column]
+		addTypeToLabel := len(types) > 1
+		for _, typ := range types {
+			header := ConvertDtToPrefix(typ) + ":" + hdr
+			var label string
+			wrappedColumn := "('" + column + "')"
+			if strings.HasSuffix(hdr, wrappedColumn) { // single-key access: Field('key')
+				label = lbl
+			} else { // whole-map access: one column per discovered key
+				header += wrappedColumn
+				label = column
+			}
+			if addTypeToLabel {
+				label += " (" + CapitalizeStr(typ) + ")"
+			}
+
+			dataModel.addColumn(header, label, typ)
+			dataModel.fillMixedMapColumn(header, hdr, column, typ, rows)
+		}
+	}
+}
+
+// explodeTypedMap is explodeMixedMap for a typed map field MAP(dt): same naming policy, but every
+// column has the map's element type, so no per-type splitting and no " (Type)" label suffix.
+func (dataModel *DataModel) explodeTypedMap(hdr string, dt string, lbl string, rows []interface{}, cat *FunctionCatalog) {
+	columnMap := dataModel.scanTypedMapKeys(hdr, dt, rows)
+
+	// Add any named key the rows did not supply, so a named access always yields all its columns
+	// (see namedMapKeys); keys with data keep the map's element type dt.
+	for _, key := range namedMapKeys(hdr, cat) {
+		if _, ok := columnMap[key]; !ok {
+			columnMap[key] = []string{dt}
+		}
+	}
+
+	for _, column := range slices.Sorted(maps.Keys(columnMap)) {
+		header := ConvertDtToPrefix(dt) + ":" + hdr
+		var label string
+		wrappedColumn := "('" + column + "')"
+		if strings.HasSuffix(hdr, wrappedColumn) { // single-key access: Field('key')
+			label = lbl
+		} else { // whole-map access: one column per discovered key
+			header += wrappedColumn
+			label = column
+		}
+
+		dataModel.addColumn(header, label, dt)
+		dataModel.fillMapColumn(header, hdr, column, rows)
+	}
+}
+
+// explodeMapForAggregateFunction explodes an aggregate applied to a map field, e.g.
+// Avg(Quota('X')) or Avg(Properties). matches is the aggregateRe match of the header; dt is the
+// map's element type, or nil for a plain MAP (per-key types from the :_ValueTypes sibling).
+// The value copied per key is the aggregate's result, so it is taken as-is, without a per-row
+// type check.
+func (dataModel *DataModel) explodeMapForAggregateFunction(matches []string, lbl string, dt *string, rows []interface{}, cat *FunctionCatalog) {
+	hdr := matches[0]
+	aggregateFnc := matches[1]
+	paramsRgx := regexp.MustCompile(`(?i)^distinct\s+`)
+	paramsStr := paramsRgx.ReplaceAllString(matches[2], "")
+	params := splitArgs(paramsStr)
+	// mapKey stays nil when the first argument is not a map access (e.g. a nested call);
+	// "" means a whole-map access. The remaining arguments (a percentile, a bucket count, …)
+	// are carried into each exploded column's name below.
+	var mapField string
+	var mapKey *string
+	if field, key, ok := parseMapAccess(params[0], cat); ok {
+		mapField = field
+		mapKey = &key
+	} else {
+		mapField = params[0]
+		mapKey = nil
+	}
+	shiftedParams := params[1:]
+
+	var columnMap map[string][]string
+	if dt == nil {
+		columnMap = dataModel.scanMixedMapKeys(hdr, rows)
+	} else {
+		columnMap = dataModel.scanTypedMapKeys(hdr, *dt, rows)
+	}
+
+	// No row carried data for the aggregate's NAMED key: still emit the column, defaulting its
+	// type to DECIMAL — aggregates are mostly math functions, so a number is the likeliest type.
+	// A whole-map access (mapKey "") has no named key to preserve and would emit a phantom
+	// Fn(Map('')) column here; like everywhere else, its empty exploded columns just drop.
+	if len(columnMap) == 0 && mapKey != nil && *mapKey != "" {
+		columnMap[*mapKey] = []string{DECIMAL}
+	}
+
+	for _, column := range slices.Sorted(maps.Keys(columnMap)) {
+		types := columnMap[column]
+		addTypeToLabel := len(types) > 1
+		for _, typ := range types {
+			var otherParams string
+			if len(shiftedParams) > 0 {
+				otherParams = "," + strings.Join(shiftedParams, ",")
+			}
+			name := aggregateFnc + "(" + mapField + "('" + column + "')" + otherParams + ")"
+			header := ConvertDtToPrefix(typ) + ":" + name
+			// A single named key (Avg(Quota('X'))) keeps the server's label, i.e. the user's alias.
+			// A whole-map access (mapKey "") or an unreduced arg (mapKey nil) explodes per key,
+			// labeled aggregate-around-key without the field name (Avg(Quota) -> "Avg(MsgsPerDay)"):
+			// keeps Avg vs Sum distinct yet short, and one alias can't label several columns anyway.
+			label := lbl
+			if mapKey == nil || *mapKey == "" {
+				label = aggregateFnc + "(" + column + otherParams + ")"
+			}
+			if addTypeToLabel {
+				label += " (" + CapitalizeStr(typ) + ")"
+			}
+
+			dataModel.addColumn(header, label, typ)
+			dataModel.fillMapColumn(header, hdr, column, rows)
+		}
+	}
+}
+
+// explodeMixedMapForFunction explodes a non-aggregate function result that is a plain MAP, e.g.
+// Length(Properties('a')) or Concat(Statistics). The naming differs from explodeMixedMap: the key
+// is matched anywhere inside the header (the function wraps the map access), and exploded columns
+// are labeled with the full name, not just the key. Values are copied raw.
+func (dataModel *DataModel) explodeMixedMapForFunction(hdr string, lbl string, rows []interface{}) {
+	columnMap := dataModel.scanMixedMapKeys(hdr, rows)
+
+	// No row carried data: still emit one column (keyed by the header itself), defaulting to
+	// STRING — the default type for anything that isn't an aggregate result.
+	if len(columnMap) == 0 {
+		columnMap[hdr] = []string{STRING}
+	}
+
+	for _, column := range slices.Sorted(maps.Keys(columnMap)) {
+		types := columnMap[column]
+		addTypeToLabel := len(types) > 1
+		for _, typ := range types {
+			name := hdr
+			header := ConvertDtToPrefix(typ) + ":" + name
+			var label string
+			wrappedColumn := "('" + column + "')"
+			if hdr == column || strings.Contains(hdr, wrappedColumn) { // key already named in the call
+				label = lbl
+			} else { // whole-map result: one column per discovered key
+				header += wrappedColumn
+				name += wrappedColumn
+				label = name
+			}
+			// Suffix both branches: a named key can also carry mixed types across rows, and its
+			// exploded columns would otherwise share one label.
+			if addTypeToLabel {
+				label += " (" + CapitalizeStr(typ) + ")"
+			}
+
+			dataModel.addColumn(header, label, typ)
+			dataModel.fillMapColumn(header, hdr, column, rows)
+		}
+	}
+}
+
+// explodeTypedMapForFunction is explodeMixedMapForFunction for a typed map result MAP(dt): same
+// naming policy, single element type, values copied without a per-row type check.
+func (dataModel *DataModel) explodeTypedMapForFunction(hdr string, lbl string, dt string, rows []interface{}) {
+	columnMap := dataModel.scanTypedMapKeys(hdr, dt, rows)
+
+	// No row carried data: still emit one column (keyed by the header itself), same as the mixed
+	// variant above — the column must not vanish on an all-null or 0-row refresh.
+	if len(columnMap) == 0 {
+		columnMap[hdr] = []string{dt}
+	}
+
+	for _, column := range slices.Sorted(maps.Keys(columnMap)) {
+		name := hdr
+		header := ConvertDtToPrefix(dt) + ":" + name
+		var label string
+		wrappedColumn := "('" + column + "')"
+		if hdr == column || strings.Contains(hdr, wrappedColumn) { // key already named in the call
+			label = lbl
+		} else { // whole-map result: one column per discovered key
+			header += wrappedColumn
+			name += wrappedColumn
+			label = name
+		}
+
+		dataModel.addColumn(header, label, dt)
+		dataModel.fillMapColumn(header, hdr, column, rows)
+	}
+}
+
+// BuildDataModel converts a parsed dataservice result set into the column-oriented DataModel
+// used to build Grafana data frames. cat is the function catalog used to recognize
+// function/aggregate headers; pass nil to use the built-in default. A shape violation is never
+// fatal: the offending value/row/column becomes null or is skipped, the rest of the result
+// survives, and the violation is recorded in model.Issues for the caller to log.
+func BuildDataModel(parsedResultSet map[string]interface{}, cat *FunctionCatalog) DataModel {
+	if cat == nil {
+		cat = defaultFunctionCatalog
+	}
+	model := newDataModel(parsedResultSet)
+
+	// Columns are built whenever a rows array is present, even an empty one — the server sends
+	// full column metadata for a 0-row match, and typed empty columns keep a table panel's
+	// schema stable across an empty refresh. Exception: a whole-map access discovers its
+	// sub-columns from the rows' :_ValueTypes siblings, so with 0 rows it explodes into nothing
+	// (named-key accesses keep their columns via the namedMapKeys backfill).
+	rows, rowsOk := parsedResultSet["rows"].([]interface{})
+	if model.RowCount > 0 && !rowsOk {
+		model.Issues.Add(`"rows" is missing or not an array`)
+	}
+	if rowsOk {
+		for _, col := range model.resultColumns(parsedResultSet) {
+			model.buildColumn(col, rows, cat)
+		}
+	}
+
+	// A query can produce the same exploded column twice — a whole map and one of its named keys
+	// (Properties, Properties('a')) both explode to the same header. The later pass overwrote the
+	// earlier one's metadata and row values (same values; whichever label came last in colhdr
+	// wins), so only the repeated Headers entries need dropping.
+	model.Headers = dedupeStrings(model.Headers)
 
 	return model
 }
@@ -126,24 +571,38 @@ type resultColumn struct {
 	label string
 }
 
-// resultColumns reads the result set's column metadata. A missing label falls back to the header.
+// resultColumns reads the result set's column metadata, skipping (and recording) malformed
+// entries and the internal Solr SCORE column. A missing label falls back to the header.
 func (dataModel *DataModel) resultColumns(parsedResultSet map[string]interface{}) []resultColumn {
-	colHeaders, _ := parsedResultSet["colhdr"].([]interface{})
-	colTypes, _ := parsedResultSet["coltype"].(map[string]interface{})
-	colLabels, _ := parsedResultSet["collabel"].(map[string]interface{})
+	colHeaders, ok := parsedResultSet["colhdr"].([]interface{})
+	if !ok {
+		dataModel.Issues.Add(`"colhdr" is missing or not an array`)
+	}
+	colTypes, ok := parsedResultSet["coltype"].(map[string]interface{})
+	if !ok {
+		dataModel.Issues.Add(`"coltype" is missing or not an object`)
+		colHeaders = nil // without types no column can be built
+	}
+	colLabels, ok := parsedResultSet["collabel"].(map[string]interface{})
+	if !ok {
+		dataModel.Issues.Add(`"collabel" is missing or not an object`)
+	}
 
 	columns := make([]resultColumn, 0, len(colHeaders))
 	for _, h := range colHeaders {
 		hdr, ok := h.(string)
 		if !ok {
+			dataModel.Issues.Add("column header is not a string")
 			continue
 		}
 		typ, ok := colTypes[hdr].(string)
 		if !ok {
+			dataModel.Issues.Add("column " + hdr + ": type is missing or not a string; column skipped")
 			continue
 		}
 		label, ok := colLabels[hdr].(string)
 		if !ok {
+			dataModel.Issues.Add("column " + hdr + ": label is missing or not a string")
 			label = hdr
 		}
 		if hdr == SCORE {
@@ -154,10 +613,46 @@ func (dataModel *DataModel) resultColumns(parsedResultSet map[string]interface{}
 	return columns
 }
 
-// buildColumn converts one wire column into its model column, dispatching on the column's jKQL
-// data type.
-func (dataModel *DataModel) buildColumn(col resultColumn, rows []interface{}) {
+// buildColumn converts one wire column into its model column(s). It dispatches first on the
+// header's shape — a Properties access, an aggregate over a map — and then on the column's
+// jKQL data type.
+func (dataModel *DataModel) buildColumn(col resultColumn, rows []interface{}, cat *FunctionCatalog) {
 	hdr, typ, label := col.hdr, col.typ, col.label
+
+	// Properties needs its own path: unlike other map fields it also appears as a scalar-typed
+	// single-key access. Match only the field itself (Properties) or a key access
+	// (Properties('key')) — a bare HasPrefix would also match an unrelated field whose name
+	// merely starts with "Properties" (e.g. a custom field PropertiesCustom), routing it here
+	// to be dropped as an unsupported access.
+	if hdr == PROPERTIES || strings.HasPrefix(hdr, PROPERTIES+"('") {
+		dataModel.buildPropertiesColumn(hdr, typ, label, rows, cat)
+		return
+	}
+
+	// An aggregate function applied to a MAP field (Avg(Quota('X')), Sum(Properties), ...).
+	if matches := cat.aggregateRe.FindStringSubmatch(hdr); matches != nil {
+		switch typ {
+		case MAP:
+			dataModel.explodeMapForAggregateFunction(matches, label, nil, rows, cat)
+			return
+		case MAP_INTEGER, MAP_DECIMAL, MAP_TIMEINTERVAL, MAP_TIMESTAMP, MAP_STRING, MAP_BOOLEAN:
+			convertedTyp := ConvertDtMapToSimple(typ)
+			dataModel.explodeMapForAggregateFunction(matches, label, &convertedTyp, rows, cat)
+			return
+		}
+	}
+
+	// A non-aggregate function applied to a MAP field (Length(Properties('a')), Concat(Statistics)).
+	if cat.functionRe.MatchString(hdr) {
+		switch typ {
+		case MAP:
+			dataModel.explodeMixedMapForFunction(hdr, label, rows)
+			return
+		case MAP_INTEGER, MAP_DECIMAL, MAP_TIMEINTERVAL, MAP_TIMESTAMP, MAP_STRING, MAP_BOOLEAN:
+			dataModel.explodeTypedMapForFunction(hdr, label, ConvertDtMapToSimple(typ), rows)
+			return
+		}
+	}
 
 	switch typ {
 	case BINARY, BOOLEAN, INTEGER, DECIMAL, TIMEINTERVAL, TIMESTAMP, STRING, ENUM, CLOB:
@@ -168,9 +663,83 @@ func (dataModel *DataModel) buildColumn(col resultColumn, rows []interface{}) {
 	case STRING_ARR, BOOLEAN_ARR, DECIMAL_ARR, INTEGER_ARR, TIMEINTERVAL_ARR, TIMESTAMP_ARR, CLOB_ARR, BINARY_ARR:
 		dataModel.addArrayColumn(hdr, typ, label, rows)
 
+	case MAP:
+		if neverExploded(hdr, cat) {
+			dataModel.addRawColumn(hdr, typ, label, rows)
+			return
+		}
+		// A bare MAP field, not wrapped in an aggregate or other function call (those are handled
+		// above): explode same as Properties — a single-key access (Dimensions('key')) unwraps to
+		// its value, a whole-map access explodes one column per discovered key.
+		dataModel.explodeMixedMap(hdr, label, rows, cat)
+
+	case MAP_INTEGER, MAP_DECIMAL, MAP_TIMEINTERVAL, MAP_TIMESTAMP, MAP_STRING, MAP_BOOLEAN:
+		if neverExploded(hdr, cat) {
+			dataModel.addRawColumn(hdr, typ, label, rows)
+			return
+		}
+		dataModel.explodeTypedMap(hdr, ConvertDtMapToSimple(typ), label, rows, cat)
+
 	default:
-		// Any coltype not enumerated above (maps, ranges, variants, …) is rendered as a raw
-		// column for now, so it isn't silently dropped from the frame.
-		dataModel.addRawColumn(hdr, typ, label, rows)
+		// Any coltype not enumerated above (arrays, unknown types) is rendered as a raw column
+		// for now, so it isn't silently dropped from the frame.
+		switch {
+		case strings.HasSuffix(typ, "[]"):
+			dataModel.addArrayColumn(hdr, typ, label, rows)
+		default:
+			dataModel.addRawColumn(hdr, typ, label, rows)
+		}
+	}
+}
+
+// neverExploded reports whether hdr should stay a single raw JSON column rather than explode.
+// alwaysRawMapFields (Objectives) never explode, for ANY access shape — bare, single-key, or
+// multi-key alike; a named key does not override this. neverExplodeMapFields (Quota, Statistics)
+// only keep the exception for a truly bare, WHOLE-map access (no key named at all) — any named-key
+// access, even naming several keys at once (Quota('a', 'b')), overrides it and explodes, since
+// naming a key always means the caller wants those specific key(s) broken out. Properties is exempt
+// from this check entirely: it's handled by buildPropertiesColumn before buildColumn's main switch
+// ever runs, so it can never reach here.
+func neverExploded(hdr string, cat *FunctionCatalog) bool {
+	field, key, ok := parseMapAccess(hdr, cat)
+	if !ok {
+		return false
+	}
+	return alwaysRawMapFields[field] || (key == "" && neverExplodeMapFields[field])
+}
+
+// propertiesScalarRe matches a single-key Properties access, Properties('key') — the only header
+// shape a scalar-typed Properties column can have.
+var propertiesScalarRe = regexp.MustCompile(`(?i)^Properties\('(.+)'\)$`)
+
+// buildPropertiesColumn handles a Properties column: the whole map (or a multi-key access)
+// explodes into one column per key; a scalar sub-value (a Properties('key') access with a
+// concrete type) becomes a single type-prefixed column. Any other coltype drops the column,
+// recorded as an issue.
+func (dataModel *DataModel) buildPropertiesColumn(hdr, typ, label string, rows []interface{}, cat *FunctionCatalog) {
+	switch typ {
+	case MAP:
+		dataModel.explodeMixedMap(hdr, label, rows, cat)
+
+	case BOOLEAN, INTEGER, DECIMAL, TIMESTAMP, STRING, TIMEINTERVAL, CLOB, ENUM:
+		if !propertiesScalarRe.MatchString(hdr) {
+			dataModel.Issues.Add("column " + hdr + ": not a Properties('key') access; column skipped")
+			return
+		}
+		// The header gets a type prefix (I:Properties('x')) so the same key requested with two
+		// types (via casts) stays two distinct columns, like an exploded mixed-map key.
+		header := ConvertDtToPrefix(typ) + ":" + hdr
+		dataModel.addColumn(header, label, typ)
+		for index, r := range rows {
+			dataModel.Rows[index][header] = nil
+			row, ok := dataModel.rowObject(r, hdr)
+			if !ok {
+				continue
+			}
+			dataModel.Rows[index][header] = row[hdr]
+		}
+
+	default:
+		dataModel.Issues.Add("column " + hdr + ": unsupported Properties coltype " + typ + "; column skipped")
 	}
 }
