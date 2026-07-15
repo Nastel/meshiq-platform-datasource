@@ -52,6 +52,12 @@ type Datasource struct {
 	// memoized for the instance lifetime; nil until first loaded. See functions.go.
 	functionCatalogCacheMu sync.RWMutex
 	functionCatalogCache   *jkql.FunctionCatalog
+
+	// enumCache memoizes each built-in enum field's complete value set (ordinal-indexed names) from
+	// "GET ENUMERATION FOR <field>". Enum definitions are static, so this is kept for the instance
+	// lifetime. A cached empty slice marks a field whose values couldn't be resolved (don't retry).
+	enumCacheMu sync.RWMutex
+	enumCache   map[string][]string
 }
 
 // NewDatasource creates a new datasource instance with an HTTP client configured from
@@ -68,7 +74,7 @@ func NewDatasource(ctx context.Context, settings backend.DataSourceInstanceSetti
 	}
 	cl.CheckRedirect = rejectCrossHostRedirect
 
-	d := &Datasource{httpClient: cl}
+	d := &Datasource{httpClient: cl, enumCache: make(map[string][]string)}
 	d.resourceHandler = d.newResourceHandler()
 	return d, nil
 }
@@ -144,7 +150,11 @@ func (d *Datasource) query(ctx context.Context, pCtx backend.PluginContext, quer
 	}
 
 	dataModel := jkql.BuildDataModel(result, d.functionCatalog(ctx, *options))
-	frame := jkql.BuildDataFrame(dataModel)
+
+	frame := jkql.BuildDataFrame(dataModel, func(field string) []string {
+		return d.enumValues(ctx, field, *options)
+	})
+	// Frame building can add issues too (variant envelopes), so log after it, once per query.
 	logParseIssues(ctx, *queryModel, dataModel)
 	frame = jkql.FinalizeFrame(frame, queryModel.JKQL, queryModel.Format)
 	frame.RefID = query.RefID
