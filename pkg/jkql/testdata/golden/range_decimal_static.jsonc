@@ -1,0 +1,118 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 6
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 6
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 6 Rows
+//  +--------------------------+------------------------+----------------+
+//  | Name: SensorHealth_begin | Name: SensorHealth_end | Name: NumberOf |
+//  | Labels:                  | Labels:                | Labels:        |
+//  | Type: []*float64         | Type: []*float64       | Type: []*int64 |
+//  +--------------------------+------------------------+----------------+
+//  | 0                        | 19.99999999            | 7              |
+//  | 20                       | 39.99999999            | 0              |
+//  | 40                       | 59.99999999            | 0              |
+//  | 60                       | 79.99999999            | 2              |
+//  | 80                       | 99.99999999            | 0              |
+//  | 100                      | 119.99999999           | 258            |
+//  +--------------------------+------------------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 6
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 6
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "SensorHealth_begin",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "SensorHealth_end",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "NumberOf",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            0,
+            20,
+            40,
+            60,
+            80,
+            100
+          ],
+          [
+            19.99999999,
+            39.99999999,
+            59.99999999,
+            79.99999999,
+            99.99999999,
+            119.99999999
+          ],
+          [
+            7,
+            0,
+            0,
+            2,
+            0,
+            258
+          ]
+        ]
+      }
+    }
+  ]
+}
