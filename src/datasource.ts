@@ -1,8 +1,29 @@
-import { CoreApp, DataQueryRequest, DataQueryResponse, DataSourceInstanceSettings, ScopedVars } from '@grafana/data';
+import {
+  CoreApp,
+  DataQueryRequest,
+  DataQueryResponse,
+  DataSourceInstanceSettings,
+  MetricFindValue,
+  ScopedVars,
+  getDefaultTimeRange,
+  LegacyMetricFindQueryOptions,
+  TimeRange,
+} from '@grafana/data';
 import { DataSourceWithBackend, HealthCheckResult, HealthStatus, getTemplateSrv } from '@grafana/runtime';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 
-import { DEFAULT_QUERY, MeshIqDataSourceOptions, MeshIqQuery, MeshIqCompletionItem, MAX_ROWS_LIMIT } from './types';
+import {
+  MeshIqQuery,
+  MeshIqDataSourceOptions,
+  MeshIqVariableQuery,
+  MeshIqTable,
+  MeshIqField,
+  MeshIqCompletionItem,
+  DEFAULT_QUERY,
+  DEFAULT_ITEM_TYPE,
+  MAX_ROWS_LIMIT,
+} from './types';
+import { MeshIqVariableSupport } from './variables';
 
 export class DataSource extends DataSourceWithBackend<MeshIqQuery, MeshIqDataSourceOptions> {
   private readonly defaultRepositoryID: string;
@@ -17,6 +38,7 @@ export class DataSource extends DataSourceWithBackend<MeshIqQuery, MeshIqDataSou
     super(instanceSettings);
     this.defaultRepositoryID = instanceSettings.jsonData.repositoryID || '';
     this.defaultTrace = instanceSettings.jsonData.trace ?? false;
+    this.variables = new MeshIqVariableSupport(this);
   }
 
   getDefaultQuery(_: CoreApp): Partial<MeshIqQuery> {
@@ -127,7 +149,7 @@ export class DataSource extends DataSourceWithBackend<MeshIqQuery, MeshIqDataSou
   applyTemplateVariables(query: MeshIqQuery, scopedVars: ScopedVars): MeshIqQuery {
     return {
       ...query,
-      jkql: query.jkql ? getTemplateSrv().replace(query.jkql, scopedVars) : query.jkql,
+      jkql: query.jkql ? getTemplateSrv().replace(query.jkql, scopedVars, formatJkqlVariable) : query.jkql,
       locale: query.locale || getBrowserLocale(),
       timezone: query.timezone || getBrowserTimezone(),
     };
@@ -137,6 +159,108 @@ export class DataSource extends DataSourceWithBackend<MeshIqQuery, MeshIqDataSou
     // Don't run empty queries.
     return !!query.jkql;
   }
+
+  // ---- Schema discovery (also used by the variable query editor) ----------
+
+  /** Lists the available item types ("tables"). */
+  fetchTables(): Promise<MeshIqTable[]> {
+    return this.getResource<MeshIqTable[]>('tables');
+  }
+
+  /** Lists the static + custom fields of an item type. */
+  fetchFields(table: string): Promise<MeshIqField[]> {
+    return this.getResource<MeshIqField[]>('fields', { table });
+  }
+
+  // ---- Template variables ---------------------------------------------------
+
+  async metricFindQuery(
+    query: MeshIqVariableQuery,
+    options?: LegacyMetricFindQueryOptions
+  ): Promise<MetricFindValue[]> {
+    // Legacy variables may still be stored as a bare jKQL string.
+    if (typeof query === 'string') {
+      return this.runJkqlForValues(query, options?.range);
+    }
+
+    switch (query?.type) {
+      case 'tables': {
+        const tables = await this.fetchTables();
+        return tables.map((t) => ({ text: t.name, value: t.name }));
+      }
+      case 'fields': {
+        const table = getTemplateSrv().replace(query.table || DEFAULT_ITEM_TYPE);
+        const fields = await this.fetchFields(table);
+        return fields.map((f) => ({ text: f.name, value: f.name }));
+      }
+      case 'query':
+      default:
+        return this.runJkqlForValues(query?.jkql ?? '', options?.range);
+    }
+  }
+
+  // runJkqlForValues runs a raw jKQL query through the backend and returns the first column's
+  // values as variable options.
+  private async runJkqlForValues(jkql: string, range?: TimeRange): Promise<MetricFindValue[]> {
+    // Interpolate only to detect an effectively-empty query (e.g. just "$var" resolving to "").
+    // The raw string goes into the target: the backend-query pipeline runs applyTemplateVariables
+    // on it, so interpolating here too would expand the query twice — a first-pass result that
+    // happens to look like a variable reference would get mangled by the second pass.
+    if (!getTemplateSrv().replace(jkql, {}, formatJkqlVariable).trim()) {
+      return [];
+    }
+
+    const request = {
+      requestId: `meshiq-variable-${Date.now()}`,
+      interval: '0',
+      intervalMs: 0,
+      range: range ?? getDefaultTimeRange(),
+      scopedVars: {},
+      timezone: getBrowserTimezone(),
+      app: CoreApp.Unknown,
+      startTime: Date.now(),
+      targets: [{ refId: 'metricFindQuery', jkql }],
+    } as DataQueryRequest<MeshIqQuery>;
+
+    const response = await lastValueFrom(this.query(request));
+    const frame = response.data?.[0];
+    if (!frame?.fields?.length) {
+      return [];
+    }
+
+    const values = frame.fields[0].values as unknown[];
+    const seen = new Set<string>();
+    const results: MetricFindValue[] = [];
+    for (const raw of Array.from(values)) {
+      if (raw == null) {
+        continue;
+      }
+      const text = String(raw);
+      if (seen.has(text)) {
+        continue;
+      }
+      seen.add(text);
+      results.push({ text });
+    }
+    return results;
+  }
+}
+
+// formatJkqlVariable renders a template-variable value into jKQL. A multi-value (or include-all)
+// selection becomes a quoted, comma-separated list — `WHERE Severity IN ($sev)` interpolates to
+// `IN ('ERROR', 'WARNING')` instead of Grafana's default glob `{ERROR,WARNING}`, which jKQL can't
+// parse. Single values stay raw, so the query author controls their quoting ('$var' vs $var).
+function formatJkqlVariable(value: unknown): string {
+  if (Array.isArray(value)) {
+    return value.map((v) => quoteJkqlString(String(v))).join(', ');
+  }
+  return String(value);
+}
+
+// quoteJkqlString single-quotes a value for jKQL. The grammar's escape character is a backslash
+// (QSTRING allows \' and \\), so both are escaped.
+function quoteJkqlString(value: string): string {
+  return `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
 }
 
 function getBrowserLocale(): string {
