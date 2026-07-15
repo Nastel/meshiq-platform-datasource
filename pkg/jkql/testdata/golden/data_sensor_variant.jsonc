@@ -1,0 +1,203 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 20
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 20
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 4 Fields by 20 Rows
+//  +----------------------------+-----------------------------+--------------------+--------------------+
+//  | Name: SensorName           | Name: SensorValue (DECIMAL) | Name: SensorHealth | Name: SensorStatus |
+//  | Labels:                    | Labels:                     | Labels:            | Labels:            |
+//  | Type: []*string            | Type: []*float64            | Type: []*float64   | Type: []*enum      |
+//  +----------------------------+-----------------------------+--------------------+--------------------+
+//  | Server Subscribtion Load   | 528                         | 100                | 0                  |
+//  | Total Running Sensors      | 396                         | 100                | 0                  |
+//  | Memory Utilization %       | 30.71                       | 100                | 0                  |
+//  | Timeout Count              | 0                           | 100                | 0                  |
+//  | Peak Response Time (ms)    | 2                           | 100                | 0                  |
+//  | Fact Storage Utilization % | 4.85                        | 100                | 0                  |
+//  | Rule Engine CPU Idle %     | 99.68                       | 100                | 0                  |
+//  | Total Active Tasks         | 0                           | 100                | 0                  |
+//  | Total Queued Tasks         | 0                           | 100                | 0                  |
+//  | ...                        | ...                         | ...                | ...                |
+//  +----------------------------+-----------------------------+--------------------+--------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 20
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 20
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "SensorName",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "SensorValue (DECIMAL)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "SensorHealth",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "SensorStatus",
+            "type": "enum",
+            "typeInfo": {
+              "frame": "enum",
+              "nullable": true
+            },
+            "config": {
+              "type": {
+                "enum": {
+                  "text": [
+                    "RUNNING"
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            "Server Subscribtion Load",
+            "Total Running Sensors",
+            "Memory Utilization %",
+            "Timeout Count",
+            "Peak Response Time (ms)",
+            "Fact Storage Utilization %",
+            "Rule Engine CPU Idle %",
+            "Total Active Tasks",
+            "Total Queued Tasks",
+            "Total Completed Tasks",
+            "Total Scheduled Tasks",
+            "Dropped Objects",
+            "Outbound Send Queue Depth",
+            "Total Full Communication Pipes",
+            "Fact Publish Latency (ms)",
+            "Fact Delivery Latency (ms)",
+            "Fact Sensor Latency (ms)",
+            "Total Facts Dropped on Delivery",
+            "Total Facts Dropped on Publish",
+            "Total Events Dropped on Delivery"
+          ],
+          [
+            528,
+            396,
+            30.71,
+            0,
+            2,
+            4.85,
+            99.68,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            6,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    }
+  ]
+}

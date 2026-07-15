@@ -1,0 +1,116 @@
+{
+  "rows-found": 5,
+  "row-count": 5,
+  "total-row-count": 5,
+  "data-date-range": "1780910992390205 TO 1783090212226690",
+  "timezone": "Coordinated Universal Time",
+  "locale": "en-US",
+  "status": "SUCCESS",
+  "time": 1783090247096646,
+  "item-type": "Log",
+  "stmt-type": "Get",
+  "colhdr": [
+    "Properties('INTEGER')"
+  ],
+  "coltype": {
+    "Properties('INTEGER')": "MAP"
+  },
+  "collabel": {
+    "Properties('INTEGER')": "Properties('INTEGER')"
+  },
+  "rows": [
+    {
+      "Properties('INTEGER')": {
+        "_EndTime_": 1781787542938602,
+        "_Expiry_": 0,
+        "_RecvTime_": 1781787542864996,
+        "_StartTime_": 1781787542862837,
+        "_WaitTime_": 5864
+      },
+      "Properties('INTEGER'):_ValueTypes": {
+        "_EndTime_": "INTEGER",
+        "_Expiry_": "INTEGER",
+        "_RecvTime_": "INTEGER",
+        "_StartTime_": "INTEGER",
+        "_WaitTime_": "INTEGER"
+      }
+    },
+    {
+      "Properties('INTEGER')": {
+        "_EndTime_": 1783083621285181,
+        "_RecvTime_": 1783083621285184,
+        "_StartTime_": 1783083621283337,
+        "_WaitTime_": 1847,
+        "jk_call_time": 1783083621282
+      },
+      "Properties('INTEGER'):_ValueTypes": {
+        "_EndTime_": "INTEGER",
+        "_RecvTime_": "INTEGER",
+        "_StartTime_": "INTEGER",
+        "_WaitTime_": "INTEGER",
+        "jk_call_time": "INTEGER"
+      }
+    },
+    {
+      "Properties('INTEGER')": {
+        "_EndTime_": 1783083621935755,
+        "_RecvTime_": 1783083621935762,
+        "_StartTime_": 1783083621932694,
+        "_WaitTime_": 3068,
+        "jk_call_time": 1783083621930
+      },
+      "Properties('INTEGER'):_ValueTypes": {
+        "_EndTime_": "INTEGER",
+        "_RecvTime_": "INTEGER",
+        "_StartTime_": "INTEGER",
+        "_WaitTime_": "INTEGER",
+        "jk_call_time": "INTEGER"
+      }
+    },
+    {
+      "Properties('INTEGER')": {
+        "_EndTime_": 1783083609900593,
+        "_RecvTime_": 1783083609900596,
+        "_StartTime_": 1783083609899319,
+        "_WaitTime_": 1277,
+        "jk_call_time": 1783083609892
+      },
+      "Properties('INTEGER'):_ValueTypes": {
+        "_EndTime_": "INTEGER",
+        "_RecvTime_": "INTEGER",
+        "_StartTime_": "INTEGER",
+        "_WaitTime_": "INTEGER",
+        "jk_call_time": "INTEGER"
+      }
+    },
+    {
+      "Properties('INTEGER')": {
+        "_EndTime_": 1781847513882074,
+        "_RecvTime_": 1781847513882079,
+        "_StartTime_": 1781847513879081,
+        "_WaitTime_": 2998
+      },
+      "Properties('INTEGER'):_ValueTypes": {
+        "_EndTime_": "INTEGER",
+        "_RecvTime_": "INTEGER",
+        "_StartTime_": "INTEGER",
+        "_WaitTime_": "INTEGER"
+      }
+    }
+  ],
+  "overallStatistics": {
+    "json_string.time.usec": 481,
+    "raw_result_post_process.time.usec": 4,
+    "request_wait.time.usec": 9245,
+    "rows_found.count": 5,
+    "rows_returned.count": 5,
+    "rows_total.count": 5,
+    "solr_request_build.time.usec": 84,
+    "solr_request_elapsed.time.usec": 25000,
+    "solr_request_exec.time.usec": 25567,
+    "solr_request_qtime.time.usec": 3000,
+    "solr_result_doc.count": 5,
+    "solr_result_proc.time.usec": 834,
+    "total_exec.time.usec": 26593
+  }
+}
