@@ -14,8 +14,13 @@ type MeshIqDataSourceOptions struct {
 	// RepositoryID is the default repository applied to queries that don't specify one.
 	RepositoryID string `json:"repositoryID"`
 	// Trace is the default for queries that don't carry their own trace flag.
-	Trace bool   `json:"trace"`
-	Token string `json:"-"`
+	Trace bool `json:"trace"`
+	// EnableCompletion turns on jKQL autocomplete, proxied to CompletionServiceUrl.
+	EnableCompletion bool `json:"enableCompletion"`
+	// CompletionServiceUrl is the base URL of the jKQL autocomplete service. Only used when
+	// EnableCompletion is set.
+	CompletionServiceUrl string `json:"completionServiceUrl"`
+	Token                string `json:"-"`
 }
 
 // BuildMeshIqDataSourceOptions parses and validates the datasource settings.

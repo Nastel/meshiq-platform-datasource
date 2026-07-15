@@ -87,6 +87,14 @@ export function ConfigEditor(props: Props) {
     onOptionsChange({ ...options, jsonData: { ...jsonData, trace: event.currentTarget.checked } });
   };
 
+  const onEnableCompletionChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onOptionsChange({ ...options, jsonData: { ...jsonData, enableCompletion: event.currentTarget.checked } });
+  };
+
+  const onCompletionServiceUrlChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onOptionsChange({ ...options, jsonData: { ...jsonData, completionServiceUrl: event.target.value } });
+  };
+
   // Secure field (only sent to the backend).
   const onAccessTokenChange = (event: ChangeEvent<HTMLInputElement>) => {
     onOptionsChange({ ...options, secureJsonData: { ...options.secureJsonData, accessToken: event.target.value } });
@@ -194,6 +202,42 @@ export function ConfigEditor(props: Props) {
           tooltip="Default: ask the dataservice to include query trace info (jk_trace). Overridable per query."
         >
           <InlineSwitch id="config-editor-trace" value={jsonData.trace ?? false} onChange={onTraceChange} />
+        </InlineField>
+      )}
+
+      {configured && (
+        <InlineField
+          label="Enable completion"
+          labelWidth={28}
+          interactive
+          tooltip="Enable jKQL autocomplete in the query editor, served by the completion service below."
+        >
+          <InlineSwitch
+            id="config-editor-enable-completion"
+            value={jsonData.enableCompletion ?? false}
+            onChange={onEnableCompletionChange}
+          />
+        </InlineField>
+      )}
+
+      {configured && jsonData.enableCompletion && (
+        <InlineField
+          label="Completion service URL"
+          labelWidth={28}
+          interactive
+          required
+          invalid={!jsonData.completionServiceUrl}
+          error="Enter the completion service URL"
+          tooltip="Base URL of the jKQL autocomplete service, e.g. http://your-host:7580"
+        >
+          <Input
+            id="config-editor-completion-service-url"
+            onChange={onCompletionServiceUrlChange}
+            value={jsonData.completionServiceUrl ?? ''}
+            placeholder="http://your-meshiq-host:7580"
+            width={40}
+            autoComplete="off"
+          />
         </InlineField>
       )}
     </>

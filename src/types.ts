@@ -28,6 +28,23 @@ export interface MeshIqDataSourceOptions extends DataSourceJsonData {
   repositoryID?: string;
   /** Default trace flag applied to queries that don't set their own. */
   trace?: boolean;
+  /** Turns on jKQL autocomplete, proxied to completionServiceUrl. */
+  enableCompletion?: boolean;
+  /** Base URL of the jKQL autocomplete service. */
+  completionServiceUrl?: string;
+}
+
+/**
+ * One completion returned by the jKQL autocomplete service, proxied through the backend
+ * `/suggestions` resource. `kind` is the service's enum name (StatementType, ItemType, Limit,
+ * Keyword, Field, Function, Operator, Token, Separator, Totals). `deleteBackwards` is the number
+ * of characters before the caret to replace when inserting.
+ */
+export interface MeshIqCompletionItem {
+  label: string;
+  insertText?: string;
+  kind?: string;
+  deleteBackwards?: number;
 }
 
 /**

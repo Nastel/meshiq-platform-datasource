@@ -14,9 +14,11 @@ import (
 // newResourceHandler builds the CallResource handler exposing the frontend's non-query endpoints:
 //
 //	GET /repositories -> ["<name>$<org>", …]     (jKQL: Get Repository Fields …)
+//	GET /suggestions  -> autocomplete proxy      (see completion.go)
 func (d *Datasource) newResourceHandler() backend.CallResourceHandler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/repositories", d.handleRepositories)
+	mux.HandleFunc("/suggestions", d.handleSuggestions)
 	return httpadapter.New(mux)
 }
 
@@ -89,8 +91,8 @@ func writeResourceJSON(r *http.Request, w http.ResponseWriter, payload interface
 }
 
 // writeResourceError answers a resource request with a JSON error and logs it. The frontend
-// degrades quietly on these (an empty repository dropdown), so this log line is the only place a
-// failing /repositories call becomes visible.
+// degrades quietly on these (an empty repository dropdown, no suggestions), so this log line is
+// the only place a failing /repositories or /suggestions call becomes visible.
 func writeResourceError(r *http.Request, w http.ResponseWriter, status int, err error) {
 	log.DefaultLogger.FromContext(r.Context()).Warn("resource request failed",
 		"path", r.URL.Path, "status", status, "error", err)
