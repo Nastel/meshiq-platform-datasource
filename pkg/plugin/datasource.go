@@ -3,114 +3,186 @@ package plugin
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"time"
+	"net/http"
 
+	"github.com/Nastel/meshiq-platform-datasource/pkg/jkql"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana-plugin-sdk-go/backend/httpclient"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
-	"github.com/grafana/grafana-plugin-sdk-go/data"
-	"github.com/Nastel/meshiq-platform-datasource/pkg/models"
+	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
+	"github.com/grafana/grafana-plugin-sdk-go/experimental/concurrent"
 )
 
-// Make sure Datasource implements required interfaces. This is important to do
-// since otherwise we will only get a not implemented error response from plugin in
-// runtime. In this example datasource instance implements backend.QueryDataHandler,
-// backend.CheckHealthHandler interfaces. Plugin should not implement all these
-// interfaces - only those which are required for a particular task.
+// errCrossHostRedirect makes http.Client abort a redirect whose target host differs from the
+// original request's. Go's default policy only strips Authorization/Cookie on a cross-host hop;
+// a custom header like X-API-Key (HDR_API_KEY in protocol.go) would be forwarded unchanged to
+// whatever host a redirect points at — a misconfigured Service URL, or a proxy/login page.
+var errCrossHostRedirect = errors.New("refusing to follow a redirect to a different host")
+
+func rejectCrossHostRedirect(req *http.Request, via []*http.Request) error {
+	if len(via) == 0 {
+		return nil
+	}
+	if req.URL.Host != via[0].URL.Host {
+		return errCrossHostRedirect
+	}
+	return nil
+}
+
+// Params is a flat key/value map (used for the health-check result parameters).
+type Params map[string]interface{}
+
+// Make sure Datasource implements the required SDK interfaces.
 var (
 	_ backend.QueryDataHandler      = (*Datasource)(nil)
 	_ backend.CheckHealthHandler    = (*Datasource)(nil)
 	_ instancemgmt.InstanceDisposer = (*Datasource)(nil)
 )
 
-// NewDatasource creates a new datasource instance.
-func NewDatasource(_ context.Context, _ backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
-	return &Datasource{}, nil
+// Datasource is the meshIQ Platform datasource instance.
+type Datasource struct {
+	httpClient *http.Client
 }
 
-// Datasource is an example datasource which can respond to data queries, reports
-// its health and has streaming skills.
-type Datasource struct{}
-
-// Dispose here tells plugin SDK that plugin wants to clean up resources when a new instance
-// created. As soon as datasource settings change detected by SDK old datasource instance will
-// be disposed and a new one will be created using NewSampleDatasource factory function.
-func (d *Datasource) Dispose() {
-	// Clean up datasource instance resources.
-}
-
-// QueryData handles multiple queries and returns multiple responses.
-// req contains the queries []DataQuery (where each query contains RefID as a unique identifier).
-// The QueryDataResponse contains a map of RefID to the response for each query, and each response
-// contains Frames ([]*Frame).
-func (d *Datasource) QueryData(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
-	// create response struct
-	response := backend.NewQueryDataResponse()
-
-	// loop over queries and execute them individually.
-	for _, q := range req.Queries {
-		res := d.query(ctx, req.PluginContext, q)
-
-		// save the response in a hashmap
-		// based on with RefID as identifier
-		response.Responses[q.RefID] = res
-	}
-
-	return response, nil
-}
-
-type queryModel struct{}
-
-func (d *Datasource) query(_ context.Context, pCtx backend.PluginContext, query backend.DataQuery) backend.DataResponse {
-	var response backend.DataResponse
-
-	// Unmarshal the JSON into our queryModel.
-	var qm queryModel
-
-	err := json.Unmarshal(query.JSON, &qm)
+// NewDatasource creates a new datasource instance with an HTTP client configured from
+// Grafana's datasource settings (proxy, TLS, timeouts).
+func NewDatasource(ctx context.Context, settings backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
+	opts, err := settings.HTTPClientOptions(ctx)
 	if err != nil {
-		return backend.ErrDataResponse(backend.StatusBadRequest, fmt.Sprintf("json unmarshal: %v", err.Error()))
+		return nil, fmt.Errorf("http client options: %w", err)
 	}
 
-	// create data frame response.
-	// For an overview on data frames and how grafana handles them:
-	// https://grafana.com/developers/plugin-tools/introduction/data-frames
-	frame := data.NewFrame("response")
+	cl, err := httpclient.New(opts)
+	if err != nil {
+		return nil, fmt.Errorf("httpclient new: %w", err)
+	}
+	cl.CheckRedirect = rejectCrossHostRedirect
 
-	// add fields.
-	frame.Fields = append(frame.Fields,
-		data.NewField("time", nil, []time.Time{query.TimeRange.From, query.TimeRange.To}),
-		data.NewField("values", nil, []int64{10, 20}),
-	)
+	return &Datasource{httpClient: cl}, nil
+}
 
-	// add the frames to the response.
+// Dispose cleans up datasource instance resources when the instance is replaced.
+func (d *Datasource) Dispose() {
+	if d.httpClient != nil {
+		d.httpClient.CloseIdleConnections()
+	}
+}
+
+// queryConcurrency bounds how many of one request's queries run against the dataservice at
+// once. Grafana sends a panel's (or alert rule's) queries in one request; running them in
+// parallel cuts the panel load time to the slowest query instead of the sum.
+const queryConcurrency = 10
+
+// QueryData handles multiple queries and returns multiple responses. Queries run concurrently
+// via the SDK helper, which also recovers a panicking query into an error response for that
+// query instead of crashing the plugin.
+func (d *Datasource) QueryData(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
+	return concurrent.QueryData(ctx, req, func(ctx context.Context, q concurrent.Query) backend.DataResponse {
+		return d.query(ctx, q.PluginContext, q.DataQuery)
+	}, queryConcurrency)
+}
+
+func (d *Datasource) query(ctx context.Context, pCtx backend.PluginContext, query backend.DataQuery) backend.DataResponse {
+	response := backend.DataResponse{}
+
+	queryModel, err := BuildQueryModel(query)
+	if err != nil {
+		return backend.ErrDataResponse(backend.StatusBadRequest, fmt.Sprintf("query model: %v", err.Error()))
+	}
+
+	// Nothing to run.
+	if queryModel.JKQL == "" {
+		return response
+	}
+
+	options, err := BuildMeshIqDataSourceOptions(pCtx.DataSourceInstanceSettings)
+	if err != nil {
+		return backend.ErrDataResponse(backend.StatusBadRequest, fmt.Sprintf("datasource options: %v", err.Error()))
+	}
+
+	result, err := queryDataService(ctx, d.httpClient, *queryModel, *options)
+	if err != nil {
+		// Error envelope = the service rejected the query (bad request); anything else is a
+		// transport/HTTP failure (bad gateway) — both downstream. Log query+date so a failure
+		// seen on a panel can be found in the server log and reproduced.
+		logger := log.DefaultLogger.FromContext(ctx)
+		status := backend.StatusBadGateway
+		var qe *queryError
+		if errors.As(err, &qe) {
+			status = backend.StatusBadRequest
+			// Usually a mistake in the query (or an expired token), not an outage — warn.
+			logger.Warn("dataservice rejected the query",
+				"query", queryModel.JKQL, "date", queryModel.Date, "error", err)
+		} else {
+			logger.Error("dataservice request failed",
+				"query", queryModel.JKQL, "date", queryModel.Date, "error", err)
+		}
+		return backend.ErrDataResponseWithSource(status, backend.ErrorSourceDownstream, err.Error())
+	}
+
+	dataModel := jkql.BuildDataModel(result)
+	frame := jkql.BuildDataFrame(dataModel)
+	logParseIssues(ctx, *queryModel, dataModel)
+	frame = jkql.FinalizeFrame(frame, queryModel.JKQL)
+	frame.RefID = query.RefID
 	response.Frames = append(response.Frames, frame)
 
 	return response
 }
 
-// CheckHealth handles health checks sent from Grafana to the plugin.
-// The main use case for these health checks is the test button on the
-// datasource configuration page which allows users to verify that
-// a datasource is working as expected.
-func (d *Datasource) CheckHealth(_ context.Context, req *backend.CheckHealthRequest) (*backend.CheckHealthResult, error) {
-	res := &backend.CheckHealthResult{}
-	config, err := models.LoadPluginSettings(*req.PluginContext.DataSourceInstanceSettings)
-
+// CheckHealth verifies the datasource can reach the dataservice and authenticate, by
+// running the "Get Params" jKQL statement.
+func (d *Datasource) CheckHealth(ctx context.Context, req *backend.CheckHealthRequest) (*backend.CheckHealthResult, error) {
+	options, err := BuildMeshIqDataSourceOptions(req.PluginContext.DataSourceInstanceSettings)
 	if err != nil {
-		res.Status = backend.HealthStatusError
-		res.Message = "Unable to load settings"
-		return res, nil
+		return newHealthError(err), nil
 	}
 
-	if config.Secrets.ApiKey == "" {
-		res.Status = backend.HealthStatusError
-		res.Message = "API key is missing"
-		return res, nil
+	response, err := testDataService(ctx, d.httpClient, *options)
+	if err != nil {
+		return newHealthError(err), nil
+	}
+
+	dataModel := jkql.BuildDataModel(response)
+	logParseIssues(ctx, BuildParamsQueryModel(), dataModel)
+	details, err := json.Marshal(buildCheckHealthResult(dataModel))
+	if err != nil {
+		return newHealthError(err), nil
 	}
 
 	return &backend.CheckHealthResult{
-		Status:  backend.HealthStatusOk,
-		Message: "Data source is working",
+		Status:      backend.HealthStatusOk,
+		Message:     "Data source is working",
+		JSONDetails: details,
 	}, nil
+}
+
+// buildCheckHealthResult turns the "Get Params" result set into a flat key/value map
+// (ParameterName -> ParameterValue) returned to the frontend as health details.
+func buildCheckHealthResult(dataModel jkql.DataModel) Params {
+	params := make(Params)
+	if len(dataModel.Headers) < 2 {
+		return params
+	}
+
+	keyHeader := dataModel.Headers[0]   // ParameterName
+	valueHeader := dataModel.Headers[1] // ParameterValue
+	for _, row := range dataModel.Rows {
+		key, ok := jkql.ConvertToGrafanaValue(row[keyHeader], dataModel.DataTypes[keyHeader]).(string)
+		if !ok {
+			continue
+		}
+		params[key] = row[valueHeader]
+	}
+
+	return params
+}
+
+func newHealthError(err error) *backend.CheckHealthResult {
+	return &backend.CheckHealthResult{
+		Status:  backend.HealthStatusError,
+		Message: err.Error(),
+	}
 }

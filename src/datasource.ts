@@ -1,26 +1,40 @@
-import { DataSourceInstanceSettings, CoreApp, ScopedVars } from '@grafana/data';
+import { CoreApp, DataSourceInstanceSettings, ScopedVars } from '@grafana/data';
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 
-import { MyQuery, MyDataSourceOptions, DEFAULT_QUERY } from './types';
+import { DEFAULT_QUERY, MeshIqDataSourceOptions, MeshIqQuery } from './types';
 
-export class DataSource extends DataSourceWithBackend<MyQuery, MyDataSourceOptions> {
-  constructor(instanceSettings: DataSourceInstanceSettings<MyDataSourceOptions>) {
+export class DataSource extends DataSourceWithBackend<MeshIqQuery, MeshIqDataSourceOptions> {
+  constructor(instanceSettings: DataSourceInstanceSettings<MeshIqDataSourceOptions>) {
     super(instanceSettings);
   }
 
-  getDefaultQuery(_: CoreApp): Partial<MyQuery> {
+  getDefaultQuery(_: CoreApp): Partial<MeshIqQuery> {
     return DEFAULT_QUERY;
   }
 
-  applyTemplateVariables(query: MyQuery, scopedVars: ScopedVars) {
+  applyTemplateVariables(query: MeshIqQuery, scopedVars: ScopedVars): MeshIqQuery {
     return {
       ...query,
-      queryText: getTemplateSrv().replace(query.queryText, scopedVars),
+      jkql: query.jkql ? getTemplateSrv().replace(query.jkql, scopedVars) : query.jkql,
+      locale: query.locale || getBrowserLocale(),
+      timezone: query.timezone || getBrowserTimezone(),
     };
   }
 
-  filterQuery(query: MyQuery): boolean {
-    // if no query has been provided, prevent the query from being executed
-    return !!query.queryText;
+  filterQuery(query: MeshIqQuery): boolean {
+    // Don't run empty queries.
+    return !!query.jkql;
+  }
+}
+
+function getBrowserLocale(): string {
+  return navigator.language || '';
+}
+
+function getBrowserTimezone(): string {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+  } catch {
+    return '';
   }
 }
