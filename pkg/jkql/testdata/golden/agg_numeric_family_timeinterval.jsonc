@@ -1,0 +1,163 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 1
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 1
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 7 Fields by 1 Rows
+//  +----------------+----------------+----------------+----------------+----------------+----------------+----------------+
+//  | Name: avg      | Name: max      | Name: min      | Name: median   | Name: p95      | Name: stddev   | Name: variance |
+//  | Labels:        | Labels:        | Labels:        | Labels:        | Labels:        | Labels:        | Labels:        |
+//  | Type: []*int64 | Type: []*int64 | Type: []*int64 | Type: []*int64 | Type: []*int64 | Type: []*int64 | Type: []*int64 |
+//  +----------------+----------------+----------------+----------------+----------------+----------------+----------------+
+//  | 603758         | 3718371        | 234            | 24293          | 3236232        | 1063112        | 1130209095189  |
+//  +----------------+----------------+----------------+----------------+----------------+----------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 1
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 1
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "avg",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            },
+            "config": {
+              "unit": "µs"
+            }
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            },
+            "config": {
+              "unit": "µs"
+            }
+          },
+          {
+            "name": "min",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            },
+            "config": {
+              "unit": "µs"
+            }
+          },
+          {
+            "name": "median",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            },
+            "config": {
+              "unit": "µs"
+            }
+          },
+          {
+            "name": "p95",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            },
+            "config": {
+              "unit": "µs"
+            }
+          },
+          {
+            "name": "stddev",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            },
+            "config": {
+              "unit": "µs"
+            }
+          },
+          {
+            "name": "variance",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            },
+            "config": {
+              "unit": "µs"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            603758
+          ],
+          [
+            3718371
+          ],
+          [
+            234
+          ],
+          [
+            24293
+          ],
+          [
+            3236232
+          ],
+          [
+            1063112
+          ],
+          [
+            1130209095189
+          ]
+        ]
+      }
+    }
+  ]
+}

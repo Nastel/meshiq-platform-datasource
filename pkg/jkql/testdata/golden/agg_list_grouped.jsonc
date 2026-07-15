@@ -1,0 +1,114 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 1
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 1
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 2 Fields by 1 Rows
+//  +----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+//  | Name: Severity | Name: resources                                                                                                                                                                                                  |
+//  | Labels:        | Labels:                                                                                                                                                                                                          |
+//  | Type: []*enum  | Type: []*json.RawMessage                                                                                                                                                                                         |
+//  +----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+//  | 0              | ["THREAD=Embedded/ClientPool/task-1#JVM=1@0148a0212fd9#IP=172.19.0.8","THREAD=Embedded/ClientPool/task-6#JVM=1@0148a0212fd9#IP=172.19.0.8","THREAD=Embedded/QueryPool/task-17#JVM=1@0148a0212fd9#IP=172.19.0.8"] |
+//  +----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 1
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 1
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "Severity",
+            "type": "enum",
+            "typeInfo": {
+              "frame": "enum",
+              "nullable": true
+            },
+            "config": {
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "0": {
+                      "text": "ERROR",
+                      "color": "semi-dark-red"
+                    }
+                  }
+                }
+              ],
+              "type": {
+                "enum": {
+                  "text": [
+                    "ERROR"
+                  ],
+                  "color": [
+                    "semi-dark-red"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": "resources",
+            "type": "other",
+            "typeInfo": {
+              "frame": "json.RawMessage",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            0
+          ],
+          [
+            [
+              "THREAD=Embedded/ClientPool/task-1#JVM=1@0148a0212fd9#IP=172.19.0.8",
+              "THREAD=Embedded/ClientPool/task-6#JVM=1@0148a0212fd9#IP=172.19.0.8",
+              "THREAD=Embedded/QueryPool/task-17#JVM=1@0148a0212fd9#IP=172.19.0.8"
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
