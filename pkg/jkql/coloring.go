@@ -84,6 +84,47 @@ var compCodeColors = colorByValue{
 	"ERROR":   colorRed,
 }
 
+// objectStateColors follows the WgsObjectState values (the generic managed-object state).
+// Meaning: running is green, transitions are blue/orange, stopped is red, no-state is neutral,
+// UNKNOWN is gray (unclear, not a warning).
+var objectStateColors = colorByValue{
+	"ACTIVE":    colorGreen,
+	"NORMAL":    colorGreen,
+	"STARTING":  colorBlue,
+	"STOPPING":  colorOrange,
+	"STOPPED":   colorRed,
+	"UNKNOWN":   colorGray,
+	"UNDEFINED": colorNeutral,
+	"DELETED":   colorNeutral,
+}
+
+// serviceStatusColors follows the WgsServiceStatus values (listener/service states).
+var serviceStatusColors = colorByValue{
+	"RUNNING":  colorGreen,
+	"STARTING": colorBlue,
+	"STOPPING": colorOrange,
+	"RETRYING": colorOrange,
+	"STOPPED":  colorRed,
+}
+
+// channelStatusColors follows the WgsChannelStatus values (IBM MQ channel states). INACTIVE is
+// neutral, not red: it is the normal resting state of a client/server channel. RETRYING and
+// PAUSED signal trouble (orange); STOPPED in MQ means stopped by error or operator (red).
+var channelStatusColors = colorByValue{
+	"RUNNING":      colorGreen,
+	"BINDING":      colorBlue,
+	"STARTING":     colorBlue,
+	"INITIALIZING": colorBlue,
+	"REQUESTING":   colorBlue,
+	"SWITCHING":    colorBlue,
+	"RETRYING":     colorOrange,
+	"PAUSED":       colorOrange,
+	"STOPPING":     colorOrange,
+	"STOPPED":      colorRed,
+	"INACTIVE":     colorNeutral,
+	"DISCONNECTED": colorNeutral,
+}
+
 // binaryStateColors is a reusable palette for two-state string fields: the positive state is green,
 // the negative state is red. Case-insensitive. These are the only values we expect for now.
 var binaryStateColors = colorByValue{
@@ -102,8 +143,11 @@ var binaryStateColors = colorByValue{
 
 // enumColorRules maps an enum field NAME to its palette. Only listed enum fields are colored.
 var enumColorRules = map[string]colorByValue{
-	"SEVERITY": severityColors,
-	"COMPCODE": compCodeColors,
+	"SEVERITY":         severityColors,
+	"COMPCODE":         compCodeColors,
+	"WGSOBJECTSTATE":   objectStateColors,
+	"WGSCHANNELSTATUS": channelStatusColors,
+	"WGSSERVICESTATUS": serviceStatusColors,
 }
 
 // stringColorRules maps an (ITEM TYPE, FIELD NAME) pair to a palette, overriding the default
@@ -119,8 +163,7 @@ var stringColorRules = map[itemField]colorByValue{}
 
 // enumColors returns the ordinal-indexed color table for an enum field, or nil when the field has
 // no rule (Grafana then auto-colors it). text is the field's ordinal->name table; the returned
-// slice is aligned to it. UNKNOWN is colored gray rather than left to fall through to a palette
-// color meant for a real error state — an unresolved/not-yet-known value isn't a warning.
+// slice is aligned to it.
 func enumColors(fieldName string, text []string) []string {
 	palette, ok := enumColorRules[strings.ToUpper(strings.TrimSpace(fieldName))]
 	if !ok {
@@ -129,11 +172,6 @@ func enumColors(fieldName string, text []string) []string {
 	colors := make([]string, len(text))
 	matched := false
 	for i, name := range text {
-		if strings.EqualFold(strings.TrimSpace(name), "UNKNOWN") {
-			colors[i] = colorGray
-			matched = true
-			continue
-		}
 		colors[i] = palette.color(name)
 		if colors[i] != "" {
 			matched = true
@@ -173,10 +211,6 @@ func stringValueMappings(model DataModel, header string) data.ValueMappings {
 			continue
 		}
 		if _, done := mapper[s]; done {
-			continue
-		}
-		if strings.EqualFold(strings.TrimSpace(s), "UNKNOWN") {
-			mapper[s] = data.ValueMappingResult{Color: colorGray}
 			continue
 		}
 		if color := palette.color(s); color != "" {
