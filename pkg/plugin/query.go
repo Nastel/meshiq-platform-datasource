@@ -46,3 +46,9 @@ func BuildParamsQueryModel() QueryModel {
 func BuildRepositoriesQueryModel() QueryModel {
 	return QueryModel{JKQL: "Get Repository Fields RepositoryID, RepositoryName, OrganizationName"}
 }
+
+// BuildFunctionsQueryModel builds the jKQL used to list the server's functions. The result set's
+// Name column holds the function names and Type is Aggregate / Analytic / Scalar.
+func BuildFunctionsQueryModel() QueryModel {
+	return QueryModel{JKQL: "get functions"}
+}
