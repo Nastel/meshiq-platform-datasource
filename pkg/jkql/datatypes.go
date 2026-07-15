@@ -73,11 +73,14 @@ const (
 	PROPERTIES FieldType = "Properties" // exploded into one column per key (see datamodel.go)
 	SCORE      FieldType = "Score"      // Solr score field, skipped
 
-	// metadata query columns (see the "Get Params" health check, the /repositories resource, and
-	// the "GET ENUMERATION FOR <field>" query used to build a dense enum value table)
-	ID      FieldType = "ID"
-	NAME    FieldType = "Name"
-	REPO_ID FieldType = "RepositoryID"
+	// metadata query columns: the "Get Params" health check, the /repositories, /tables and
+	// /fields resources, and the "GET ENUMERATION FOR <field>" dense enum value table.
+	ID         FieldType = "ID"
+	NAME       FieldType = "Name"
+	REPO_ID    FieldType = "RepositoryID"
+	ITEM_NAME  FieldType = "ItemName"
+	FIELD_NAME FieldType = "FieldName"
+	DATA_TYPE  FieldType = "DataType"
 
 	// Map fields other than Properties: whole-map access (bare field name, no key) stays a single
 	// raw JSON column instead of exploding one column per key. A named key still always unwraps/
