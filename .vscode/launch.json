@@ -1,0 +1,55 @@
+{
+  // Debug configurations for the meshIQ Platform data source plugin.
+  //
+  // Frontend: with "Run: dev" running, launch "Frontend: debug in Chrome".
+  //
+  // Flow: run the app with Ctrl/Cmd+Shift+B, and hit the datasource once (Save & Test or a query)
+  // so Grafana spawns the plugin PROCESS — delve can't attach to a process that isn't running yet.
+  // Then launch "Backend: attach to delve": its preLaunchTask ("Debug: delve watcher") starts the
+  // delve watcher, waits until it's listening on :2345, and this config attaches. The plain
+  // container is already delve-ready (SYS_PTRACE + unconfined + :2345 from docker-compose-base).
+  // A reload replaces the plugin process (ending the session); the watcher re-opens :2345 — re-launch.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend: attach to delve",
+      "type": "go",
+      "request": "attach",
+      "mode": "remote",
+      "host": "127.0.0.1",
+      "port": 2345,
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Debug: delve watcher"
+    },
+    {
+      "name": "Frontend: debug in Chrome",
+      "type": "chrome",
+      "request": "launch",
+      // Local forwarded port: VS Code forwarded the container's Grafana (3000) to 3000 on your
+      // machine. If VS Code assigns a different local port, update this (see the Ports panel).
+      "url": "http://localhost:3000",
+      // The dev container has no browser — launch Chrome on your local (Windows) machine.
+      // If you use Edge instead of Chrome, change "type" to "msedge".
+      "browserLaunchLocation": "ui",
+      "webRoot": "${workspaceFolder}",
+      // webpack emits source paths relative to src/ (e.g. "./components/QueryEditor.tsx"), so map
+      // the "./" root to ${workspaceFolder}/src. The eval-source-map dev build uses the
+      // webpack-internal:/// scheme; include both.
+      "sourceMapPathOverrides": {
+        "webpack://meshiq-platform-datasource/./*": "${workspaceFolder}/src/*",
+        "webpack-internal:///./*": "${workspaceFolder}/src/*",
+        "webpack:///./*": "${workspaceFolder}/src/*"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      // Attach both debuggers at once, ON TOP OF a running app (Ctrl/Cmd+Shift+B first — the
+      // backend preLaunchTask only starts the delve watcher, not the dev loop; without Grafana
+      // up it waits forever). stopAll: ending one debug session stops the other too.
+      "name": "Attach both (backend + frontend)",
+      "configurations": ["Backend: attach to delve", "Frontend: debug in Chrome"],
+      "stopAll": true
+    }
+  ]
+}
