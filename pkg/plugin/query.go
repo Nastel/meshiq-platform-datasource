@@ -54,3 +54,10 @@ func BuildRepositoriesQueryModel() QueryModel {
 func BuildFunctionsQueryModel() QueryModel {
 	return QueryModel{JKQL: "get functions"}
 }
+
+// BuildEnumValuesQueryModel builds the jKQL used to list the complete value set of a built-in enum
+// field ("GET ENUMERATION FOR <field>"). The result set has an ID column (the ordinal) and a Name
+// column, one row per possible enum value — used to build a full, gap-free enum Text table.
+func BuildEnumValuesQueryModel(field string) QueryModel {
+	return QueryModel{JKQL: "GET ENUMERATION FOR " + field}
+}

@@ -223,3 +223,27 @@ func TestBuildDataModel_MixedMapIntDecimalKeyMergesIntoOneColumn(t *testing.T) {
 		t.Errorf("row 1 merged value = %v, want 2.5 (untouched)", m.Rows[1][header])
 	}
 }
+
+// TestBuildDataModel_MergeDropsIntHeaderFromNames pins that merging an I:-prefixed column into its
+// D:-prefixed twin also removes the merged I: header from model.Names — the merge drops the column
+// from Headers, so a leftover Names entry would be dead metadata referencing a column that no
+// longer exists.
+func TestBuildDataModel_MergeDropsIntHeaderFromNames(t *testing.T) {
+	raw := `{
+		"row-count": 2, "total-row-count": 2, "status": "SUCCESS",
+		"colhdr": ["Properties('Quota')"],
+		"coltype": {"Properties('Quota')": "MAP"},
+		"collabel": {"Properties('Quota')": "Quota"},
+		"rows": [
+			{"Properties('Quota')": {"Quota": 5}, "Properties('Quota'):_ValueTypes": {"Quota": "INTEGER"}},
+			{"Properties('Quota')": {"Quota": 2.5}, "Properties('Quota'):_ValueTypes": {"Quota": "DECIMAL"}}
+		]
+	}`
+	m := BuildDataModel(parseRS(t, raw), nil)
+
+	for header := range m.Names {
+		if strings.HasPrefix(header, "I:") {
+			t.Errorf("Names still holds the merged int header %q, want it deleted", header)
+		}
+	}
+}
