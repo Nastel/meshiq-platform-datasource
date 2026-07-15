@@ -1,0 +1,118 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 6
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 6
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 6 Rows
+//  +-----------------------+---------------------+----------------+
+//  | Name: MsgLength_begin | Name: MsgLength_end | Name: NumberOf |
+//  | Labels:               | Labels:             | Labels:        |
+//  | Type: []*int64        | Type: []*int64      | Type: []*int64 |
+//  +-----------------------+---------------------+----------------+
+//  | 10                    | 14                  | 1              |
+//  | 15                    | 19                  | 0              |
+//  | 20                    | 24                  | 0              |
+//  | 25                    | 29                  | 0              |
+//  | 30                    | 34                  | 0              |
+//  | 35                    | 39                  | 2              |
+//  +-----------------------+---------------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 6
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 6
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "MsgLength_begin",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "MsgLength_end",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "NumberOf",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            10,
+            15,
+            20,
+            25,
+            30,
+            35
+          ],
+          [
+            14,
+            19,
+            24,
+            29,
+            34,
+            39
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            2
+          ]
+        ]
+      }
+    }
+  ]
+}

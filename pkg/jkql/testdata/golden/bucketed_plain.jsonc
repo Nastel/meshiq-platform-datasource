@@ -1,0 +1,176 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 24
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 24
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 24 Rows
+//  +-----------------------+---------------------+----------------+
+//  | Name: MsgLength_begin | Name: MsgLength_end | Name: NumberOf |
+//  | Labels:               | Labels:             | Labels:        |
+//  | Type: []*int64        | Type: []*int64      | Type: []*int64 |
+//  +-----------------------+---------------------+----------------+
+//  | 14                    | 14                  | 1              |
+//  | 15                    | 15                  | 0              |
+//  | 16                    | 16                  | 0              |
+//  | 17                    | 17                  | 0              |
+//  | 18                    | 18                  | 0              |
+//  | 19                    | 19                  | 0              |
+//  | 20                    | 20                  | 0              |
+//  | 21                    | 21                  | 0              |
+//  | 22                    | 22                  | 0              |
+//  | ...                   | ...                 | ...            |
+//  +-----------------------+---------------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 24
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 24
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "MsgLength_begin",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "MsgLength_end",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "NumberOf",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37
+          ],
+          [
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      }
+    }
+  ]
+}
