@@ -5,12 +5,14 @@ import (
 	"strings"
 )
 
-// jKQL function catalog. Names are grouped by the server's function categories (Aggregate /
-// Analytic / Scalar). The server normalizes every alias to its one canonical name in the header
-// (Len -> Length, Ucase -> Upper, StdDev -> StdDevPop), so only canonical names are listed. Within
-// each group the v11-only names are marked, so they can be removed in one step when v11 support is
-// dropped (v12 is a strict subset of v11). This is a hardcoded list for now; loading it from the
-// server is a later step.
+// jKQL function catalog. Names are grouped by the server's function categories (see the
+// `get functions` query, whose Type column is Aggregate / Analytic / Scalar). We only ever parse
+// responses, and the server normalizes every alias to its one canonical name in the header (Len ->
+// Length, Ucase -> Upper, StdDev -> StdDevPop), so only canonical names are listed. Within each
+// group the v11-only names are marked, so they can be removed in one step when v11 support is
+// dropped (v12 is a strict subset of v11). These lists are only the built-in fallback: the live
+// set is loaded from the server via `get functions` (pkg/plugin functions.go) and injected into
+// BuildDataModel; the fallback covers a failed or not-yet-loaded fetch.
 
 var aggregateFunctions = []string{
 	"Apdex", "Avg", "Close", "Count", "List", "Max", "Median", "Min", "Open",
@@ -38,10 +40,10 @@ var scalarFunctions = []string{
 	"Delta", "Next", "PercentChg", "Previous",
 }
 
-// FunctionCatalog recognizes jKQL function names in result-set column headers. It exists so
-// parseMapAccess can tell a map-field access like Properties('key') apart from a same-shaped
-// function call like Round('x'). The converter never loads it; the caller passes one in, or nil
-// for the hardcoded default below.
+// FunctionCatalog recognizes jKQL function names in result-set column headers. It is built from
+// the server's function set (or the hardcoded default below) and injected into BuildDataModel. The
+// converter never loads it itself — only the caller has the client, so it loads it (or passes nil
+// for the hardcoded default).
 type FunctionCatalog struct {
 	// aggregateRe matches an aggregate header, capturing the name and inner args:
 	// "Avg(Quota('x'))" -> ["Avg(Quota('x'))", "Avg", "Quota('x')"].
