@@ -1,0 +1,177 @@
+{
+  // VS Code tasks for the meshIQ Platform data source plugin.
+  // Open this folder and "Reopen in Container" (.devcontainer ships Go + Node + mage +
+  // docker-in-docker), then press Ctrl/Cmd+Shift+B.
+  //
+  // Task groups: "Build:" (compile only), "Run:" (start services), "Debug:", "Test:", "Check:".
+  // Hidden tasks ("hide": true): watch sub-tasks and the delve watcher (internal plumbing).
+  // All tasks run on the HOST where file-watching works reliably.
+  "version": "2.0.0",
+  "tasks": [
+    // ── Build (compile only, no running) ──────────────────────────────────────
+    {
+      "label": "Build: frontend",
+      "type": "npm",
+      "script": "build",
+      "group": "build",
+      "problemMatcher": ["$tsc"],
+      "presentation": { "reveal": "silent" }
+    },
+    {
+      "label": "Build: backend (current platform)",
+      "type": "shell",
+      "command": "mage -v build:linux",
+      "group": "build",
+      "problemMatcher": ["$go"],
+      "presentation": { "reveal": "silent" }
+    },
+    {
+      "label": "Build: backend (all platforms)",
+      "type": "shell",
+      "command": "mage -v buildAll",
+      "group": "build",
+      "problemMatcher": ["$go"],
+      "presentation": { "reveal": "silent" }
+    },
+    {
+      "label": "Build: all (backend + frontend)",
+      "type": "shell",
+      "command": "mage -v buildAll && npm run build",
+      "group": "build",
+      "problemMatcher": ["$go", "$tsc"]
+    },
+
+    // ── Run (start services) ──────────────────────────────────────────────────
+    {
+      // Default task (Ctrl/Cmd+Shift+B): the full development loop.
+      // Starts: backend watch + frontend watch + Grafana container.
+      // Backend changes trigger container restart (fast, DB persists).
+      // Frontend changes trigger hot-reload (no restart needed).
+      // To debug, press F5 after "Run: dev" is running (attaches delve to backend).
+      "label": "Run: dev",
+      "dependsOn": ["Run: watch backend", "Run: watch frontend", "Run: Grafana container"],
+      "dependsOrder": "sequence",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      // Sub-task: watches backend Go code, rebuilds, restarts Grafana on changes.
+      "label": "Run: watch backend",
+      "hide": true,
+      "type": "shell",
+      "command": "mage -v watch",
+      "isBackground": true,
+      "presentation": { "group": "dev", "panel": "dedicated" },
+      "problemMatcher": {
+        "pattern": [{ "regexp": "^(__no_match__):(\\d+):(.*)$", "file": 1, "line": 2, "message": 3 }],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "Running target"
+        }
+      }
+    },
+    {
+      // Sub-task: watches frontend TypeScript/React, rebuilds, hot-reloads in browser.
+      "label": "Run: watch frontend",
+      "hide": true,
+      "type": "shell",
+      "command": "npm run dev",
+      "isBackground": true,
+      "presentation": { "group": "dev", "panel": "dedicated" },
+      "problemMatcher": {
+        "owner": "typescript",
+        "source": "webpack",
+        "fileLocation": "absolute",
+        "pattern": [
+          { "regexp": "^ERROR in (.*)\\((\\d+),(\\d+)\\)$", "file": 1, "line": 2, "column": 3 },
+          { "regexp": "^(.*)$", "message": 1 }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "webpack \\d+\\.\\d+\\.\\d+ (compiling|building)",
+          "endsPattern": "(compiled successfully|compiled with|webpack .* compiled)"
+        }
+      }
+    },
+    {
+      // Sub-task of "Run: dev": starts the Grafana container.
+      // Container serves pre-built dist/ files (compiled by watch tasks).
+      // Use "Run: stop Grafana" to shut it down.
+      "label": "Run: Grafana container",
+      "hide": true,
+      "type": "shell",
+      "command": "docker compose up --build",
+      "isBackground": true,
+      "presentation": { "group": "dev", "panel": "dedicated" },
+      "problemMatcher": {
+        "pattern": [{ "regexp": "^(__no_match__):(\\d+):(.*)$", "file": 1, "line": 2, "message": 3 }],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "(Attaching to|Building|Creating|Container .* Creating)",
+          "endsPattern": "(HTTP Server Listen|Grafana is up|migrations completed|Initializing)"
+        }
+      }
+    },
+    {
+      // Start Grafana container only (requires manual build beforehand).
+      // Use ONLY for production testing after "Build: all".
+      // For development, use "Run: dev" instead — it includes the frontend watcher.
+      "label": "Run: Grafana",
+      "type": "shell",
+      "command": "docker compose up --build",
+      "isBackground": true,
+      "presentation": { "group": "dev", "panel": "dedicated" },
+      "problemMatcher": {
+        "pattern": [{ "regexp": "^(__no_match__):(\\d+):(.*)$", "file": 1, "line": 2, "message": 3 }],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "(Attaching to|Building|Creating|Container .* Creating)",
+          "endsPattern": "(HTTP Server Listen|Grafana is up|migrations completed|Initializing)"
+        }
+      }
+    },
+    {
+      "label": "Run: stop Grafana",
+      "type": "shell",
+      "command": "docker compose down",
+      "problemMatcher": []
+    },
+
+    // ── Debug ─────────────────────────────────────────────────────────────────
+    {
+      // Plumbing for F5 (hidden from picker): keeps delve attached to the backend plugin.
+      // Started automatically by "Backend: attach to delve" launch config — do not run manually.
+      // Requires "Run: dev" to be running first (delve needs the backend process to exist).
+      "label": "Debug: delve watcher",
+      "hide": true,
+      "type": "shell",
+      "command": "sh scripts/watch-delve.sh",
+      "isBackground": true,
+      "presentation": { "group": "debug", "panel": "dedicated" },
+      "problemMatcher": {
+        "pattern": [{ "regexp": "^(__no_match__):(\\d+):(.*)$", "file": 1, "line": 2, "message": 3 }],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "delve watcher started",
+          "endsPattern": "API server listening"
+        }
+      }
+    },
+
+    // ── Test ──────────────────────────────────────────────────────────────────
+    {
+      "label": "Test: backend",
+      "type": "shell",
+      "command": "mage -v test",
+      "group": "test",
+      "problemMatcher": ["$go"]
+    },
+    { "label": "Test: frontend", "type": "npm", "script": "test:ci", "group": "test", "problemMatcher": [] },
+    { "label": "Test: e2e", "type": "npm", "script": "e2e", "group": "test", "problemMatcher": [] },
+
+    // ── Check (utilities) ─────────────────────────────────────────────────────
+    { "label": "Check: lint", "type": "npm", "script": "lint", "problemMatcher": ["$eslint-stylish"] },
+    { "label": "Check: typecheck", "type": "npm", "script": "typecheck", "problemMatcher": ["$tsc"] }
+  ]
+}

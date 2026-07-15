@@ -3,3 +3,36 @@ services:
     extends:
       file: .config/docker-compose-base.yaml
       service: grafana
+    build:
+      # Only used by the optional DEVELOPMENT=true image (the managed .config/Dockerfile
+      # defaults to an older Go than go.mod needs). Ignored by the plain image the dev loop
+      # uses. Keep in sync with the `go` directive in go.mod.
+      args:
+        GO_VERSION: 1.26.4
+    # Dataservice credentials for the provisioned "meshIQ Platform" datasource.
+    # Compose substitutes these from a gitignored .env file (see .env.example); the empty
+    # defaults keep `docker compose` quiet when .env is absent. Merged with the base env.
+    environment:
+      MESHIQ_SERVICE_URL: ${MESHIQ_SERVICE_URL:-}
+      MESHIQ_ACCESS_TOKEN: ${MESHIQ_ACCESS_TOKEN:-}
+      # Log to a file (in addition to the console) so the Grafana + captured plugin logs
+      # can be inspected directly at ./logs/grafana.log on the host. Plain-text format.
+      GF_LOG_MODE: 'console file'
+      GF_PATHS_LOGS: /var/log/grafana
+      # Disable Grafana's rotation; we manage it via the entrypoint instead.
+      # This keeps the log directory clean and avoids file handle corruption.
+      GF_LOG_FILE_LOG_ROTATE: 'false'
+    # Startup prep (fresh logs + non-blocking livereload) lives in docker/entrypoint.sh, mounted
+    # read-only below; it hands off to the image's real /entrypoint.sh. See that file for why.
+    entrypoint: ['sh', '/docker/entrypoint.sh']
+    volumes:
+      # Container startup wrapper (see the entrypoint above). Read-only.
+      - ./docker/entrypoint.sh:/docker/entrypoint.sh:ro
+      # Grafana writes grafana.log here; ./logs is gitignored.
+      - ./logs:/var/log/grafana
+      # Persist Grafana's DB so `docker compose restart grafana` (backend reload) is fast —
+      # migrations don't re-run. The plugin bind-mount (base compose) nests under this.
+      - grafana-data:/var/lib/grafana
+
+volumes:
+  grafana-data:

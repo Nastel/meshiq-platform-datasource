@@ -1,0 +1,53 @@
+{
+  // Contributor-facing dev container for the meshIQ Platform data source plugin.
+  // Ships in the public repo: it has everything needed to build and run the plugin
+  // (Go + Node + mage + Docker) and nothing else. "Reopen in Container", then
+  // Ctrl/Cmd+Shift+B runs the whole dev loop (backend + frontend watch + Grafana) —
+  // see DEVELOPMENT.md and .vscode/tasks.json.
+  "name": "meshiq-platform-datasource",
+
+  // Contributor dev image (see Dockerfile): Go 1.26 toolchain + baked, pinned mage & delve.
+  // The Go version must be >= the `go` directive in go.mod (the Grafana plugin SDK requires it).
+  "build": { "dockerfile": "Dockerfile" },
+
+  "features": {
+    // Node for the frontend build (package.json requires Node >= 22; .nvmrc pins 22).
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" },
+    // Host-safe Docker-in-Docker so `npm run server` (docker compose up) can start
+    // a local Grafana with the plugin mounted, inside the container.
+    "ghcr.io/devcontainers/features/docker-in-docker:2": { "moby": false }
+  },
+
+  // Persist node_modules in a named volume: it survives container rebuilds (so no
+  // full reinstall each time) and avoids slow bind-mount I/O over thousands of files.
+  "mounts": [
+    "source=meshiq-platform-datasource-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+  ],
+
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "Grafana",
+      "onAutoForward": "silent"
+    },
+    "2345": {
+      "label": "delve",
+      "onAutoForward": "ignore"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        // Auto-save edited files after a short delay.
+        "files.autoSave": "afterDelay"
+      },
+      "extensions": ["golang.go", "dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+    }
+  },
+
+  // Setup: take ownership of the freshly-created node_modules volume (mounts as root), then
+  // install frontend deps. (mage + delve are baked into the image — see Dockerfile.) `npm install`
+  // is incremental, so once the volume is populated a rebuild reuses it (unlike `npm ci`).
+  "postCreateCommand": "sudo chown -R vscode:vscode node_modules && npm install"
+}

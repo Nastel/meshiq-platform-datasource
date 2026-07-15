@@ -1,14 +1,19 @@
 apiVersion: 1
 
+# Local dev datasource. Credentials come from environment variables (see .env.example),
+# so this file contains NO secrets and is safe to commit. Grafana interpolates $VARS from
+# the container environment at load time; the vars are supplied via docker-compose.yaml,
+# which reads them from a gitignored .env file.
+
 datasources:
-  - name: 'Demo'
+  - name: 'meshIQ Platform'
     type: 'meshiq-platform-datasource'
     access: proxy
-    isDefault: false
+    isDefault: true
     orgId: 1
     version: 1
     editable: true
     jsonData:
-      path: '/resources'
+      serviceUrl: '$MESHIQ_SERVICE_URL'
     secureJsonData:
-      apiKey: 'api-key'
+      accessToken: '$MESHIQ_ACCESS_TOKEN'
