@@ -16,7 +16,11 @@ func BuildDataFrame(model DataModel) *data.Frame {
 	x := 0
 	for _, header := range model.Headers {
 		columnDataType := model.DataTypes[header]
-		addSimpleColumn(frame, model, &x, columnDataType, header)
+		if columnDataType == VARIANT {
+			addVariantColumn(frame, model, &x, header)
+		} else {
+			addSimpleColumn(frame, model, &x, columnDataType, header)
+		}
 	}
 
 	frame.Meta = buildFrameMeta(model)
@@ -37,6 +41,15 @@ func buildFrameMeta(model DataModel) *data.FrameMeta {
 	}
 	if notice := buildStatusNotice(model); notice != nil {
 		meta.Notices = append(meta.Notices, *notice)
+	}
+	// Parse issues are tolerated (values nulled, columns skipped) but never hidden: the user
+	// sees this warning on the panel, and the caller logs the details.
+	if issues := model.Issues.List(); len(issues) > 0 {
+		meta.Notices = append(meta.Notices, data.Notice{
+			Severity: data.NoticeSeverityWarning,
+			Text: fmt.Sprintf("%d value(s) could not be read from the response and are shown as empty. "+
+				"Details are in the Grafana server log.", len(issues)),
+		})
 	}
 	return meta
 }
@@ -73,6 +86,60 @@ func FinalizeFrame(frame *data.Frame, executedQuery string) *data.Frame {
 	return frame
 }
 
+// addVariantColumn splits a VARIANT column into one sub-column per underlying type actually seen
+// in the rows (collapsed to DECIMAL/STRING/BOOLEAN/TIMESTAMP/TIMEINTERVAL — see
+// getVariantDataTypeAndValue), so e.g. a column that mixes numbers and text becomes a numeric
+// sub-column and a text sub-column rather than one stringified column.
+func addVariantColumn(frame *data.Frame, model DataModel, x *int, header string) {
+	types := getUniqueVariantTypes(model, header)
+	if len(types) == 0 {
+		// Every row is null, so no underlying type was seen. Still render the column (one
+		// all-null string sub-column) instead of silently dropping it from the frame.
+		types = []string{STRING}
+	}
+	for t := range types {
+		frameDataType := types[t]
+		addSimpleColumn(frame, model, x, frameDataType, header)
+	}
+}
+
+func getUniqueVariantTypes(model DataModel, header string) []string {
+	types := make([]string, 0)
+	for _, row := range model.Rows {
+		variant := row[header]
+		if variant == nil {
+			continue
+		}
+		envelope, ok := variant.(map[string]interface{})
+		if !ok {
+			model.Issues.Add(fmt.Sprintf("column %q: variant value is not a {data-type, value} object", header))
+			continue
+		}
+		dataType, _ := getVariantDataTypeAndValue(envelope)
+		if !Contains(types, dataType) {
+			types = append(types, dataType)
+		}
+	}
+	return types
+}
+
+func getVariantDataTypeAndValue(variant map[string]interface{}) (string, interface{}) {
+	value := variant["value"]
+	// A missing or mistyped data-type falls through to STRING, the tolerant default.
+	dataType, _ := variant["data-type"].(string)
+	switch dataType {
+	case INTEGER, DECIMAL:
+		dataType = DECIMAL
+	case BOOLEAN, TIMESTAMP, TIMEINTERVAL:
+		// Keep these as their own real type instead of folding into STRING — a boolean/time
+		// VARIANT value should render as a real bool/time, not stringified text.
+	default:
+		dataType = STRING
+	}
+
+	return dataType, value
+}
+
 func addSimpleColumn(frame *data.Frame, model DataModel, x *int, frameDataType string, header string) {
 	addEmptyField(frame, model, frameDataType, header)
 	setFrameValues(frame, model, x, frameDataType, header)
@@ -81,6 +148,10 @@ func addSimpleColumn(frame *data.Frame, model DataModel, x *int, frameDataType s
 func addEmptyField(frame *data.Frame, model DataModel, frameDataType string, header string) {
 	size := model.RowCount
 	label := model.Label[header]
+	columnDataType := model.DataTypes[header]
+	if columnDataType == VARIANT {
+		label += " (" + frameDataType + ")"
+	}
 	emptyFrameValues := buildFrameDataType(frameDataType, size)
 	field := data.NewField(label, nil, emptyFrameValues)
 	if frameDataType == TIMEINTERVAL {
@@ -100,7 +171,7 @@ func buildFrameDataType(dataType string, size int) interface{} {
 		return make([]*bool, size)
 	case DECIMAL:
 		return make([]*float64, size)
-	case STRING, ENUM, CLOB:
+	case STRING, ENUM, LABELSET, CLOB:
 		return make([]*string, size)
 	default:
 		// Any array coltype carries JSON; unknown scalars render as text. Must agree with
@@ -114,7 +185,26 @@ func buildFrameDataType(dataType string, size int) interface{} {
 
 func setFrameValues(frame *data.Frame, model DataModel, x *int, frameDataType string, header string) {
 	for y, row := range model.Rows {
-		value := row[header]
+		var value interface{}
+		columnDataType := model.DataTypes[header]
+
+		if columnDataType == VARIANT {
+			envelope, ok := row[header].(map[string]interface{})
+			if !ok {
+				continue // null, or a bad envelope already recorded by getUniqueVariantTypes
+			}
+			variantDataType, variantValue := getVariantDataTypeAndValue(envelope)
+			// Each value belongs to exactly one sub-column: the one matching its variant type.
+			// Rows of other types stay null here — a one-sided skip would duplicate numbers
+			// into the string sub-column as text.
+			if variantDataType != frameDataType {
+				continue
+			}
+			value = variantValue
+		} else {
+			value = row[header]
+		}
+
 		grafanaValue := ConvertToGrafanaValue(value, frameDataType)
 		if grafanaValue != nil {
 			frame.SetConcrete(*x, y, grafanaValue)
@@ -148,7 +238,7 @@ func ConvertToGrafanaValue(value interface{}, dataType string) interface{} {
 			return f
 		}
 		return nil
-	case STRING, CLOB:
+	case STRING, LABELSET, CLOB:
 		return fmt.Sprint(value)
 	case ENUM:
 		// The wire encodes an enum as "ordinal#name"; keep just the name.
@@ -157,6 +247,18 @@ func ConvertToGrafanaValue(value interface{}, dataType string) interface{} {
 			return parts[1]
 		}
 		return parts[0]
+	case VARIANT:
+		// A VARIANT value is a {data-type, value} envelope. This case is hit for VARIANT[]
+		// elements (convertToJSONArray descends with elementType "VARIANT"); scalar VARIANT
+		// columns are unwrapped earlier in setFrameValues. Collapse to the value's real type
+		// via getVariantDataTypeAndValue, matching how scalar VARIANT columns render, instead
+		// of stringifying the raw map.
+		m, ok := value.(map[string]interface{})
+		if !ok {
+			return nil
+		}
+		innerType, innerValue := getVariantDataTypeAndValue(m)
+		return ConvertToGrafanaValue(innerValue, innerType)
 	case BOOLEAN:
 		if b, ok := value.(bool); ok {
 			return b
