@@ -1,8 +1,17 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { CodeEditor, Combobox, ComboboxOption, InlineField, InlineSwitch, Monaco, MonacoEditor } from '@grafana/ui';
-import { QueryEditorProps } from '@grafana/data';
+import {
+  CodeEditor,
+  Combobox,
+  ComboboxOption,
+  InlineField,
+  InlineSwitch,
+  Monaco,
+  MonacoEditor,
+  RadioButtonGroup,
+} from '@grafana/ui';
+import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { DataSource } from '../datasource';
-import { MeshIqDataSourceOptions, MeshIqQuery } from '../types';
+import { MeshIqDataSourceOptions, MeshIqFormat, MeshIqQuery } from '../types';
 import { buildRepositoriesComboboxOptions } from '../utils';
 import {
   clearJkqlCompletionHandler,
@@ -13,6 +22,11 @@ import {
 } from '../completion';
 
 type Props = QueryEditorProps<DataSource, MeshIqQuery, MeshIqDataSourceOptions>;
+
+const FORMAT_OPTIONS: Array<SelectableValue<MeshIqFormat>> = [
+  { label: 'Table', value: 'table' },
+  { label: 'Time series', value: 'timeseries' },
+];
 
 export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) {
   const [repositoriesOptions, setRepositoriesOptions] = useState<ComboboxOption[]>([]);
@@ -100,6 +114,11 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
     onRunQuery();
   };
 
+  const onFormatChange = (format: MeshIqFormat) => {
+    onChange({ ...query, format });
+    onRunQuery();
+  };
+
   return (
     <>
       <InlineField
@@ -129,6 +148,13 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
             onBlur={onJkqlBlur}
           />
         </div>
+      </InlineField>
+      <InlineField
+        label="Format as"
+        labelWidth={18}
+        tooltip="Table returns rows as-is. Time series pivots time-bucketed results into series for graph panels."
+      >
+        <RadioButtonGroup options={FORMAT_OPTIONS} value={query.format ?? 'table'} onChange={onFormatChange} />
       </InlineField>
       {repositoriesOptions.length > 0 && (
         <InlineField

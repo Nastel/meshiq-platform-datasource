@@ -16,8 +16,10 @@ type QueryModel struct {
 	MaxRows      int    `json:"maxRows"`
 	// Trace is a pointer so "not set" is distinguishable from an explicit false: a query that
 	// doesn't set it leaves it nil and inherits the datasource default.
-	Trace *bool  `json:"trace"`
-	Date  string `json:"-"`
+	Trace *bool `json:"trace"`
+	// Format selects the frame shape: jkql.FormatTable (default) or jkql.FormatTimeSeries.
+	Format string `json:"format"`
+	Date   string `json:"-"`
 }
 
 // BuildQueryModel unmarshals a Grafana query and derives the jKQL date range.
