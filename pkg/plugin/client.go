@@ -102,12 +102,20 @@ func buildUrlParams(queryModel QueryModel) url.Values {
 		params.Set(REQ_TIMEZONE, queryModel.Timezone)
 	}
 
+	if queryModel.RepositoryID != "" {
+		params.Set(REQ_REPO, queryModel.RepositoryID)
+	}
+
 	if queryModel.Date != "" {
 		params.Set(REQ_DATE, queryModel.Date)
 	}
 
 	if queryModel.MaxRows != 0 {
 		params.Set(REQ_MAXROWS, fmt.Sprintf("%d", queryModel.MaxRows))
+	}
+
+	if queryModel.Trace != nil && *queryModel.Trace {
+		params.Set(REQ_TRACE, "true")
 	}
 
 	return params

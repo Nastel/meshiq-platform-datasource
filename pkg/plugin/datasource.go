@@ -22,12 +22,14 @@ type Params map[string]interface{}
 var (
 	_ backend.QueryDataHandler      = (*Datasource)(nil)
 	_ backend.CheckHealthHandler    = (*Datasource)(nil)
+	_ backend.CallResourceHandler   = (*Datasource)(nil)
 	_ instancemgmt.InstanceDisposer = (*Datasource)(nil)
 )
 
 // Datasource is the meshIQ Platform datasource instance.
 type Datasource struct {
-	httpClient *http.Client
+	httpClient      *http.Client
+	resourceHandler backend.CallResourceHandler
 }
 
 // NewDatasource creates a new datasource instance with an HTTP client configured from
@@ -43,7 +45,14 @@ func NewDatasource(ctx context.Context, settings backend.DataSourceInstanceSetti
 		return nil, fmt.Errorf("httpclient new: %w", err)
 	}
 
-	return &Datasource{httpClient: cl}, nil
+	d := &Datasource{httpClient: cl}
+	d.resourceHandler = d.newResourceHandler()
+	return d, nil
+}
+
+// CallResource serves the frontend's non-query endpoints: /repositories. See resources.go.
+func (d *Datasource) CallResource(ctx context.Context, req *backend.CallResourceRequest, sender backend.CallResourceResponseSender) error {
+	return d.resourceHandler.CallResource(ctx, req, sender)
 }
 
 // Dispose cleans up datasource instance resources when the instance is replaced.
@@ -85,13 +94,22 @@ func (d *Datasource) query(ctx context.Context, pCtx backend.PluginContext, quer
 		return backend.ErrDataResponse(backend.StatusBadRequest, fmt.Sprintf("datasource options: %v", err.Error()))
 	}
 
+	// Fall back to the datasource defaults when the query doesn't carry its own repository or
+	// trace flag.
+	if queryModel.RepositoryID == "" {
+		queryModel.RepositoryID = options.RepositoryID
+	}
+	if queryModel.Trace == nil {
+		queryModel.Trace = &options.Trace
+	}
+
 	result, err := queryDataService(ctx, d.httpClient, *queryModel, *options)
 	if err != nil {
 		// Both cases are downstream (the dataservice, not the plugin): an error envelope means
 		// the service rejected the query (bad jKQL, bad token) — a bad-request; anything else
-		// is a transport/HTTP failure — a bad gateway. Log with the query and date range so a
-		// failure seen on a panel can be found in the server log and reproduced — the panel
-		// error alone doesn't say what ran.
+		// is a transport/HTTP failure — a bad gateway. Log with the query, date range and
+		// repository so a failure seen on a panel can be found in the server log and reproduced —
+		// the panel error alone doesn't say what ran.
 		logger := log.DefaultLogger.FromContext(ctx)
 		status := backend.StatusBadGateway
 		var qe *queryError
@@ -99,10 +117,10 @@ func (d *Datasource) query(ctx context.Context, pCtx backend.PluginContext, quer
 			status = backend.StatusBadRequest
 			// Usually a mistake in the query (or an expired token), not an outage — warn.
 			logger.Warn("dataservice rejected the query",
-				"query", queryModel.JKQL, "date", queryModel.Date, "error", err)
+				"query", queryModel.JKQL, "date", queryModel.Date, "repo", queryModel.RepositoryID, "error", err)
 		} else {
 			logger.Error("dataservice request failed",
-				"query", queryModel.JKQL, "date", queryModel.Date, "error", err)
+				"query", queryModel.JKQL, "date", queryModel.Date, "repo", queryModel.RepositoryID, "error", err)
 		}
 		return backend.ErrDataResponseWithSource(status, backend.ErrorSourceDownstream, err.Error())
 	}

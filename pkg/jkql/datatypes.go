@@ -66,8 +66,9 @@ const (
 	PROPERTIES FieldType = "Properties" // exploded into one column per key (see datamodel.go)
 	SCORE      FieldType = "Score"      // Solr score field, skipped
 
-	// metadata query columns (see the "Get Params" health check)
-	NAME FieldType = "Name"
+	// metadata query columns (see the "Get Params" health check and the /repositories resource)
+	NAME    FieldType = "Name"
+	REPO_ID FieldType = "RepositoryID"
 )
 
 // ConvertDtToPrefix returns the single-letter data-type prefix jKQL uses in column headers for an

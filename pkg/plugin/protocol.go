@@ -19,8 +19,10 @@ const (
 	REQ_QUERY    RequestParameter = "jk_query"
 	REQ_TIMEZONE RequestParameter = "jk_tz"
 	REQ_LOCALE   RequestParameter = "jk_locale"
+	REQ_REPO     RequestParameter = "jk_repo"
 	REQ_DATE     RequestParameter = "jk_date"
 	REQ_MAXROWS  RequestParameter = "jk_maxrows"
+	REQ_TRACE    RequestParameter = "jk_trace"
 )
 
 // ResponseField enumerates the dataservice error-envelope fields ({ "jk_ccode": "ERROR",
