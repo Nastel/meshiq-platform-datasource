@@ -1,0 +1,66 @@
+{
+    "rows-found": 10,
+    "row-count": 10,
+    "total-row-count": 10,
+    "query-date-filter": "1783987200000000 TO 1784073599999999",
+    "timezone": "GMT",
+    "locale": "en",
+    "status": "SUCCESS",
+    "time": 1784031424029019,
+    "item-type": "Log",
+    "stmt-type": "Get",
+    "colhdr": [
+        "MsgLength"
+    ],
+    "coltype": {
+        "MsgLength": "INTEGER"
+    },
+    "collabel": {
+        "MsgLength": "MsgLength"
+    },
+    "rows": [
+        {
+            "MsgLength": 37
+        },
+        {
+            "MsgLength": 10
+        },
+        {
+            "MsgLength": 140
+        },
+        {
+            "MsgLength": 36
+        },
+        {
+            "MsgLength": 127
+        },
+        {
+            "MsgLength": 162
+        },
+        {
+            "MsgLength": 139
+        },
+        {
+            "MsgLength": 81
+        },
+        {
+            "MsgLength": 145
+        },
+        {
+            "MsgLength": 157
+        }
+    ],
+    "overallStatistics": {
+        "json_string.time.usec": 80,
+        "pinot_request_build.time.usec": 406,
+        "pinot_request_exec.time.usec": 8311,
+        "pinot_result_proc.time.usec": 71,
+        "pinot_result_rows.count": 10,
+        "raw_result_post_process.time.usec": 2,
+        "request_wait.time.usec": 3569,
+        "rows_found.count": 10,
+        "rows_returned.count": 10,
+        "rows_total.count": 10,
+        "total_exec.time.usec": 9175
+    }
+}

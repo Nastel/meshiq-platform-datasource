@@ -1,0 +1,117 @@
+{
+    "rows-found": 3200,
+    "row-count": 10,
+    "total-row-count": 10,
+    "timezone": "GMT",
+    "locale": "en",
+    "status": "SUCCESS",
+    "time": 1784031206001572,
+    "item-type": "Log",
+    "stmt-type": "Get",
+    "colhdr": [
+        "Properties('jk_call_time')"
+    ],
+    "coltype": {
+        "Properties('jk_call_time')": "MAP"
+    },
+    "collabel": {
+        "Properties('jk_call_time')": "jk_call_time"
+    },
+    "rows": [
+        {
+            "Properties('jk_call_time')": {
+                "jk_call_time": 1784011079057
+            },
+            "Properties('jk_call_time'):_ValueTypes": {
+                "jk_call_time": "INTEGER"
+            }
+        },
+        {
+            "Properties('jk_call_time')": {
+                "jk_call_time": 1784011079536
+            },
+            "Properties('jk_call_time'):_ValueTypes": {
+                "jk_call_time": "INTEGER"
+            }
+        },
+        {
+            "Properties('jk_call_time')": {
+                "jk_call_time": 1784011079850
+            },
+            "Properties('jk_call_time'):_ValueTypes": {
+                "jk_call_time": "INTEGER"
+            }
+        },
+        {
+            "Properties('jk_call_time')": {
+                "jk_call_time": 1784011118569
+            },
+            "Properties('jk_call_time'):_ValueTypes": {
+                "jk_call_time": "INTEGER"
+            }
+        },
+        {
+            "Properties('jk_call_time')": {
+                "jk_call_time": 1784011195761
+            },
+            "Properties('jk_call_time'):_ValueTypes": {
+                "jk_call_time": "INTEGER"
+            }
+        },
+        {
+            "Properties('jk_call_time')": {
+                "jk_call_time": 1784011198751
+            },
+            "Properties('jk_call_time'):_ValueTypes": {
+                "jk_call_time": "INTEGER"
+            }
+        },
+        {
+            "Properties('jk_call_time')": {
+                "jk_call_time": 1784011216239
+            },
+            "Properties('jk_call_time'):_ValueTypes": {
+                "jk_call_time": "INTEGER"
+            }
+        },
+        {
+            "Properties('jk_call_time')": {
+                "jk_call_time": 1784011216478
+            },
+            "Properties('jk_call_time'):_ValueTypes": {
+                "jk_call_time": "INTEGER"
+            }
+        },
+        {
+            "Properties('jk_call_time')": {
+                "jk_call_time": 1784011216566
+            },
+            "Properties('jk_call_time'):_ValueTypes": {
+                "jk_call_time": "INTEGER"
+            }
+        },
+        {
+            "Properties('jk_call_time')": {
+                "jk_call_time": 1784011287322
+            },
+            "Properties('jk_call_time'):_ValueTypes": {
+                "jk_call_time": "INTEGER"
+            }
+        }
+    ],
+    "overallStatistics": {
+        "apply_limit.time.usec": 14,
+        "json_string.time.usec": 314,
+        "pinot_request_build.time.usec": 348,
+        "pinot_request_exec.time.usec": 57026,
+        "pinot_result_proc.time.usec": 28267,
+        "pinot_result_rows.count": 3200,
+        "raw_result_post_process.time.usec": 3,
+        "request_wait.time.usec": 7915,
+        "rows_found.count": 3200,
+        "rows_returned.count": 10,
+        "rows_total.count": 10,
+        "sort_time.time.usec": 215,
+        "total_exec.time.usec": 86103
+    }
+}
