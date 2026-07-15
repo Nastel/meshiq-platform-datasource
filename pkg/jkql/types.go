@@ -61,10 +61,12 @@ type DataModel struct {
 	TotalRowCount int          `json:"totalRowCount"`
 	Status        CompCodeType `json:"status"`    // in-body SUCCESS/WARNING/ERROR
 	StatusMsg     string       `json:"statusMsg"` // e.g. "Only returning N of M rows"
+	ItemType      string       `json:"itemType"`  // queried item type (Log, Event, …); drives per-field string coloring
 	// Headers, and the map keys below, are raw column headers — not just field names. A header can
 	// be any jKQL expression (a function call, a cast, a custom field), so it stays a plain string.
 	Headers   []string                 `json:"headers"`
 	Label     map[string]string        `json:"label"`     // header -> display label
+	Names     map[string]string        `json:"names"`     // header -> underlying jKQL field name (may itself be an expression)
 	DataTypes map[string]DataType      `json:"dataTypes"` // header -> jKQL data type
 	Rows      []map[string]interface{} `json:"rows"`
 	// Issues is a pointer: the model is copied by value into the frame builder, and every

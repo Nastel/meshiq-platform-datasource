@@ -45,7 +45,7 @@ func TestBuildDataFrame_VariantColumnSplitsByType(t *testing.T) {
 		]
 	}`
 	m := BuildDataModel(parseRS(t, raw), nil)
-	frame := BuildDataFrame(m)
+	frame := BuildDataFrame(m, nil)
 
 	// A VARIANT column mixing a number and a string splits into a DECIMAL sub-column and a
 	// STRING sub-column, each keeping only the rows of its own type.
@@ -80,7 +80,7 @@ func TestBuildDataFrame_VariantBooleanKeepsOwnType(t *testing.T) {
 		]
 	}`
 	m := BuildDataModel(parseRS(t, raw), nil)
-	frame := BuildDataFrame(m)
+	frame := BuildDataFrame(m, nil)
 
 	fields := map[string]*data.Field{}
 	for _, f := range frame.Fields {
@@ -107,7 +107,7 @@ func TestBuildDataFrame_AllNullVariantColumnKept(t *testing.T) {
 		"rows": [ {"Payload": null} ]
 	}`
 	m := BuildDataModel(parseRS(t, raw), nil)
-	frame := BuildDataFrame(m)
+	frame := BuildDataFrame(m, nil)
 
 	// Every row is null, so no underlying type was ever seen — the column must still render
 	// (one all-null sub-column), not be dropped from the frame.
@@ -125,7 +125,7 @@ func TestBuildDataFrame_MalformedVariantRecordsIssue(t *testing.T) {
 		"rows": [ {"Payload": "not-an-envelope"} ]
 	}`
 	m := BuildDataModel(parseRS(t, raw), nil)
-	BuildDataFrame(m)
+	BuildDataFrame(m, nil)
 
 	if len(m.Issues.List()) == 0 {
 		t.Error("a VARIANT value that isn't a {data-type, value} object should record a parse issue")

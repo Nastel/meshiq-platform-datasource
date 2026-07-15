@@ -22,7 +22,7 @@ func TestHandleSuggestions_InvalidPositionIsBadRequest(t *testing.T) {
 	}
 	pCtx := backend.PluginContext{DataSourceInstanceSettings: &settings}
 
-	ds := &Datasource{httpClient: http.DefaultClient}
+	ds := &Datasource{httpClient: http.DefaultClient, enumCache: make(map[string][]string)}
 
 	req := httptest.NewRequest(http.MethodGet, "/suggestions?jk_query=get+events&jk_position=not-a-number", nil)
 	req = req.WithContext(backend.WithPluginContext(req.Context(), pCtx))
@@ -96,7 +96,7 @@ func TestHandleSuggestions_SendsAFormEncodedPost(t *testing.T) {
 	}
 	pCtx := backend.PluginContext{DataSourceInstanceSettings: &settings}
 
-	ds := &Datasource{httpClient: completionServer.Client()}
+	ds := &Datasource{httpClient: completionServer.Client(), enumCache: make(map[string][]string)}
 
 	req := httptest.NewRequest(http.MethodGet, "/suggestions?jk_query=get+events&jk_position=5", nil)
 	req = req.WithContext(backend.WithPluginContext(req.Context(), pCtx))
