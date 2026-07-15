@@ -1,50 +1,95 @@
-<!-- This README file is going to be the one displayed on the Grafana.com website for your plugin. Uncomment and replace the content here before publishing.
+# meshIQ Platform data source for Grafana
 
-Remove any remaining comments before publishing as these may be displayed on Grafana.com -->
+Query the **meshIQ Platform** from Grafana. This backend data source runs
+[jKQL](https://www.meshiq.com/) queries against the meshIQ dataservice and returns the results
+as native Grafana data frames — events, logs, metrics, and messaging-middleware data (Kafka,
+IBM MQ, RabbitMQ, Solace, TIBCO EMS, ActiveMQ, and more).
 
-# Platform
+## Features
 
-<!-- To help maximize the impact of your README and improve usability for users, we propose the following loose structure:
-
-**BEFORE YOU BEGIN**
-- Ensure all links are absolute URLs so that they will work when the README is displayed within Grafana and Grafana.com
-- Be inspired ✨
-  - [grafana-polystat-panel](https://github.com/grafana/grafana-polystat-panel)
-  - [volkovlabs-variable-panel](https://github.com/volkovlabs/volkovlabs-variable-panel)
-
-**ADD SOME BADGES**
-
-Badges convey useful information at a glance for users whether in the Catalog or viewing the source code. You can use the generator on [Shields.io](https://shields.io/badges/dynamic-json-badge) together with the Grafana.com API
-to create dynamic badges that update automatically when you publish a new version to the marketplace.
-
-- For the URL parameter use `https://grafana.com/api/plugins/your-plugin-id`.
-- Example queries:
-  - Downloads: `$.downloads`
-  - Catalog Version: `$.version`
-  - Grafana Dependency: `$.grafanaDependency`
-  - Signature Type: `$.versionSignatureType`
-- Optionally, for the logo parameter use `grafana`.
-
-Full example: ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?logo=grafana&query=$.version&url=https://grafana.com/api/plugins/grafana-polystat-panel&label=Marketplace&prefix=v&color=F47A20)
-
-Consider other [badges](https://shields.io/badges) as you feel appropriate for your project.
-
-## Overview / Introduction
-Provide one or more paragraphs as an introduction to your plugin to help users understand why they should use it.
-
-Consider including screenshots:
-- in [plugin.json](https://grafana.com/developers/plugin-tools/reference/plugin-json#info) include them as relative links.
-- in the README ensure they are absolute URLs.
+- **jKQL query editor** with syntax highlighting and optional autocomplete.
+- **Table, time series, and logs** result formats. Time-bucketed results pivot into series for
+  graph panels; log results render in Explore's logs view.
+- **Template variables** — drive dashboard variables from a jKQL query, or list item types and
+  fields. Multi-value variables expand to a quoted list, ready for `In ($variable)`.
+- **Alerting and annotations** — alert rules evaluate on the backend; annotation queries can
+  overlay meshIQ events on any dashboard panel.
+- **Repository selection** per data source and per query, for multi-repository accounts.
+- The dashboard **time range is applied automatically** to every query.
 
 ## Requirements
-List any requirements or dependencies they may need to run the plugin.
 
-## Getting Started
-Provide a quick start on how to configure and use the plugin.
+- Grafana 12.3 or newer.
+- A meshIQ dataservice endpoint and an access token.
 
-## Documentation
-If your project has dedicated documentation available for users, provide links here. For help in following Grafana's style recommendations for technical documentation, refer to our [Writer's Toolkit](https://grafana.com/docs/writers-toolkit/).
+## Configuration
 
-## Contributing
-Do you want folks to contribute to the plugin or provide feedback through specific means? If so, tell them how!
--->
+Add a **meshIQ Platform** data source and fill in:
+
+| Field | Meaning |
+|---|---|
+| **Service URL** | Base URL of the meshIQ dataservice, e.g. `https://your-host:8084/ds-api`. |
+| **Access Token** | API token for the dataservice. Sent as the `X-API-Key` header; stored encrypted. |
+| **Default repository** | Repository used by queries that don't pick their own. Loaded after a valid connection. |
+| **Trace** | Ask the dataservice to include query trace info (`jk_trace`). Overridable per query. |
+| **Enable completion** | Turn on jKQL autocomplete, served by a separate completion service. |
+| **Completion service URL** | Base URL of the jKQL autocomplete service, e.g. `http://your-host:7580`. |
+
+Click **Save & Test**. On success the page also shows the server's **version** and its
+**maximum result rows** limit.
+
+## Writing queries
+
+Type a jKQL statement and press **Ctrl/Cmd+Enter** (or click away) to run it:
+
+```sql
+-- Recent log entries (choose "Format as: Logs" in Explore)
+Get Log
+
+-- Errors only
+Get Log Where Severity In ('ERROR', 'FATAL')
+
+-- Slowest events
+Get Top 10 Event Fields ResourceName, ElapsedTime Sort By ElapsedTime Desc
+
+-- Log volume over time (choose "Format as: Time series")
+Get Number Of Log Group By ReportTime Bucketed By 1 hour
+
+-- Filter on a custom property
+Get Log Where Properties('Region') In ('us-east', 'us-west')
+```
+
+The dashboard time range is added to every query automatically, so you normally don't write
+time filters.
+
+### Template variables
+
+Create a variable with one of the query types:
+
+- **jKQL query** — the first result column becomes the variable's values.
+- **Item types** — all queryable item types (Log, Event, KAFKA_BROKER, …).
+- **Fields** — the fields of one item type, including custom properties.
+
+A multi-value variable interpolates as `'a', 'b', 'c'`, so use it like
+`Where Severity In ($severity)`.
+
+## Provisioning
+
+```yaml
+apiVersion: 1
+datasources:
+  - name: meshIQ Platform
+    type: meshiq-platform-datasource
+    jsonData:
+      serviceUrl: https://your-host:8084/ds-api
+      repositoryID: DefaultRepo$YourOrg
+    secureJsonData:
+      accessToken: $MESHIQ_ACCESS_TOKEN
+```
+
+## Getting help
+
+- Source and issues: <https://github.com/Nastel/meshiq-platform-datasource>
+- meshIQ: <https://www.meshiq.com/>
+
+Apache License 2.0.
