@@ -39,6 +39,10 @@ func queryDataService(ctx context.Context, httpClient *http.Client, queryModel Q
 		return nil, err
 	}
 
+	// TODO(dev-only): remove or comment out together with capture.go. No-op unless
+	// MESHIQ_CAPTURE_DIR is set.
+	captureResponse(queryModel, bodyBytes)
+
 	response, err := parseServiceResponse(bodyBytes)
 	if err != nil {
 		// The body wasn't JSON — usually an HTML login/redirect or a proxy error page,
