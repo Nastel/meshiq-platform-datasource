@@ -1,0 +1,80 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 3
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 3
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 1 Fields by 3 Rows
+//  +-----------------+
+//  | Name: user      |
+//  | Labels:         |
+//  | Type: []*string |
+//  +-----------------+
+//  | unknown         |
+//  | Administrator   |
+//  | Admin           |
+//  +-----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 3
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 3
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "user",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            "unknown",
+            "Administrator",
+            "Admin"
+          ]
+        ]
+      }
+    }
+  ]
+}

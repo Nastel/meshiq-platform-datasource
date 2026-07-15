@@ -1,0 +1,173 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 3
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 3
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 6 Fields by 3 Rows
+//  +--------------------------------------+----------------+-------------------+-------------------------------+-----------------+--------------------------------------+
+//  | Name: dateAdd                        | Name: dateDiff | Name: dateExtract | Name: dateAdjust              | Name: dayOfWeek | Name: now                            |
+//  | Labels:                              | Labels:        | Labels:           | Labels:                       | Labels:         | Labels:                              |
+//  | Type: []*time.Time                   | Type: []*int64 | Type: []*int64    | Type: []*time.Time            | Type: []*enum   | Type: []*time.Time                   |
+//  +--------------------------------------+----------------+-------------------+-------------------------------+-----------------+--------------------------------------+
+//  | 2026-07-15 07:12:03.169676 +0000 UTC | 0              | 7                 | 2026-07-14 00:00:00 +0000 UTC | 0               | 2026-07-15 23:15:42.775773 +0000 UTC |
+//  | 2026-07-15 07:22:07.904567 +0000 UTC | 0              | 7                 | 2026-07-14 00:00:00 +0000 UTC | 0               | 2026-07-15 23:15:42.776131 +0000 UTC |
+//  | 2026-07-15 08:05:54.215861 +0000 UTC | 0              | 8                 | 2026-07-14 00:00:00 +0000 UTC | 0               | 2026-07-15 23:15:42.776994 +0000 UTC |
+//  +--------------------------------------+----------------+-------------------+-------------------------------+-----------------+--------------------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 3
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 3
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "dateAdd",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time",
+              "nullable": true
+            }
+          },
+          {
+            "name": "dateDiff",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            },
+            "config": {
+              "unit": "µs"
+            }
+          },
+          {
+            "name": "dateExtract",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "dateAdjust",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time",
+              "nullable": true
+            }
+          },
+          {
+            "name": "dayOfWeek",
+            "type": "enum",
+            "typeInfo": {
+              "frame": "enum",
+              "nullable": true
+            },
+            "config": {
+              "type": {
+                "enum": {
+                  "text": [
+                    "TUESDAY"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": "now",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1784099523169,
+            1784100127904,
+            1784102754215
+          ],
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            7,
+            7,
+            8
+          ],
+          [
+            1783987200000,
+            1783987200000,
+            1783987200000
+          ],
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1784157342775,
+            1784157342776,
+            1784157342776
+          ]
+        ],
+        "nanos": [
+          [
+            676000,
+            567000,
+            861000
+          ],
+          null,
+          null,
+          null,
+          null,
+          [
+            773000,
+            131000,
+            994000
+          ]
+        ]
+      }
+    }
+  ]
+}
