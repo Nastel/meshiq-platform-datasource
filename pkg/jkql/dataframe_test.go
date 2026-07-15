@@ -103,7 +103,7 @@ func TestFinalizeFrame_SetsExecutedQuery(t *testing.T) {
 	m := BuildDataModel(parseRS(t, `{"row-count": 0, "total-row-count": 0, "status": "SUCCESS", "colhdr": [], "coltype": {}, "collabel": {}, "rows": []}`), nil)
 	frame := BuildDataFrame(m)
 
-	frame = FinalizeFrame(frame, "Get Events")
+	frame = FinalizeFrame(frame, "Get Events", FormatTable)
 	if frame.Meta.ExecutedQueryString != "Get Events" {
 		t.Errorf("ExecutedQueryString = %q, want %q", frame.Meta.ExecutedQueryString, "Get Events")
 	}

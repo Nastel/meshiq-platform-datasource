@@ -7,15 +7,20 @@ export const MAX_ROWS_LIMIT = 1000;
 /** Repository name pre-selected as the default when present (identifier form "DefaultRepo$<org>"). */
 export const DEFAULT_REPOSITORY_NAME = 'DefaultRepo';
 
+export type MeshIqFormat = 'table' | 'timeseries';
+
 export interface MeshIqQuery extends DataQuery {
   jkql?: string;
   locale?: string;
   timezone?: string;
+  format?: MeshIqFormat;
   repositoryID?: string;
   maxRows?: number;
 }
 
-export const DEFAULT_QUERY: Partial<MeshIqQuery> = {};
+export const DEFAULT_QUERY: Partial<MeshIqQuery> = {
+  format: 'table',
+};
 
 /**
  * Options configured for each meshIQ Platform data source instance.

@@ -77,7 +77,7 @@ describe('QueryEditor', () => {
     const onChange = jest.fn();
     const onRunQuery = jest.fn();
     const datasource = makeDatasource();
-    const query: MeshIqQuery = { refId: 'A', jkql: 'get events', repositoryID: 'repo-1' };
+    const query: MeshIqQuery = { refId: 'A', jkql: 'get events', format: 'table', repositoryID: 'repo-1' };
 
     const { rerender } = render(
       <QueryEditor query={query} onChange={onChange} onRunQuery={onRunQuery} datasource={datasource} />
@@ -85,21 +85,21 @@ describe('QueryEditor', () => {
     await waitFor(() => expect(datasource.listRepositories).toHaveBeenCalled());
     expect(mockMountOnChange).toBeDefined();
 
-    // The user picks a different repository; Grafana re-renders with the updated query.
+    // The user switches "Format as" to Time series; Grafana re-renders with the updated query.
     rerender(
       <QueryEditor
-        query={{ ...query, repositoryID: 'repo-2' }}
+        query={{ ...query, format: 'timeseries' }}
         onChange={onChange}
         onRunQuery={onRunQuery}
         datasource={datasource}
       />
     );
 
-    // Then types in the editor: the mount-time onChange must still see repositoryID=repo-2.
+    // Then types in the editor: the mount-time onChange must still see format=timeseries.
     act(() => mockMountOnChange!('get events fields Severity'));
 
     expect(onChange).toHaveBeenLastCalledWith(
-      expect.objectContaining({ repositoryID: 'repo-2', jkql: 'get events fields Severity' })
+      expect.objectContaining({ format: 'timeseries', jkql: 'get events fields Severity' })
     );
   });
 
@@ -107,7 +107,7 @@ describe('QueryEditor', () => {
     const onChange = jest.fn();
     const onRunQuery = jest.fn();
     const datasource = makeDatasource();
-    const query: MeshIqQuery = { refId: 'A', jkql: 'get events', repositoryID: 'repo-1' };
+    const query: MeshIqQuery = { refId: 'A', jkql: 'get events', format: 'table', repositoryID: 'repo-1' };
 
     render(<QueryEditor query={query} onChange={onChange} onRunQuery={onRunQuery} datasource={datasource} />);
     await waitFor(() => expect(datasource.listRepositories).toHaveBeenCalled());
@@ -129,7 +129,7 @@ describe('QueryEditor', () => {
       listRepositories: jest.fn().mockRejectedValue(new Error('boom')),
       getDefaultRepositoryID: jest.fn().mockReturnValue('repo-1'),
     } as unknown as DataSource;
-    const query: MeshIqQuery = { refId: 'A', jkql: 'get events', repositoryID: 'repo-1' };
+    const query: MeshIqQuery = { refId: 'A', jkql: 'get events', format: 'table', repositoryID: 'repo-1' };
 
     render(<QueryEditor query={query} onChange={onChange} onRunQuery={onRunQuery} datasource={datasource} />);
 
