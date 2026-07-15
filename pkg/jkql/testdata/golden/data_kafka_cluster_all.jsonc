@@ -19,23 +19,23 @@
 //      "preferredVisualisationType": "table"
 //  }
 //  Name: 
-//  Dimensions: 17 Fields by 20 Rows
-//  +-------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-------------------------------------------+--------------------------------------+---------------------------------------------------------------------------------+-----------------+------------------------+--------------------------------+-------------------------------------------+-------------------------------------+-----------------------------------+---------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+-----------------------------------------------------------------------------------------------------------+--------------------------------------+-----------------------------------+
-//  | Name: MetricID                                                                                                                            | Name: Category  | Name: Name                                | Name: MetricTime                     | Name: SourceFQN                                                                 | Name: partition | Name: topic            | Name: Partition.AtMinIsr.Value | Name: Partition.InSyncReplicasCount.Value | Name: Partition.ReplicasCount.Value | Name: Partition.UnderMinIsr.Value | Name: Partition.UnderReplicated.Value | Name: MetaData                                                                                                                                                                                                        | Name: SourceSSN  | Name: SourceComps                                                                                         | Name: ReceivedTime                   | Name: UpdateTime                  |
-//  | Labels:                                                                                                                                   | Labels:         | Labels:                                   | Labels:                              | Labels:                                                                         | Labels:         | Labels:                | Labels:                        | Labels:                                   | Labels:                             | Labels:                           | Labels:                               | Labels:                                                                                                                                                                                                               | Labels:          | Labels:                                                                                                   | Labels:                              | Labels:                           |
-//  | Type: []*string                                                                                                                           | Type: []*string | Type: []*string                           | Type: []*time.Time                   | Type: []*string                                                                 | Type: []*string | Type: []*string        | Type: []*int64                 | Type: []*int64                            | Type: []*int64                      | Type: []*int64                    | Type: []*int64                        | Type: []*string                                                                                                                                                                                                       | Type: []*string  | Type: []*string                                                                                           | Type: []*time.Time                   | Type: []*time.Time                |
-//  +-------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-------------------------------------------+--------------------------------------+---------------------------------------------------------------------------------+-----------------+------------------------+--------------------------------+-------------------------------------------+-------------------------------------+-----------------------------------+---------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+-----------------------------------------------------------------------------------------------------------+--------------------------------------+-----------------------------------+
-//  | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers::topic=raw-tnt4j-data,partition=28::1783081271392         | JMX-KAFKA       | topic=raw-tnt4j-data,partition=28         | 2026-07-03 12:21:11.392845 +0000 UTC | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers | 28              | raw-tnt4j-data         | null                           | null                                      | null                                | null                              | 0                                     | {"ObjectName":"kafka.cluster:type=Partition,name=UnderReplicated,topic=raw-tnt4j-data,partition=28","SampleDurationUsec":14272,"SampleEndTimestamp":1783081381856961,"SampleStartTimestamp":1783081381842689}         | tnt4j-stream-jmx | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["9DNtlAtBlB4FjgIWBk917w=="],"NETADDR":["192.0.2.13"]} | 2026-07-03 12:23:18.668555 +0000 UTC | 2026-07-03 12:23:19.69 +0000 UTC  |
-//  | BROKER=2#NETADDR=192.0.2.14#CLUSTER=TczKPzvBNiSk3jfjHD8Cnw==#APPL=Kafka-Brokers::topic=result-to-router,partition=1::1783081271868        | JMX-KAFKA       | topic=result-to-router,partition=1        | 2026-07-03 12:21:11.868653 +0000 UTC | BROKER=2#NETADDR=192.0.2.14#CLUSTER=TczKPzvBNiSk3jfjHD8Cnw==#APPL=Kafka-Brokers | 1               | result-to-router       | null                           | null                                      | null                                | null                              | 0                                     | {"ObjectName":"kafka.cluster:type=Partition,name=UnderReplicated,topic=result-to-router,partition=1","SampleDurationUsec":59669,"SampleEndTimestamp":1783081379857400,"SampleStartTimestamp":1783081379797731}        | tnt4j-stream-jmx | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["TczKPzvBNiSk3jfjHD8Cnw=="],"NETADDR":["192.0.2.14"]} | 2026-07-03 12:23:07.145992 +0000 UTC | 2026-07-03 12:23:07.871 +0000 UTC |
-//  | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers::topic=__consumer_offsets,partition=3::1783081271392      | JMX-KAFKA       | topic=__consumer_offsets,partition=3      | 2026-07-03 12:21:11.392845 +0000 UTC | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers | 3               | __consumer_offsets     | null                           | null                                      | null                                | null                              | 0                                     | {"ObjectName":"kafka.cluster:type=Partition,name=UnderReplicated,topic=__consumer_offsets,partition=3","SampleDurationUsec":13724,"SampleEndTimestamp":1783081381887198,"SampleStartTimestamp":1783081381873474}      | tnt4j-stream-jmx | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["9DNtlAtBlB4FjgIWBk917w=="],"NETADDR":["192.0.2.13"]} | 2026-07-03 12:23:18.859273 +0000 UTC | 2026-07-03 12:23:19.723 +0000 UTC |
-//  | BROKER=2#NETADDR=192.0.2.14#CLUSTER=TczKPzvBNiSk3jfjHD8Cnw==#APPL=Kafka-Brokers::topic=pinot-log-topic,partition=0::1783081271868         | JMX-KAFKA       | topic=pinot-log-topic,partition=0         | 2026-07-03 12:21:11.868653 +0000 UTC | BROKER=2#NETADDR=192.0.2.14#CLUSTER=TczKPzvBNiSk3jfjHD8Cnw==#APPL=Kafka-Brokers | 0               | pinot-log-topic        | null                           | null                                      | null                                | null                              | 0                                     | {"ObjectName":"kafka.cluster:type=Partition,name=UnderReplicated,topic=pinot-log-topic,partition=0","SampleDurationUsec":61366,"SampleEndTimestamp":1783081380981659,"SampleStartTimestamp":1783081380920293}         | tnt4j-stream-jmx | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["TczKPzvBNiSk3jfjHD8Cnw=="],"NETADDR":["192.0.2.14"]} | 2026-07-03 12:23:17.524974 +0000 UTC | 2026-07-03 12:23:17.879 +0000 UTC |
-//  | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers::topic=status-results,partition=8::1783081271392          | JMX-KAFKA       | topic=status-results,partition=8          | 2026-07-03 12:21:11.392845 +0000 UTC | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers | 8               | status-results         | null                           | null                                      | null                                | null                              | 0                                     | {"ObjectName":"kafka.cluster:type=Partition,name=UnderReplicated,topic=status-results,partition=8","SampleDurationUsec":12784,"SampleEndTimestamp":1783081382418006,"SampleStartTimestamp":1783081382405222}          | tnt4j-stream-jmx | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["9DNtlAtBlB4FjgIWBk917w=="],"NETADDR":["192.0.2.13"]} | 2026-07-03 12:23:25.712036 +0000 UTC | 2026-07-03 12:23:26.7 +0000 UTC   |
-//  | BROKER=2#NETADDR=192.0.2.12#CLUSTER=yMoRNRD8osxWxjB8GcGguA==#APPL=Kafka-Brokers::topic=trig-data-to-real-time,partition=14::1783081271392 | JMX-KAFKA       | topic=trig-data-to-real-time,partition=14 | 2026-07-03 12:21:11.392844 +0000 UTC | BROKER=2#NETADDR=192.0.2.12#CLUSTER=yMoRNRD8osxWxjB8GcGguA==#APPL=Kafka-Brokers | 14              | trig-data-to-real-time | null                           | null                                      | null                                | null                              | 0                                     | {"ObjectName":"kafka.cluster:type=Partition,name=UnderReplicated,topic=trig-data-to-real-time,partition=14","SampleDurationUsec":31996,"SampleEndTimestamp":1783081370874866,"SampleStartTimestamp":1783081370842870} | tnt4j-stream-jmx | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["yMoRNRD8osxWxjB8GcGguA=="],"NETADDR":["192.0.2.12"]} | 2026-07-03 12:22:51.432276 +0000 UTC | 2026-07-03 12:22:51.561 +0000 UTC |
-//  | BROKER=2#NETADDR=192.0.2.12#CLUSTER=yMoRNRD8osxWxjB8GcGguA==#APPL=Kafka-Brokers::topic=stream-data-default,partition=9::1783081271392     | JMX-KAFKA       | topic=stream-data-default,partition=9     | 2026-07-03 12:21:11.392844 +0000 UTC | BROKER=2#NETADDR=192.0.2.12#CLUSTER=yMoRNRD8osxWxjB8GcGguA==#APPL=Kafka-Brokers | 9               | stream-data-default    | null                           | null                                      | null                                | null                              | 0                                     | {"ObjectName":"kafka.cluster:type=Partition,name=UnderReplicated,topic=stream-data-default,partition=9","SampleDurationUsec":12679,"SampleEndTimestamp":1783081376204878,"SampleStartTimestamp":1783081376192199}     | tnt4j-stream-jmx | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["yMoRNRD8osxWxjB8GcGguA=="],"NETADDR":["192.0.2.12"]} | 2026-07-03 12:23:24.443573 +0000 UTC | 2026-07-03 12:23:25.387 +0000 UTC |
-//  | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers::topic=to-jkql-scheduler,partition=1::1783081271392       | JMX-KAFKA       | topic=to-jkql-scheduler,partition=1       | 2026-07-03 12:21:11.392845 +0000 UTC | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers | 1               | to-jkql-scheduler      | 1                              | null                                      | null                                | null                              | null                                  | {"ObjectName":"kafka.cluster:type=Partition,name=AtMinIsr,topic=to-jkql-scheduler,partition=1","SampleDurationUsec":17610,"SampleEndTimestamp":1783081381632097,"SampleStartTimestamp":1783081381614487}              | tnt4j-stream-jmx | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["9DNtlAtBlB4FjgIWBk917w=="],"NETADDR":["192.0.2.13"]} | 2026-07-03 12:23:14.807691 +0000 UTC | 2026-07-03 12:23:15.448 +0000 UTC |
-//  | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers::topic=status-results,partition=12::1783081271392         | JMX-KAFKA       | topic=status-results,partition=12         | 2026-07-03 12:21:11.392845 +0000 UTC | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers | 12              | status-results         | null                           | null                                      | null                                | 0                                 | null                                  | {"ObjectName":"kafka.cluster:type=Partition,name=UnderMinIsr,topic=status-results,partition=12","SampleDurationUsec":13323,"SampleEndTimestamp":1783081381113132,"SampleStartTimestamp":1783081381099809}             | tnt4j-stream-jmx | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["9DNtlAtBlB4FjgIWBk917w=="],"NETADDR":["192.0.2.13"]} | 2026-07-03 12:23:05.776896 +0000 UTC | 2026-07-03 12:23:06.435 +0000 UTC |
-//  | ...                                                                                                                                       | ...             | ...                                       | ...                                  | ...                                                                             | ...             | ...                    | ...                            | ...                                       | ...                                 | ...                               | ...                                   | ...                                                                                                                                                                                                                   | ...              | ...                                                                                                       | ...                                  | ...                               |
-//  +-------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-------------------------------------------+--------------------------------------+---------------------------------------------------------------------------------+-----------------+------------------------+--------------------------------+-------------------------------------------+-------------------------------------+-----------------------------------+---------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+-----------------------------------------------------------------------------------------------------------+--------------------------------------+-----------------------------------+
+//  Dimensions: 20 Fields by 20 Rows
+//  +-------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-------------------------------------------+--------------------------------------+---------------------------------------------------------------------------------+-----------------+------------------------+--------------------------------+-------------------------------------------+-------------------------------------+-----------------------------------+---------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+--------------------------+--------------------------+------------------------------+--------------------------+--------------------------------------+-----------------------------------+
+//  | Name: MetricID                                                                                                                            | Name: Category  | Name: Name                                | Name: MetricTime                     | Name: SourceFQN                                                                 | Name: partition | Name: topic            | Name: Partition.AtMinIsr.Value | Name: Partition.InSyncReplicasCount.Value | Name: Partition.ReplicasCount.Value | Name: Partition.UnderMinIsr.Value | Name: Partition.UnderReplicated.Value | Name: MetaData                                                                                                                                                                                                        | Name: SourceSSN  | Name: APPL               | Name: BROKER             | Name: CLUSTER                | Name: NETADDR            | Name: ReceivedTime                   | Name: UpdateTime                  |
+//  | Labels:                                                                                                                                   | Labels:         | Labels:                                   | Labels:                              | Labels:                                                                         | Labels:         | Labels:                | Labels:                        | Labels:                                   | Labels:                             | Labels:                           | Labels:                               | Labels:                                                                                                                                                                                                               | Labels:          | Labels:                  | Labels:                  | Labels:                      | Labels:                  | Labels:                              | Labels:                           |
+//  | Type: []*string                                                                                                                           | Type: []*string | Type: []*string                           | Type: []*time.Time                   | Type: []*string                                                                 | Type: []*string | Type: []*string        | Type: []*int64                 | Type: []*int64                            | Type: []*int64                      | Type: []*int64                    | Type: []*int64                        | Type: []*json.RawMessage                                                                                                                                                                                              | Type: []*string  | Type: []*json.RawMessage | Type: []*json.RawMessage | Type: []*json.RawMessage     | Type: []*json.RawMessage | Type: []*time.Time                   | Type: []*time.Time                |
+//  +-------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-------------------------------------------+--------------------------------------+---------------------------------------------------------------------------------+-----------------+------------------------+--------------------------------+-------------------------------------------+-------------------------------------+-----------------------------------+---------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+--------------------------+--------------------------+------------------------------+--------------------------+--------------------------------------+-----------------------------------+
+//  | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers::topic=raw-tnt4j-data,partition=28::1783081271392         | JMX-KAFKA       | topic=raw-tnt4j-data,partition=28         | 2026-07-03 12:21:11.392845 +0000 UTC | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers | 28              | raw-tnt4j-data         | null                           | null                                      | null                                | null                              | 0                                     | {"ObjectName":"kafka.cluster:type=Partition,name=UnderReplicated,topic=raw-tnt4j-data,partition=28","SampleDurationUsec":14272,"SampleEndTimestamp":1783081381856961,"SampleStartTimestamp":1783081381842689}         | tnt4j-stream-jmx | ["Kafka-Brokers"]        | ["2"]                    | ["9DNtlAtBlB4FjgIWBk917w=="] | ["192.0.2.13"]           | 2026-07-03 12:23:18.668555 +0000 UTC | 2026-07-03 12:23:19.69 +0000 UTC  |
+//  | BROKER=2#NETADDR=192.0.2.14#CLUSTER=TczKPzvBNiSk3jfjHD8Cnw==#APPL=Kafka-Brokers::topic=result-to-router,partition=1::1783081271868        | JMX-KAFKA       | topic=result-to-router,partition=1        | 2026-07-03 12:21:11.868653 +0000 UTC | BROKER=2#NETADDR=192.0.2.14#CLUSTER=TczKPzvBNiSk3jfjHD8Cnw==#APPL=Kafka-Brokers | 1               | result-to-router       | null                           | null                                      | null                                | null                              | 0                                     | {"ObjectName":"kafka.cluster:type=Partition,name=UnderReplicated,topic=result-to-router,partition=1","SampleDurationUsec":59669,"SampleEndTimestamp":1783081379857400,"SampleStartTimestamp":1783081379797731}        | tnt4j-stream-jmx | ["Kafka-Brokers"]        | ["2"]                    | ["TczKPzvBNiSk3jfjHD8Cnw=="] | ["192.0.2.14"]           | 2026-07-03 12:23:07.145992 +0000 UTC | 2026-07-03 12:23:07.871 +0000 UTC |
+//  | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers::topic=__consumer_offsets,partition=3::1783081271392      | JMX-KAFKA       | topic=__consumer_offsets,partition=3      | 2026-07-03 12:21:11.392845 +0000 UTC | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers | 3               | __consumer_offsets     | null                           | null                                      | null                                | null                              | 0                                     | {"ObjectName":"kafka.cluster:type=Partition,name=UnderReplicated,topic=__consumer_offsets,partition=3","SampleDurationUsec":13724,"SampleEndTimestamp":1783081381887198,"SampleStartTimestamp":1783081381873474}      | tnt4j-stream-jmx | ["Kafka-Brokers"]        | ["2"]                    | ["9DNtlAtBlB4FjgIWBk917w=="] | ["192.0.2.13"]           | 2026-07-03 12:23:18.859273 +0000 UTC | 2026-07-03 12:23:19.723 +0000 UTC |
+//  | BROKER=2#NETADDR=192.0.2.14#CLUSTER=TczKPzvBNiSk3jfjHD8Cnw==#APPL=Kafka-Brokers::topic=pinot-log-topic,partition=0::1783081271868         | JMX-KAFKA       | topic=pinot-log-topic,partition=0         | 2026-07-03 12:21:11.868653 +0000 UTC | BROKER=2#NETADDR=192.0.2.14#CLUSTER=TczKPzvBNiSk3jfjHD8Cnw==#APPL=Kafka-Brokers | 0               | pinot-log-topic        | null                           | null                                      | null                                | null                              | 0                                     | {"ObjectName":"kafka.cluster:type=Partition,name=UnderReplicated,topic=pinot-log-topic,partition=0","SampleDurationUsec":61366,"SampleEndTimestamp":1783081380981659,"SampleStartTimestamp":1783081380920293}         | tnt4j-stream-jmx | ["Kafka-Brokers"]        | ["2"]                    | ["TczKPzvBNiSk3jfjHD8Cnw=="] | ["192.0.2.14"]           | 2026-07-03 12:23:17.524974 +0000 UTC | 2026-07-03 12:23:17.879 +0000 UTC |
+//  | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers::topic=status-results,partition=8::1783081271392          | JMX-KAFKA       | topic=status-results,partition=8          | 2026-07-03 12:21:11.392845 +0000 UTC | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers | 8               | status-results         | null                           | null                                      | null                                | null                              | 0                                     | {"ObjectName":"kafka.cluster:type=Partition,name=UnderReplicated,topic=status-results,partition=8","SampleDurationUsec":12784,"SampleEndTimestamp":1783081382418006,"SampleStartTimestamp":1783081382405222}          | tnt4j-stream-jmx | ["Kafka-Brokers"]        | ["2"]                    | ["9DNtlAtBlB4FjgIWBk917w=="] | ["192.0.2.13"]           | 2026-07-03 12:23:25.712036 +0000 UTC | 2026-07-03 12:23:26.7 +0000 UTC   |
+//  | BROKER=2#NETADDR=192.0.2.12#CLUSTER=yMoRNRD8osxWxjB8GcGguA==#APPL=Kafka-Brokers::topic=trig-data-to-real-time,partition=14::1783081271392 | JMX-KAFKA       | topic=trig-data-to-real-time,partition=14 | 2026-07-03 12:21:11.392844 +0000 UTC | BROKER=2#NETADDR=192.0.2.12#CLUSTER=yMoRNRD8osxWxjB8GcGguA==#APPL=Kafka-Brokers | 14              | trig-data-to-real-time | null                           | null                                      | null                                | null                              | 0                                     | {"ObjectName":"kafka.cluster:type=Partition,name=UnderReplicated,topic=trig-data-to-real-time,partition=14","SampleDurationUsec":31996,"SampleEndTimestamp":1783081370874866,"SampleStartTimestamp":1783081370842870} | tnt4j-stream-jmx | ["Kafka-Brokers"]        | ["2"]                    | ["yMoRNRD8osxWxjB8GcGguA=="] | ["192.0.2.12"]           | 2026-07-03 12:22:51.432276 +0000 UTC | 2026-07-03 12:22:51.561 +0000 UTC |
+//  | BROKER=2#NETADDR=192.0.2.12#CLUSTER=yMoRNRD8osxWxjB8GcGguA==#APPL=Kafka-Brokers::topic=stream-data-default,partition=9::1783081271392     | JMX-KAFKA       | topic=stream-data-default,partition=9     | 2026-07-03 12:21:11.392844 +0000 UTC | BROKER=2#NETADDR=192.0.2.12#CLUSTER=yMoRNRD8osxWxjB8GcGguA==#APPL=Kafka-Brokers | 9               | stream-data-default    | null                           | null                                      | null                                | null                              | 0                                     | {"ObjectName":"kafka.cluster:type=Partition,name=UnderReplicated,topic=stream-data-default,partition=9","SampleDurationUsec":12679,"SampleEndTimestamp":1783081376204878,"SampleStartTimestamp":1783081376192199}     | tnt4j-stream-jmx | ["Kafka-Brokers"]        | ["2"]                    | ["yMoRNRD8osxWxjB8GcGguA=="] | ["192.0.2.12"]           | 2026-07-03 12:23:24.443573 +0000 UTC | 2026-07-03 12:23:25.387 +0000 UTC |
+//  | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers::topic=to-jkql-scheduler,partition=1::1783081271392       | JMX-KAFKA       | topic=to-jkql-scheduler,partition=1       | 2026-07-03 12:21:11.392845 +0000 UTC | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers | 1               | to-jkql-scheduler      | 1                              | null                                      | null                                | null                              | null                                  | {"ObjectName":"kafka.cluster:type=Partition,name=AtMinIsr,topic=to-jkql-scheduler,partition=1","SampleDurationUsec":17610,"SampleEndTimestamp":1783081381632097,"SampleStartTimestamp":1783081381614487}              | tnt4j-stream-jmx | ["Kafka-Brokers"]        | ["2"]                    | ["9DNtlAtBlB4FjgIWBk917w=="] | ["192.0.2.13"]           | 2026-07-03 12:23:14.807691 +0000 UTC | 2026-07-03 12:23:15.448 +0000 UTC |
+//  | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers::topic=status-results,partition=12::1783081271392         | JMX-KAFKA       | topic=status-results,partition=12         | 2026-07-03 12:21:11.392845 +0000 UTC | BROKER=2#NETADDR=192.0.2.13#CLUSTER=9DNtlAtBlB4FjgIWBk917w==#APPL=Kafka-Brokers | 12              | status-results         | null                           | null                                      | null                                | 0                                 | null                                  | {"ObjectName":"kafka.cluster:type=Partition,name=UnderMinIsr,topic=status-results,partition=12","SampleDurationUsec":13323,"SampleEndTimestamp":1783081381113132,"SampleStartTimestamp":1783081381099809}             | tnt4j-stream-jmx | ["Kafka-Brokers"]        | ["2"]                    | ["9DNtlAtBlB4FjgIWBk917w=="] | ["192.0.2.13"]           | 2026-07-03 12:23:05.776896 +0000 UTC | 2026-07-03 12:23:06.435 +0000 UTC |
+//  | ...                                                                                                                                       | ...             | ...                                       | ...                                  | ...                                                                             | ...             | ...                    | ...                            | ...                                       | ...                                 | ...                               | ...                                   | ...                                                                                                                                                                                                                   | ...              | ...                      | ...                      | ...                          | ...                      | ...                                  | ...                               |
+//  +-------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-------------------------------------------+--------------------------------------+---------------------------------------------------------------------------------+-----------------+------------------------+--------------------------------+-------------------------------------------+-------------------------------------+-----------------------------------+---------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------+--------------------------+--------------------------+------------------------------+--------------------------+--------------------------------------+-----------------------------------+
 //  
 //  
 //  🌟 This was machine generated.  Do not edit. 🌟
@@ -161,9 +161,9 @@
           },
           {
             "name": "MetaData",
-            "type": "string",
+            "type": "other",
             "typeInfo": {
-              "frame": "string",
+              "frame": "json.RawMessage",
               "nullable": true
             }
           },
@@ -176,10 +176,34 @@
             }
           },
           {
-            "name": "SourceComps",
-            "type": "string",
+            "name": "APPL",
+            "type": "other",
             "typeInfo": {
-              "frame": "string",
+              "frame": "json.RawMessage",
+              "nullable": true
+            }
+          },
+          {
+            "name": "BROKER",
+            "type": "other",
+            "typeInfo": {
+              "frame": "json.RawMessage",
+              "nullable": true
+            }
+          },
+          {
+            "name": "CLUSTER",
+            "type": "other",
+            "typeInfo": {
+              "frame": "json.RawMessage",
+              "nullable": true
+            }
+          },
+          {
+            "name": "NETADDR",
+            "type": "other",
+            "typeInfo": {
+              "frame": "json.RawMessage",
               "nullable": true
             }
           },
@@ -468,26 +492,126 @@
             null
           ],
           [
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=UnderReplicated,topic=raw-tnt4j-data,partition=28\",\"SampleDurationUsec\":14272,\"SampleEndTimestamp\":1783081381856961,\"SampleStartTimestamp\":1783081381842689}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=UnderReplicated,topic=result-to-router,partition=1\",\"SampleDurationUsec\":59669,\"SampleEndTimestamp\":1783081379857400,\"SampleStartTimestamp\":1783081379797731}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=UnderReplicated,topic=__consumer_offsets,partition=3\",\"SampleDurationUsec\":13724,\"SampleEndTimestamp\":1783081381887198,\"SampleStartTimestamp\":1783081381873474}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=UnderReplicated,topic=pinot-log-topic,partition=0\",\"SampleDurationUsec\":61366,\"SampleEndTimestamp\":1783081380981659,\"SampleStartTimestamp\":1783081380920293}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=UnderReplicated,topic=status-results,partition=8\",\"SampleDurationUsec\":12784,\"SampleEndTimestamp\":1783081382418006,\"SampleStartTimestamp\":1783081382405222}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=UnderReplicated,topic=trig-data-to-real-time,partition=14\",\"SampleDurationUsec\":31996,\"SampleEndTimestamp\":1783081370874866,\"SampleStartTimestamp\":1783081370842870}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=UnderReplicated,topic=stream-data-default,partition=9\",\"SampleDurationUsec\":12679,\"SampleEndTimestamp\":1783081376204878,\"SampleStartTimestamp\":1783081376192199}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=AtMinIsr,topic=to-jkql-scheduler,partition=1\",\"SampleDurationUsec\":17610,\"SampleEndTimestamp\":1783081381632097,\"SampleStartTimestamp\":1783081381614487}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=UnderMinIsr,topic=status-results,partition=12\",\"SampleDurationUsec\":13323,\"SampleEndTimestamp\":1783081381113132,\"SampleStartTimestamp\":1783081381099809}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=AtMinIsr,topic=stream-data-default,partition=2\",\"SampleDurationUsec\":12765,\"SampleEndTimestamp\":1783081381522381,\"SampleStartTimestamp\":1783081381509616}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=InSyncReplicasCount,topic=to-sched-jkql-handler,partition=3\",\"SampleDurationUsec\":52348,\"SampleEndTimestamp\":1783081378535539,\"SampleStartTimestamp\":1783081378483191}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=AtMinIsr,topic=to-action-executor,partition=31\",\"SampleDurationUsec\":68193,\"SampleEndTimestamp\":1783081383353458,\"SampleStartTimestamp\":1783081383285265}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=ReplicasCount,topic=to-action-executor,partition=45\",\"SampleDurationUsec\":34814,\"SampleEndTimestamp\":1783081388846733,\"SampleStartTimestamp\":1783081388811919}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=ReplicasCount,topic=pinot-activity-topic,partition=12\",\"SampleDurationUsec\":13851,\"SampleEndTimestamp\":1783081386306720,\"SampleStartTimestamp\":1783081386292869}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=AtMinIsr,topic=pending-schema-keys,partition=3\",\"SampleDurationUsec\":56852,\"SampleEndTimestamp\":1783081386387295,\"SampleStartTimestamp\":1783081386330443}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=ReplicasCount,topic=jkreq-to-query,partition=54\",\"SampleDurationUsec\":56295,\"SampleEndTimestamp\":1783081386391453,\"SampleStartTimestamp\":1783081386335158}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=ReplicasCount,topic=pinot-alert-topic,partition=10\",\"SampleDurationUsec\":58319,\"SampleEndTimestamp\":1783081387009777,\"SampleStartTimestamp\":1783081386951458}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=UnderReplicated,topic=status-results,partition=11\",\"SampleDurationUsec\":48892,\"SampleEndTimestamp\":1783081387273104,\"SampleStartTimestamp\":1783081387224212}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=ReplicasCount,topic=to-item-updater,partition=26\",\"SampleDurationUsec\":38047,\"SampleEndTimestamp\":1783081387813127,\"SampleStartTimestamp\":1783081387775080}",
-            "{\"ObjectName\":\"kafka.cluster:type=Partition,name=ReplicasCount,topic=to-item-updater,partition=33\",\"SampleDurationUsec\":56582,\"SampleEndTimestamp\":1783081390798836,\"SampleStartTimestamp\":1783081390742254}"
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=UnderReplicated,topic=raw-tnt4j-data,partition=28",
+              "SampleDurationUsec": 14272,
+              "SampleEndTimestamp": 1783081381856961,
+              "SampleStartTimestamp": 1783081381842689
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=UnderReplicated,topic=result-to-router,partition=1",
+              "SampleDurationUsec": 59669,
+              "SampleEndTimestamp": 1783081379857400,
+              "SampleStartTimestamp": 1783081379797731
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=UnderReplicated,topic=__consumer_offsets,partition=3",
+              "SampleDurationUsec": 13724,
+              "SampleEndTimestamp": 1783081381887198,
+              "SampleStartTimestamp": 1783081381873474
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=UnderReplicated,topic=pinot-log-topic,partition=0",
+              "SampleDurationUsec": 61366,
+              "SampleEndTimestamp": 1783081380981659,
+              "SampleStartTimestamp": 1783081380920293
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=UnderReplicated,topic=status-results,partition=8",
+              "SampleDurationUsec": 12784,
+              "SampleEndTimestamp": 1783081382418006,
+              "SampleStartTimestamp": 1783081382405222
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=UnderReplicated,topic=trig-data-to-real-time,partition=14",
+              "SampleDurationUsec": 31996,
+              "SampleEndTimestamp": 1783081370874866,
+              "SampleStartTimestamp": 1783081370842870
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=UnderReplicated,topic=stream-data-default,partition=9",
+              "SampleDurationUsec": 12679,
+              "SampleEndTimestamp": 1783081376204878,
+              "SampleStartTimestamp": 1783081376192199
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=AtMinIsr,topic=to-jkql-scheduler,partition=1",
+              "SampleDurationUsec": 17610,
+              "SampleEndTimestamp": 1783081381632097,
+              "SampleStartTimestamp": 1783081381614487
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=UnderMinIsr,topic=status-results,partition=12",
+              "SampleDurationUsec": 13323,
+              "SampleEndTimestamp": 1783081381113132,
+              "SampleStartTimestamp": 1783081381099809
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=AtMinIsr,topic=stream-data-default,partition=2",
+              "SampleDurationUsec": 12765,
+              "SampleEndTimestamp": 1783081381522381,
+              "SampleStartTimestamp": 1783081381509616
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=InSyncReplicasCount,topic=to-sched-jkql-handler,partition=3",
+              "SampleDurationUsec": 52348,
+              "SampleEndTimestamp": 1783081378535539,
+              "SampleStartTimestamp": 1783081378483191
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=AtMinIsr,topic=to-action-executor,partition=31",
+              "SampleDurationUsec": 68193,
+              "SampleEndTimestamp": 1783081383353458,
+              "SampleStartTimestamp": 1783081383285265
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=ReplicasCount,topic=to-action-executor,partition=45",
+              "SampleDurationUsec": 34814,
+              "SampleEndTimestamp": 1783081388846733,
+              "SampleStartTimestamp": 1783081388811919
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=ReplicasCount,topic=pinot-activity-topic,partition=12",
+              "SampleDurationUsec": 13851,
+              "SampleEndTimestamp": 1783081386306720,
+              "SampleStartTimestamp": 1783081386292869
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=AtMinIsr,topic=pending-schema-keys,partition=3",
+              "SampleDurationUsec": 56852,
+              "SampleEndTimestamp": 1783081386387295,
+              "SampleStartTimestamp": 1783081386330443
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=ReplicasCount,topic=jkreq-to-query,partition=54",
+              "SampleDurationUsec": 56295,
+              "SampleEndTimestamp": 1783081386391453,
+              "SampleStartTimestamp": 1783081386335158
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=ReplicasCount,topic=pinot-alert-topic,partition=10",
+              "SampleDurationUsec": 58319,
+              "SampleEndTimestamp": 1783081387009777,
+              "SampleStartTimestamp": 1783081386951458
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=UnderReplicated,topic=status-results,partition=11",
+              "SampleDurationUsec": 48892,
+              "SampleEndTimestamp": 1783081387273104,
+              "SampleStartTimestamp": 1783081387224212
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=ReplicasCount,topic=to-item-updater,partition=26",
+              "SampleDurationUsec": 38047,
+              "SampleEndTimestamp": 1783081387813127,
+              "SampleStartTimestamp": 1783081387775080
+            },
+            {
+              "ObjectName": "kafka.cluster:type=Partition,name=ReplicasCount,topic=to-item-updater,partition=33",
+              "SampleDurationUsec": 56582,
+              "SampleEndTimestamp": 1783081390798836,
+              "SampleStartTimestamp": 1783081390742254
+            }
           ],
           [
             "tnt4j-stream-jmx",
@@ -512,26 +636,252 @@
             "tnt4j-stream-jmx"
           ],
           [
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"9DNtlAtBlB4FjgIWBk917w==\"],\"NETADDR\":[\"192.0.2.13\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"TczKPzvBNiSk3jfjHD8Cnw==\"],\"NETADDR\":[\"192.0.2.14\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"9DNtlAtBlB4FjgIWBk917w==\"],\"NETADDR\":[\"192.0.2.13\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"TczKPzvBNiSk3jfjHD8Cnw==\"],\"NETADDR\":[\"192.0.2.14\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"9DNtlAtBlB4FjgIWBk917w==\"],\"NETADDR\":[\"192.0.2.13\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"yMoRNRD8osxWxjB8GcGguA==\"],\"NETADDR\":[\"192.0.2.12\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"yMoRNRD8osxWxjB8GcGguA==\"],\"NETADDR\":[\"192.0.2.12\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"9DNtlAtBlB4FjgIWBk917w==\"],\"NETADDR\":[\"192.0.2.13\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"9DNtlAtBlB4FjgIWBk917w==\"],\"NETADDR\":[\"192.0.2.13\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"9DNtlAtBlB4FjgIWBk917w==\"],\"NETADDR\":[\"192.0.2.13\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"yMoRNRD8osxWxjB8GcGguA==\"],\"NETADDR\":[\"192.0.2.12\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"TczKPzvBNiSk3jfjHD8Cnw==\"],\"NETADDR\":[\"192.0.2.14\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"9DNtlAtBlB4FjgIWBk917w==\"],\"NETADDR\":[\"192.0.2.13\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"TczKPzvBNiSk3jfjHD8Cnw==\"],\"NETADDR\":[\"192.0.2.14\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"TczKPzvBNiSk3jfjHD8Cnw==\"],\"NETADDR\":[\"192.0.2.14\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"TczKPzvBNiSk3jfjHD8Cnw==\"],\"NETADDR\":[\"192.0.2.14\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"TczKPzvBNiSk3jfjHD8Cnw==\"],\"NETADDR\":[\"192.0.2.14\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"TczKPzvBNiSk3jfjHD8Cnw==\"],\"NETADDR\":[\"192.0.2.14\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"TczKPzvBNiSk3jfjHD8Cnw==\"],\"NETADDR\":[\"192.0.2.14\"]}",
-            "{\"APPL\":[\"Kafka-Brokers\"],\"BROKER\":[\"2\"],\"CLUSTER\":[\"9DNtlAtBlB4FjgIWBk917w==\"],\"NETADDR\":[\"192.0.2.13\"]}"
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ]
+          ],
+          [
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ]
+          ],
+          [
+            [
+              "9DNtlAtBlB4FjgIWBk917w=="
+            ],
+            [
+              "TczKPzvBNiSk3jfjHD8Cnw=="
+            ],
+            [
+              "9DNtlAtBlB4FjgIWBk917w=="
+            ],
+            [
+              "TczKPzvBNiSk3jfjHD8Cnw=="
+            ],
+            [
+              "9DNtlAtBlB4FjgIWBk917w=="
+            ],
+            [
+              "yMoRNRD8osxWxjB8GcGguA=="
+            ],
+            [
+              "yMoRNRD8osxWxjB8GcGguA=="
+            ],
+            [
+              "9DNtlAtBlB4FjgIWBk917w=="
+            ],
+            [
+              "9DNtlAtBlB4FjgIWBk917w=="
+            ],
+            [
+              "9DNtlAtBlB4FjgIWBk917w=="
+            ],
+            [
+              "yMoRNRD8osxWxjB8GcGguA=="
+            ],
+            [
+              "TczKPzvBNiSk3jfjHD8Cnw=="
+            ],
+            [
+              "9DNtlAtBlB4FjgIWBk917w=="
+            ],
+            [
+              "TczKPzvBNiSk3jfjHD8Cnw=="
+            ],
+            [
+              "TczKPzvBNiSk3jfjHD8Cnw=="
+            ],
+            [
+              "TczKPzvBNiSk3jfjHD8Cnw=="
+            ],
+            [
+              "TczKPzvBNiSk3jfjHD8Cnw=="
+            ],
+            [
+              "TczKPzvBNiSk3jfjHD8Cnw=="
+            ],
+            [
+              "TczKPzvBNiSk3jfjHD8Cnw=="
+            ],
+            [
+              "9DNtlAtBlB4FjgIWBk917w=="
+            ]
+          ],
+          [
+            [
+              "192.0.2.13"
+            ],
+            [
+              "192.0.2.14"
+            ],
+            [
+              "192.0.2.13"
+            ],
+            [
+              "192.0.2.14"
+            ],
+            [
+              "192.0.2.13"
+            ],
+            [
+              "192.0.2.12"
+            ],
+            [
+              "192.0.2.12"
+            ],
+            [
+              "192.0.2.13"
+            ],
+            [
+              "192.0.2.13"
+            ],
+            [
+              "192.0.2.13"
+            ],
+            [
+              "192.0.2.12"
+            ],
+            [
+              "192.0.2.14"
+            ],
+            [
+              "192.0.2.13"
+            ],
+            [
+              "192.0.2.14"
+            ],
+            [
+              "192.0.2.14"
+            ],
+            [
+              "192.0.2.14"
+            ],
+            [
+              "192.0.2.14"
+            ],
+            [
+              "192.0.2.14"
+            ],
+            [
+              "192.0.2.14"
+            ],
+            [
+              "192.0.2.13"
+            ]
           ],
           [
             1783081398668,
@@ -604,6 +954,9 @@
             653000,
             845000
           ],
+          null,
+          null,
+          null,
           null,
           null,
           null,

@@ -1,0 +1,274 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 10
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 10
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 6 Fields by 10 Rows
+//  +-----------------+----------------------------+--------------------------+--------------------------+------------------------------+--------------------------+
+//  | Name: partition | Name: topic                | Name: APPL               | Name: BROKER             | Name: CLUSTER                | Name: NETADDR            |
+//  | Labels:         | Labels:                    | Labels:                  | Labels:                  | Labels:                      | Labels:                  |
+//  | Type: []*string | Type: []*string            | Type: []*json.RawMessage | Type: []*json.RawMessage | Type: []*json.RawMessage     | Type: []*json.RawMessage |
+//  +-----------------+----------------------------+--------------------------+--------------------------+------------------------------+--------------------------+
+//  | 8               | jkreq-to-query             | ["Kafka-Brokers"]        | ["2"]                    | ["TczKPzvBNiSk3jfjHD8Cnw=="] | ["192.0.2.22"]           |
+//  | 3               | pending-schema-keys        | ["Kafka-Brokers"]        | ["2"]                    | ["TczKPzvBNiSk3jfjHD8Cnw=="] | ["192.0.2.22"]           |
+//  | 7               | pinot-event-topic          | ["Kafka-Brokers"]        | ["2"]                    | ["TczKPzvBNiSk3jfjHD8Cnw=="] | ["192.0.2.22"]           |
+//  | 26              | to-compute-handler-default | ["Kafka-Brokers"]        | ["2"]                    | ["TczKPzvBNiSk3jfjHD8Cnw=="] | ["192.0.2.22"]           |
+//  | 4               | jkreq-to-query             | ["Kafka-Brokers"]        | ["2"]                    | ["n5lBj-977TLEfjZxDLxTZQ=="] | ["192.0.2.21"]           |
+//  | 12              | to-sched-jkql-res-handler  | ["Kafka-Brokers"]        | ["2"]                    | ["TczKPzvBNiSk3jfjHD8Cnw=="] | ["192.0.2.22"]           |
+//  | 23              | raw-tnt4j-data             | ["Kafka-Brokers"]        | ["2"]                    | ["TczKPzvBNiSk3jfjHD8Cnw=="] | ["192.0.2.22"]           |
+//  | 30              | jkreq-to-query             | ["Kafka-Brokers"]        | ["2"]                    | ["yMoRNRD8osxWxjB8GcGguA=="] | ["192.0.2.23"]           |
+//  | 9               | jkql-item-defs-out         | ["Kafka-Brokers"]        | ["2"]                    | ["yMoRNRD8osxWxjB8GcGguA=="] | ["192.0.2.23"]           |
+//  | 18              | to-compute-handler-default | ["Kafka-Brokers"]        | ["2"]                    | ["yMoRNRD8osxWxjB8GcGguA=="] | ["192.0.2.23"]           |
+//  +-----------------+----------------------------+--------------------------+--------------------------+------------------------------+--------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 10
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 10
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "partition",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "topic",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "APPL",
+            "type": "other",
+            "typeInfo": {
+              "frame": "json.RawMessage",
+              "nullable": true
+            }
+          },
+          {
+            "name": "BROKER",
+            "type": "other",
+            "typeInfo": {
+              "frame": "json.RawMessage",
+              "nullable": true
+            }
+          },
+          {
+            "name": "CLUSTER",
+            "type": "other",
+            "typeInfo": {
+              "frame": "json.RawMessage",
+              "nullable": true
+            }
+          },
+          {
+            "name": "NETADDR",
+            "type": "other",
+            "typeInfo": {
+              "frame": "json.RawMessage",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            "8",
+            "3",
+            "7",
+            "26",
+            "4",
+            "12",
+            "23",
+            "30",
+            "9",
+            "18"
+          ],
+          [
+            "jkreq-to-query",
+            "pending-schema-keys",
+            "pinot-event-topic",
+            "to-compute-handler-default",
+            "jkreq-to-query",
+            "to-sched-jkql-res-handler",
+            "raw-tnt4j-data",
+            "jkreq-to-query",
+            "jkql-item-defs-out",
+            "to-compute-handler-default"
+          ],
+          [
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ],
+            [
+              "Kafka-Brokers"
+            ]
+          ],
+          [
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ],
+            [
+              "2"
+            ]
+          ],
+          [
+            [
+              "TczKPzvBNiSk3jfjHD8Cnw=="
+            ],
+            [
+              "TczKPzvBNiSk3jfjHD8Cnw=="
+            ],
+            [
+              "TczKPzvBNiSk3jfjHD8Cnw=="
+            ],
+            [
+              "TczKPzvBNiSk3jfjHD8Cnw=="
+            ],
+            [
+              "n5lBj-977TLEfjZxDLxTZQ=="
+            ],
+            [
+              "TczKPzvBNiSk3jfjHD8Cnw=="
+            ],
+            [
+              "TczKPzvBNiSk3jfjHD8Cnw=="
+            ],
+            [
+              "yMoRNRD8osxWxjB8GcGguA=="
+            ],
+            [
+              "yMoRNRD8osxWxjB8GcGguA=="
+            ],
+            [
+              "yMoRNRD8osxWxjB8GcGguA=="
+            ]
+          ],
+          [
+            [
+              "192.0.2.22"
+            ],
+            [
+              "192.0.2.22"
+            ],
+            [
+              "192.0.2.22"
+            ],
+            [
+              "192.0.2.22"
+            ],
+            [
+              "192.0.2.21"
+            ],
+            [
+              "192.0.2.22"
+            ],
+            [
+              "192.0.2.22"
+            ],
+            [
+              "192.0.2.23"
+            ],
+            [
+              "192.0.2.23"
+            ],
+            [
+              "192.0.2.23"
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

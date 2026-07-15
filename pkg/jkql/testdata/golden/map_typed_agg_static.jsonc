@@ -1,0 +1,119 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 2
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 2
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 2 Fields by 2 Rows
+//  +----------------+-------------------------------------------------+
+//  | Name: Severity | Name: Percentile(Properties('jk_call_time'),95) |
+//  | Labels:        | Labels:                                         |
+//  | Type: []*enum  | Type: []*float64                                |
+//  +----------------+-------------------------------------------------+
+//  | 0              | 1.7840323807093613e+12                          |
+//  | 1              | 1.7840272631102002e+12                          |
+//  +----------------+-------------------------------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 2
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 2
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "Severity",
+            "type": "enum",
+            "typeInfo": {
+              "frame": "enum",
+              "nullable": true
+            },
+            "config": {
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "0": {
+                      "text": "INFO",
+                      "color": "semi-dark-blue"
+                    },
+                    "1": {
+                      "text": "ERROR",
+                      "color": "semi-dark-red"
+                    }
+                  }
+                }
+              ],
+              "type": {
+                "enum": {
+                  "text": [
+                    "INFO",
+                    "ERROR"
+                  ],
+                  "color": [
+                    "semi-dark-blue",
+                    "semi-dark-red"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": "Percentile(Properties('jk_call_time'),95)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            0,
+            1
+          ],
+          [
+            1784032380709.3613,
+            1784027263110.2002
+          ]
+        ]
+      }
+    }
+  ]
+}

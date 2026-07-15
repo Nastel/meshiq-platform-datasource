@@ -811,10 +811,19 @@ func (dataModel *DataModel) buildColumn(col resultColumn, rows []interface{}, ca
 
 	default:
 		// Coltypes not enumerated above (e.g. MAP(STRING[]), RANGE(...)[]): keep the column
-		// instead of dropping it silently. Arrays render as JSON arrays, ranges split into
-		// _begin/_end, everything else stays a raw column the frame builder renders as JSON
-		// or text.
+		// instead of dropping it silently, UNLESS it's a typed map (MAP(dt)) whose element type
+		// the fixed MAP_* enum above doesn't cover — e.g. MAP(STRING[]), an already-array-valued
+		// key such as SourceComps('NETADDR') — which explodes the same way the enumerated MAP_*
+		// cases above do. Arrays render as JSON arrays, ranges split into _begin/_end, everything
+		// else stays a raw column the frame builder renders as JSON or text.
 		switch {
+		case strings.HasPrefix(typ, "MAP(") && strings.HasSuffix(typ, ")"):
+			if neverExploded(hdr, cat) {
+				dataModel.addRawColumn(hdr, typ, label, rows)
+				return
+			}
+			elementType := strings.TrimSuffix(strings.TrimPrefix(typ, "MAP("), ")")
+			dataModel.explodeTypedMap(hdr, elementType, label, rows, cat)
 		case strings.HasSuffix(typ, "[]"):
 			dataModel.addArrayColumn(hdr, typ, label, rows)
 		case strings.HasPrefix(typ, "RANGE"):

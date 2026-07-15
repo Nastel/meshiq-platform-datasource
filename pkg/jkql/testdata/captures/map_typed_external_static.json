@@ -1,0 +1,239 @@
+{
+    "rows-found": 10,
+    "row-count": 10,
+    "total-row-count": 10,
+    "query-date-filter": "1783987200000000 TO 1784073599999999",
+    "timezone": "GMT",
+    "locale": "en",
+    "status": "SUCCESS",
+    "time": 1784034439340977,
+    "item-type": "kafka.cluster",
+    "stmt-type": "Get",
+    "colhdr": [
+        "Dimensions",
+        "SourceComps"
+    ],
+    "coltype": {
+        "Dimensions": "MAP(STRING)",
+        "SourceComps": "MAP(STRING[])"
+    },
+    "collabel": {
+        "Dimensions": "Dimensions",
+        "SourceComps": "SourceComps"
+    },
+    "rows": [
+        {
+            "Dimensions": {
+                "partition": "8",
+                "topic": "jkreq-to-query"
+            },
+            "SourceComps": {
+                "APPL": [
+                    "Kafka-Brokers"
+                ],
+                "BROKER": [
+                    "2"
+                ],
+                "CLUSTER": [
+                    "TczKPzvBNiSk3jfjHD8Cnw=="
+                ],
+                "NETADDR": [
+                    "192.0.2.22"
+                ]
+            }
+        },
+        {
+            "Dimensions": {
+                "partition": "3",
+                "topic": "pending-schema-keys"
+            },
+            "SourceComps": {
+                "APPL": [
+                    "Kafka-Brokers"
+                ],
+                "BROKER": [
+                    "2"
+                ],
+                "CLUSTER": [
+                    "TczKPzvBNiSk3jfjHD8Cnw=="
+                ],
+                "NETADDR": [
+                    "192.0.2.22"
+                ]
+            }
+        },
+        {
+            "Dimensions": {
+                "partition": "7",
+                "topic": "pinot-event-topic"
+            },
+            "SourceComps": {
+                "APPL": [
+                    "Kafka-Brokers"
+                ],
+                "BROKER": [
+                    "2"
+                ],
+                "CLUSTER": [
+                    "TczKPzvBNiSk3jfjHD8Cnw=="
+                ],
+                "NETADDR": [
+                    "192.0.2.22"
+                ]
+            }
+        },
+        {
+            "Dimensions": {
+                "partition": "26",
+                "topic": "to-compute-handler-default"
+            },
+            "SourceComps": {
+                "APPL": [
+                    "Kafka-Brokers"
+                ],
+                "BROKER": [
+                    "2"
+                ],
+                "CLUSTER": [
+                    "TczKPzvBNiSk3jfjHD8Cnw=="
+                ],
+                "NETADDR": [
+                    "192.0.2.22"
+                ]
+            }
+        },
+        {
+            "Dimensions": {
+                "partition": "4",
+                "topic": "jkreq-to-query"
+            },
+            "SourceComps": {
+                "APPL": [
+                    "Kafka-Brokers"
+                ],
+                "BROKER": [
+                    "2"
+                ],
+                "CLUSTER": [
+                    "n5lBj-977TLEfjZxDLxTZQ=="
+                ],
+                "NETADDR": [
+                    "192.0.2.21"
+                ]
+            }
+        },
+        {
+            "Dimensions": {
+                "partition": "12",
+                "topic": "to-sched-jkql-res-handler"
+            },
+            "SourceComps": {
+                "APPL": [
+                    "Kafka-Brokers"
+                ],
+                "BROKER": [
+                    "2"
+                ],
+                "CLUSTER": [
+                    "TczKPzvBNiSk3jfjHD8Cnw=="
+                ],
+                "NETADDR": [
+                    "192.0.2.22"
+                ]
+            }
+        },
+        {
+            "Dimensions": {
+                "partition": "23",
+                "topic": "raw-tnt4j-data"
+            },
+            "SourceComps": {
+                "APPL": [
+                    "Kafka-Brokers"
+                ],
+                "BROKER": [
+                    "2"
+                ],
+                "CLUSTER": [
+                    "TczKPzvBNiSk3jfjHD8Cnw=="
+                ],
+                "NETADDR": [
+                    "192.0.2.22"
+                ]
+            }
+        },
+        {
+            "Dimensions": {
+                "partition": "30",
+                "topic": "jkreq-to-query"
+            },
+            "SourceComps": {
+                "APPL": [
+                    "Kafka-Brokers"
+                ],
+                "BROKER": [
+                    "2"
+                ],
+                "CLUSTER": [
+                    "yMoRNRD8osxWxjB8GcGguA=="
+                ],
+                "NETADDR": [
+                    "192.0.2.23"
+                ]
+            }
+        },
+        {
+            "Dimensions": {
+                "partition": "9",
+                "topic": "jkql-item-defs-out"
+            },
+            "SourceComps": {
+                "APPL": [
+                    "Kafka-Brokers"
+                ],
+                "BROKER": [
+                    "2"
+                ],
+                "CLUSTER": [
+                    "yMoRNRD8osxWxjB8GcGguA=="
+                ],
+                "NETADDR": [
+                    "192.0.2.23"
+                ]
+            }
+        },
+        {
+            "Dimensions": {
+                "partition": "18",
+                "topic": "to-compute-handler-default"
+            },
+            "SourceComps": {
+                "APPL": [
+                    "Kafka-Brokers"
+                ],
+                "BROKER": [
+                    "2"
+                ],
+                "CLUSTER": [
+                    "yMoRNRD8osxWxjB8GcGguA=="
+                ],
+                "NETADDR": [
+                    "192.0.2.23"
+                ]
+            }
+        }
+    ],
+    "overallStatistics": {
+        "json_string.time.usec": 1010,
+        "pinot_request_build.time.usec": 868,
+        "pinot_request_exec.time.usec": 27912,
+        "pinot_result_proc.time.usec": 133,
+        "pinot_result_rows.count": 10,
+        "raw_result_post_process.time.usec": 3,
+        "request_wait.time.usec": 7110,
+        "rows_found.count": 10,
+        "rows_returned.count": 10,
+        "rows_total.count": 10,
+        "total_exec.time.usec": 29382
+    }
+}
