@@ -1,6 +1,7 @@
 package jkql
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/grafana/grafana-plugin-sdk-go/data"
@@ -9,6 +10,50 @@ import (
 func TestConvertToGrafanaValue_Labelset(t *testing.T) {
 	if got := ConvertToGrafanaValue("Allow", LABELSET); got != "Allow" {
 		t.Errorf("LABELSET -> %v, want the raw label", got)
+	}
+}
+
+func TestConvertToGrafanaValue_StringUnwrapsSingleKeyMap(t *testing.T) {
+	// A Properties('key') value can reach here still wrapped in its single-key map envelope
+	// (e.g. via Coalesce(Properties('key'), ...)) when the header doesn't match the patterns
+	// BuildDataModel unwraps upfront. Must extract the real value, not stringify the Go map.
+	value := map[string]interface{}{"UserName": "Administrator"}
+	if got := ConvertToGrafanaValue(value, STRING); got != "Administrator" {
+		t.Errorf("STRING with single-key map envelope = %#v, want the unwrapped value", got)
+	}
+}
+
+// TestConvertToGrafanaValue_StringSingleKeyMapWithNilValue pins that a single-key map envelope
+// whose value is nil unwraps to nil, not fmt.Sprint's "<nil>" text.
+func TestConvertToGrafanaValue_StringSingleKeyMapWithNilValue(t *testing.T) {
+	value := map[string]interface{}{"UserName": nil}
+	if got := ConvertToGrafanaValue(value, STRING); got != nil {
+		t.Errorf("STRING with a nil single-key map value = %#v, want nil", got)
+	}
+}
+
+// TestConvertToGrafanaValue_StringRendersContainersAsJSON pins that a STRING-typed value that
+// unexpectedly arrives as a multi-key map or an array renders as JSON, not fmt.Sprint's Go syntax
+// ("map[a:1 b:2]", "[a b]").
+func TestConvertToGrafanaValue_StringRendersContainersAsJSON(t *testing.T) {
+	mapValue := map[string]interface{}{"a": "1", "b": "2"}
+	got := ConvertToGrafanaValue(mapValue, STRING)
+	gotStr, ok := got.(string)
+	if !ok {
+		t.Fatalf("STRING with a multi-key map = %#v (%T), want a JSON string", got, got)
+	}
+	if strings.Contains(gotStr, "map[") {
+		t.Errorf("STRING with a multi-key map = %q, leaked Go map syntax", gotStr)
+	}
+
+	arrValue := []interface{}{"a", "b"}
+	got = ConvertToGrafanaValue(arrValue, STRING)
+	gotStr, ok = got.(string)
+	if !ok {
+		t.Fatalf("STRING with an array value = %#v (%T), want a JSON string", got, got)
+	}
+	if gotStr == "[a b]" {
+		t.Errorf("STRING with an array value = %q, leaked Go slice syntax", gotStr)
 	}
 }
 

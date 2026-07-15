@@ -1,0 +1,78 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 2
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 2
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 1 Fields by 2 Rows
+//  +--------------------------------------+
+//  | Name: id                             |
+//  | Labels:                              |
+//  | Type: []*string                      |
+//  +--------------------------------------+
+//  | 19467c18-80a3-11f1-85ae-7ef73bd5afed |
+//  | 19467c31-80a3-11f1-85ae-7ef73bd5afed |
+//  +--------------------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 2
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 2
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            "19467c18-80a3-11f1-85ae-7ef73bd5afed",
+            "19467c31-80a3-11f1-85ae-7ef73bd5afed"
+          ]
+        ]
+      }
+    }
+  ]
+}

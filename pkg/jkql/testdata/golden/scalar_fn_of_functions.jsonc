@@ -1,0 +1,132 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 3
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 3
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 5 Fields by 3 Rows
+//  +----------------+----------------+----------------+----------------+----------------+
+//  | Name: sumOf    | Name: avgOf    | Name: medianOf | Name: maxOf    | Name: minOf    |
+//  | Labels:        | Labels:        | Labels:        | Labels:        | Labels:        |
+//  | Type: []*int64 | Type: []*int64 | Type: []*int64 | Type: []*int64 | Type: []*int64 |
+//  +----------------+----------------+----------------+----------------+----------------+
+//  | 14             | 7              | 7              | 14             | 0              |
+//  | 14             | 7              | 7              | 14             | 0              |
+//  | 14             | 7              | 7              | 14             | 0              |
+//  +----------------+----------------+----------------+----------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 3
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 3
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "sumOf",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "avgOf",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "medianOf",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "maxOf",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "minOf",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            14,
+            14,
+            14
+          ],
+          [
+            7,
+            7,
+            7
+          ],
+          [
+            7,
+            7,
+            7
+          ],
+          [
+            14,
+            14,
+            14
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    }
+  ]
+}
