@@ -166,6 +166,44 @@ func (dataModel *DataModel) addArrayColumn(hdr string, typ string, lbl string, r
 	}
 }
 
+// explodeRange splits a RANGE column into two scalar columns, <hdr>_begin and <hdr>_end, each
+// typed by the range's element type. jKQL ranges are encoded as { "begin", "end" }; a generic
+// RANGE with no element type has its endpoints rendered as strings.
+func (dataModel *DataModel) explodeRange(hdr string, rangeType string, lbl string, rows []interface{}) {
+	elemType := ConvertRangeToDt(rangeType)
+	if elemType == UNDEFINED {
+		elemType = STRING
+	}
+
+	for _, bound := range []string{"begin", "end"} {
+		header := hdr + "_" + bound
+		dataModel.addColumn(header, lbl+"_"+bound, elemType)
+
+		for i, r := range rows {
+			dataModel.Rows[i][header] = nil
+			row, ok := r.(map[string]interface{})
+			if !ok {
+				if bound == "begin" { // record once per row, not once per bound
+					dataModel.Issues.Add("column " + hdr + ": row is not an object")
+				}
+				continue
+			}
+			value := row[hdr]
+			if value == nil {
+				continue
+			}
+			rng, ok := value.(map[string]interface{})
+			if !ok {
+				if bound == "begin" {
+					dataModel.Issues.Add("column " + hdr + ": value is not a {begin, end} range")
+				}
+				continue
+			}
+			dataModel.Rows[i][header] = rng[bound]
+		}
+	}
+}
+
 // Every map explode below runs the same two phases. Scan: walk the rows once to learn the map's
 // key set and each key's value type(s) — that is the whole shape discovery, and the only place
 // shape violations are recorded. Emit: for each key (and type), decide the column's header and
@@ -502,9 +540,11 @@ func BuildDataModel(parsedResultSet map[string]interface{}, cat *FunctionCatalog
 	// A query can produce the same exploded column twice — a whole map and one of its named keys
 	// (Properties, Properties('a')) both explode to the same header. The later pass overwrote the
 	// earlier one's metadata and row values (same values; whichever label came last in colhdr
-	// wins), so only the repeated Headers entries need dropping.
+	// wins), so only the repeated Headers entries need dropping: keeping them would duplicate the
+	// frame field and run the int→decimal label fix below once per occurrence.
 	model.Headers = dedupeStrings(model.Headers)
 
+	model.mergeIntColumnsIntoDecimal()
 	return model
 }
 
@@ -619,8 +659,8 @@ func (dataModel *DataModel) resultColumns(parsedResultSet map[string]interface{}
 func (dataModel *DataModel) buildColumn(col resultColumn, rows []interface{}, cat *FunctionCatalog) {
 	hdr, typ, label := col.hdr, col.typ, col.label
 
-	// Properties needs its own path: unlike other map fields it also appears as a scalar-typed
-	// single-key access. Match only the field itself (Properties) or a key access
+	// Properties needs its own path: unlike other map fields it also appears as scalar- and
+	// RANGE-typed single-key accesses. Match only the field itself (Properties) or a key access
 	// (Properties('key')) — a bare HasPrefix would also match an unrelated field whose name
 	// merely starts with "Properties" (e.g. a custom field PropertiesCustom), routing it here
 	// to be dropped as an unsupported access.
@@ -655,13 +695,19 @@ func (dataModel *DataModel) buildColumn(col resultColumn, rows []interface{}, ca
 	}
 
 	switch typ {
-	case BINARY, BOOLEAN, INTEGER, DECIMAL, TIMEINTERVAL, TIMESTAMP, STRING, ENUM, CLOB:
-		// CLOB (deprecated in v12 but still emitted, e.g. cast(x,'CLOB')) is text — treat as
-		// STRING. ENUM is rendered as the raw "ordinal#name" wire value for now.
+	case BINARY, BOOLEAN, INTEGER, DECIMAL, TIMEINTERVAL, TIMESTAMP, VARIANT, STRING, LABELSET, CLOB:
+		// normal; LABELSET is a scalar string (a value from a fixed set of labels).
+		// CLOB (deprecated in v12 but still emitted, e.g. cast(x,'CLOB')) is text — treat as STRING.
 		dataModel.addRawColumn(hdr, typ, label, rows)
 
-	case STRING_ARR, BOOLEAN_ARR, DECIMAL_ARR, INTEGER_ARR, TIMEINTERVAL_ARR, TIMESTAMP_ARR, CLOB_ARR, BINARY_ARR:
+	case ENUM:
+		dataModel.addRawColumn(hdr, typ, label, rows)
+
+	case STRING_ARR, BOOLEAN_ARR, DECIMAL_ARR, INTEGER_ARR, TIMEINTERVAL_ARR, TIMESTAMP_ARR, VARIANT_ARR, LABELSET_ARR, CLOB_ARR, BINARY_ARR:
 		dataModel.addArrayColumn(hdr, typ, label, rows)
+
+	case RANGE_INTEGER, RANGE_DECIMAL, RANGE_TIMEINTERVAL, RANGE_TIMESTAMP, RANGE_GENERIC:
+		dataModel.explodeRange(hdr, typ, label, rows)
 
 	case MAP:
 		if neverExploded(hdr, cat) {
@@ -681,11 +727,15 @@ func (dataModel *DataModel) buildColumn(col resultColumn, rows []interface{}, ca
 		dataModel.explodeTypedMap(hdr, ConvertDtMapToSimple(typ), label, rows, cat)
 
 	default:
-		// Any coltype not enumerated above (arrays, unknown types) is rendered as a raw column
-		// for now, so it isn't silently dropped from the frame.
+		// Coltypes not enumerated above (e.g. MAP(STRING[]), RANGE(...)[]): keep the column
+		// instead of dropping it silently. Arrays render as JSON arrays, ranges split into
+		// _begin/_end, everything else stays a raw column the frame builder renders as JSON
+		// or text.
 		switch {
 		case strings.HasSuffix(typ, "[]"):
 			dataModel.addArrayColumn(hdr, typ, label, rows)
+		case strings.HasPrefix(typ, "RANGE"):
+			dataModel.explodeRange(hdr, typ, label, rows)
 		default:
 			dataModel.addRawColumn(hdr, typ, label, rows)
 		}
@@ -713,15 +763,19 @@ func neverExploded(hdr string, cat *FunctionCatalog) bool {
 var propertiesScalarRe = regexp.MustCompile(`(?i)^Properties\('(.+)'\)$`)
 
 // buildPropertiesColumn handles a Properties column: the whole map (or a multi-key access)
-// explodes into one column per key; a scalar sub-value (a Properties('key') access with a
-// concrete type) becomes a single type-prefixed column. Any other coltype drops the column,
-// recorded as an issue.
+// explodes into one column per key; a RANGE sub-value splits into _begin/_end scalar columns
+// (same as a top-level RANGE — a raw {begin, end} map would render as Go map syntax); a scalar
+// sub-value (a Properties('key') access with a concrete type) becomes a single type-prefixed
+// column. Any other coltype drops the column, recorded as an issue.
 func (dataModel *DataModel) buildPropertiesColumn(hdr, typ, label string, rows []interface{}, cat *FunctionCatalog) {
 	switch typ {
 	case MAP:
 		dataModel.explodeMixedMap(hdr, label, rows, cat)
 
-	case BOOLEAN, INTEGER, DECIMAL, TIMESTAMP, STRING, TIMEINTERVAL, CLOB, ENUM:
+	case RANGE_INTEGER, RANGE_DECIMAL, RANGE_TIMEINTERVAL, RANGE_TIMESTAMP, RANGE_GENERIC:
+		dataModel.explodeRange(hdr, typ, label, rows)
+
+	case BOOLEAN, INTEGER, DECIMAL, TIMESTAMP, VARIANT, STRING, TIMEINTERVAL, LABELSET, CLOB, ENUM:
 		if !propertiesScalarRe.MatchString(hdr) {
 			dataModel.Issues.Add("column " + hdr + ": not a Properties('key') access; column skipped")
 			return
@@ -741,5 +795,58 @@ func (dataModel *DataModel) buildPropertiesColumn(hdr, typ, label string, rows [
 
 	default:
 		dataModel.Issues.Add("column " + hdr + ": unsupported Properties coltype " + typ + "; column skipped")
+	}
+}
+
+// mergeIntColumnsIntoDecimal merges each I:-prefixed column into its D:-prefixed twin (the same
+// header after the prefix). The pair appears when a mixed-map key holds integers on some rows and
+// decimals on others — both columns describe the same key, so the integer values fill the decimal
+// column's null cells and the integer column is dropped.
+func (dataModel *DataModel) mergeIntColumnsIntoDecimal() {
+	headerSet := make(map[string]bool, len(dataModel.Headers))
+	for _, header := range dataModel.Headers {
+		headerSet[header] = true
+	}
+	decimalFor := make(map[string]string) // "I:..." header -> its "D:..." twin
+	for _, header := range dataModel.Headers {
+		if strings.HasPrefix(header, "D:") && headerSet["I:"+header[2:]] {
+			decimalFor["I:"+header[2:]] = header
+		}
+	}
+	if len(decimalFor) == 0 {
+		return
+	}
+
+	kept := make([]string, 0, len(dataModel.Headers))
+	for _, header := range dataModel.Headers {
+		if _, merge := decimalFor[header]; !merge {
+			kept = append(kept, header)
+		}
+	}
+	dataModel.Headers = kept
+
+	// A same-key column still needs its " (Type)" label suffix after the merge if any other
+	// typed sibling for that key survives it (e.g. a mixed-map key seen as INTEGER, DECIMAL, and
+	// STRING explodes into three columns; merging I: into D: must not strip D:'s suffix while
+	// S:'s sibling — labeled "key (String)" — is still around to disambiguate against).
+	keyCount := make(map[string]int, len(kept))
+	for _, header := range kept {
+		if idx := strings.Index(header, ":"); idx >= 0 {
+			keyCount[header[idx+1:]]++
+		}
+	}
+
+	for intHeader, decimalHeader := range decimalFor {
+		delete(dataModel.Label, intHeader)
+		delete(dataModel.DataTypes, intHeader)
+		if keyCount[decimalHeader[2:]] <= 1 {
+			dataModel.Label[decimalHeader] = strings.TrimSuffix(dataModel.Label[decimalHeader], " (Decimal)")
+		}
+		for _, row := range dataModel.Rows {
+			if row[decimalHeader] == nil {
+				row[decimalHeader] = row[intHeader]
+			}
+			delete(row, intHeader)
+		}
 	}
 }

@@ -319,6 +319,48 @@ func TestBuildDataModel_WholeMapPlusNamedKey_NoDuplicateColumn(t *testing.T) {
 	}
 }
 
+func TestBuildDataModel_WholeMapPlusNamedKey_MixedIntDecimal(t *testing.T) {
+	// The same key holds INTEGER in one row and DECIMAL in another, and the query selects both
+	// the whole map and the named key. Used to panic: the duplicate D: header made the
+	// int→decimal merge strip the " (Decimal)" label suffix once per occurrence.
+	raw := `{
+		"row-count": 2, "total-row-count": 2, "status": "SUCCESS",
+		"colhdr": ["Properties", "Properties('a')"],
+		"coltype": {"Properties": "MAP", "Properties('a')": "MAP"},
+		"collabel": {"Properties": "Properties", "Properties('a')": "a"},
+		"rows": [
+			{
+				"Properties": {"a": 1},
+				"Properties:_ValueTypes": {"a": "INTEGER"},
+				"Properties('a')": {"a": 1},
+				"Properties('a'):_ValueTypes": {"a": "INTEGER"}
+			},
+			{
+				"Properties": {"a": 2.5},
+				"Properties:_ValueTypes": {"a": "DECIMAL"},
+				"Properties('a')": {"a": 2.5},
+				"Properties('a'):_ValueTypes": {"a": "DECIMAL"}
+			}
+		]
+	}`
+	m := BuildDataModel(parseRS(t, raw), nil)
+
+	// The I:/D: pair merges into the single decimal column, its type suffix dropped.
+	want := []string{"D:Properties('a')"}
+	if !reflect.DeepEqual(m.Headers, want) {
+		t.Fatalf("headers = %v, want %v", m.Headers, want)
+	}
+	if m.Label["D:Properties('a')"] != "a" {
+		t.Errorf("label = %q, want %q", m.Label["D:Properties('a')"], "a")
+	}
+	if v, ok := ToInt64(m.Rows[0]["D:Properties('a')"]); !ok || v != 1 {
+		t.Errorf("row 0 = %v, want the integer row's value 1", m.Rows[0]["D:Properties('a')"])
+	}
+	if v, ok := ToFloat64(m.Rows[1]["D:Properties('a')"]); !ok || v != 2.5 {
+		t.Errorf("row 1 = %v, want 2.5", m.Rows[1]["D:Properties('a')"])
+	}
+}
+
 func TestSplitArgs(t *testing.T) {
 	// splitArgs splits an argument list on commas but must ignore commas inside '...' quotes — a
 	// quoted map key can itself contain a comma, and a bare split would corrupt the argument list.

@@ -20,6 +20,7 @@ const (
 	BOOLEAN      = "BOOLEAN"
 	ENUM         = "ENUM"
 	BINARY       = "BINARY"
+	VARIANT      = "VARIANT"
 	CLOB         = "CLOB"
 
 	// array data types
@@ -29,6 +30,7 @@ const (
 	STRING_ARR       = "STRING[]"
 	TIMEINTERVAL_ARR = "TIMEINTERVAL[]"
 	TIMESTAMP_ARR    = "TIMESTAMP[]"
+	VARIANT_ARR      = "VARIANT[]"
 	CLOB_ARR         = "CLOB[]"
 	BINARY_ARR       = "BINARY[]"
 
@@ -40,6 +42,18 @@ const (
 	MAP_STRING       = "MAP(STRING)"
 	MAP_TIMEINTERVAL = "MAP(TIMEINTERVAL)"
 	MAP_TIMESTAMP    = "MAP(TIMESTAMP)"
+
+	// range data types
+	RANGE_DECIMAL      = "RANGE(DECIMAL)"
+	RANGE_INTEGER      = "RANGE(INTEGER)"
+	RANGE_TIMEINTERVAL = "RANGE(TIMEINTERVAL)"
+	RANGE_TIMESTAMP    = "RANGE(TIMESTAMP)"
+
+	// LABELSET is a scalar string — one label from a fixed set — and LABELSET[] is its array
+	// form; RANGE_GENERIC is an untyped range whose endpoints render as strings.
+	LABELSET      = "LABELSET"
+	LABELSET_ARR  = "LABELSET[]"
+	RANGE_GENERIC = "RANGE"
 
 	UNDEFINED = ""
 )
@@ -95,12 +109,34 @@ func ConvertDtToPrefix(dataType string) string {
 		return "E"
 	case BINARY:
 		return "X"
+	case VARIANT:
+		return "A"
 	case CLOB:
 		return "C"
+	case LABELSET:
+		return "L"
 	default:
 		// An unknown type can reach here via a map's :_ValueTypes sibling, which carries
 		// arbitrary server-side type names. No prefix is better than a wrong one.
 		return ""
+	}
+}
+
+// ConvertRangeToDt returns the element data type of a RANGE(...) type.
+func ConvertRangeToDt(dataType string) string {
+	switch dataType {
+	case RANGE_INTEGER:
+		return INTEGER
+	case RANGE_DECIMAL:
+		return DECIMAL
+	case RANGE_TIMESTAMP:
+		return TIMESTAMP
+	case RANGE_TIMEINTERVAL:
+		return TIMEINTERVAL
+	default:
+		// A generic RANGE or an unknown RANGE(...) coltype has no element type;
+		// the caller (explodeRange) falls back to STRING endpoints.
+		return UNDEFINED
 	}
 }
 
