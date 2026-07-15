@@ -1,0 +1,129 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 10
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 10
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 1 Fields by 10 Rows
+//  +----------------+
+//  | Name: Severity |
+//  | Labels:        |
+//  | Type: []*enum  |
+//  +----------------+
+//  | 0              |
+//  | 0              |
+//  | 0              |
+//  | 0              |
+//  | 0              |
+//  | 1              |
+//  | 2              |
+//  | 2              |
+//  | 2              |
+//  | 2              |
+//  +----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 10
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 10
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "Severity",
+            "type": "enum",
+            "typeInfo": {
+              "frame": "enum",
+              "nullable": true
+            },
+            "config": {
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "0": {
+                      "text": "INFO",
+                      "color": "semi-dark-blue"
+                    },
+                    "1": {
+                      "text": "WARNING",
+                      "color": "semi-dark-orange"
+                    },
+                    "2": {
+                      "text": "ERROR",
+                      "color": "semi-dark-red"
+                    }
+                  }
+                }
+              ],
+              "type": {
+                "enum": {
+                  "text": [
+                    "INFO",
+                    "WARNING",
+                    "ERROR"
+                  ],
+                  "color": [
+                    "semi-dark-blue",
+                    "semi-dark-orange",
+                    "semi-dark-red"
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            2,
+            2,
+            2,
+            2
+          ]
+        ]
+      }
+    }
+  ]
+}

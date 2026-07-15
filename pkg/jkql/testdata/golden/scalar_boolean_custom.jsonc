@@ -1,0 +1,94 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 10
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 133
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 1 Fields by 10 Rows
+//  +---------------+
+//  | Name: incEnbl |
+//  | Labels:       |
+//  | Type: []*bool |
+//  +---------------+
+//  | true          |
+//  | true          |
+//  | true          |
+//  | true          |
+//  | true          |
+//  | false         |
+//  | false         |
+//  | false         |
+//  | false         |
+//  | false         |
+//  +---------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 10
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 133
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "incEnbl",
+            "type": "boolean",
+            "typeInfo": {
+              "frame": "bool",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            true,
+            true,
+            true,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ]
+      }
+    }
+  ]
+}

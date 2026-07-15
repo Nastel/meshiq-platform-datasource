@@ -1,0 +1,108 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 10
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 10
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 1 Fields by 10 Rows
+//  +--------------------------------------+
+//  | Name: ReportTime                     |
+//  | Labels:                              |
+//  | Type: []*time.Time                   |
+//  +--------------------------------------+
+//  | 2026-07-14 06:37:12.942326 +0000 UTC |
+//  | 2026-07-14 06:37:59.064093 +0000 UTC |
+//  | 2026-07-14 06:37:59.547674 +0000 UTC |
+//  | 2026-07-14 06:38:00.024943 +0000 UTC |
+//  | 2026-07-14 06:38:38.593529 +0000 UTC |
+//  | 2026-07-14 06:39:55.773125 +0000 UTC |
+//  | 2026-07-14 06:39:58.765865 +0000 UTC |
+//  | 2026-07-14 06:40:16.27734 +0000 UTC  |
+//  | 2026-07-14 06:40:16.490194 +0000 UTC |
+//  | 2026-07-14 06:40:16.571567 +0000 UTC |
+//  +--------------------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 10
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 10
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "ReportTime",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1784011032942,
+            1784011079064,
+            1784011079547,
+            1784011080024,
+            1784011118593,
+            1784011195773,
+            1784011198765,
+            1784011216277,
+            1784011216490,
+            1784011216571
+          ]
+        ],
+        "nanos": [
+          [
+            326000,
+            93000,
+            674000,
+            943000,
+            529000,
+            125000,
+            865000,
+            340000,
+            194000,
+            567000
+          ]
+        ]
+      }
+    }
+  ]
+}

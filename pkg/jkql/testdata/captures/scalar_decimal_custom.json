@@ -1,0 +1,60 @@
+{
+    "rows-found": 3,
+    "row-count": 3,
+    "total-row-count": 3,
+    "query-date-filter": "1783987200000000 TO 1784073599999999",
+    "timezone": "GMT",
+    "locale": "en",
+    "status": "SUCCESS",
+    "time": 1784031570682084,
+    "item-type": "Log",
+    "stmt-type": "Get",
+    "colhdr": [
+        "Properties('limiter_bytes_per_sec')"
+    ],
+    "coltype": {
+        "Properties('limiter_bytes_per_sec')": "MAP"
+    },
+    "collabel": {
+        "Properties('limiter_bytes_per_sec')": "limiter_bytes_per_sec"
+    },
+    "rows": [
+        {
+            "Properties('limiter_bytes_per_sec')": {
+                "limiter_bytes_per_sec": 51236.32791483129
+            },
+            "Properties('limiter_bytes_per_sec'):_ValueTypes": {
+                "limiter_bytes_per_sec": "DECIMAL"
+            }
+        },
+        {
+            "Properties('limiter_bytes_per_sec')": {
+                "limiter_bytes_per_sec": 51237.872678763895
+            },
+            "Properties('limiter_bytes_per_sec'):_ValueTypes": {
+                "limiter_bytes_per_sec": "DECIMAL"
+            }
+        },
+        {
+            "Properties('limiter_bytes_per_sec')": {
+                "limiter_bytes_per_sec": 51238.61092620785
+            },
+            "Properties('limiter_bytes_per_sec'):_ValueTypes": {
+                "limiter_bytes_per_sec": "DECIMAL"
+            }
+        }
+    ],
+    "overallStatistics": {
+        "json_string.time.usec": 95,
+        "pinot_request_build.time.usec": 273,
+        "pinot_request_exec.time.usec": 9708,
+        "pinot_result_proc.time.usec": 253,
+        "pinot_result_rows.count": 3,
+        "raw_result_post_process.time.usec": 1,
+        "request_wait.time.usec": 3182,
+        "rows_found.count": 3,
+        "rows_returned.count": 3,
+        "rows_total.count": 3,
+        "total_exec.time.usec": 10505
+    }
+}
