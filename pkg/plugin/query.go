@@ -9,11 +9,12 @@ import (
 
 // QueryModel is the per-query model sent from the frontend query editor.
 type QueryModel struct {
-	JKQL     string `json:"jkql"`
-	Locale   string `json:"locale"`
-	Timezone string `json:"timezone"`
-	MaxRows  int    `json:"maxRows"`
-	Date     string `json:"-"`
+	JKQL         string `json:"jkql"`
+	Locale       string `json:"locale"`
+	Timezone     string `json:"timezone"`
+	RepositoryID string `json:"repositoryID"`
+	MaxRows      int    `json:"maxRows"`
+	Date         string `json:"-"`
 }
 
 // BuildQueryModel unmarshals a Grafana query and derives the jKQL date range.
@@ -39,4 +40,9 @@ func buildDate(timeRange backend.TimeRange) string {
 // BuildParamsQueryModel builds the jKQL used by the health check to read server parameters.
 func BuildParamsQueryModel() QueryModel {
 	return QueryModel{JKQL: "Get Params"}
+}
+
+// BuildRepositoriesQueryModel builds the jKQL used to list repositories.
+func BuildRepositoriesQueryModel() QueryModel {
+	return QueryModel{JKQL: "Get Repository Fields RepositoryID, RepositoryName, OrganizationName"}
 }
