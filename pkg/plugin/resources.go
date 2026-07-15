@@ -66,6 +66,24 @@ func grafanaString(model jkql.DataModel, row map[string]interface{}, header stri
 	return s, true
 }
 
+// grafanaInt reads a single column value from a row and normalizes it to an int via the column's
+// data type. The bool reports whether the column exists and holds an integer/numeric value.
+func grafanaInt(model jkql.DataModel, row map[string]interface{}, header string) (int, bool) {
+	dataType, ok := model.DataTypes[header]
+	if !ok {
+		return 0, false
+	}
+	value := jkql.ConvertToGrafanaValue(row[header], dataType)
+	switch n := value.(type) {
+	case int64:
+		return int(n), true
+	case float64:
+		return int(n), true
+	default:
+		return 0, false
+	}
+}
+
 // collectColumnStrings returns the non-empty string values of a single column, in row order.
 func collectColumnStrings(model jkql.DataModel, header string) []string {
 	values := make([]string, 0, len(model.Rows))

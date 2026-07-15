@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+// IdentifierRegExp matches a bare jKQL identifier (an item type or field name). It checks whether
+// a column's field name is a plain built-in field, e.g. to resolve its enum values (dataframe.go).
+var IdentifierRegExp = regexp.MustCompile(`^[A-Za-z0-9_.]+$`)
+
 // MapAccessRegExp parses a keyed map-field access, Field('key'), into (field, key). In jKQL this
 // syntax means a map access and nothing else, so we match the shape rather than enumerate field
 // names: there are many map-type fields (Properties, Quota, Statistics, and more, varying by item
@@ -46,11 +50,14 @@ func namedMapKeys(hdr string, cat *FunctionCatalog) []string {
 	return keys
 }
 
-// addColumn registers one output column's metadata: its header, display label and jKQL data
-// type. Row values are filled separately by the caller.
-func (dataModel *DataModel) addColumn(header, label, typ string) {
+// addColumn registers one output column's metadata: its header, the underlying jKQL field name,
+// display label and jKQL data type. Row values are filled separately by the caller. name is used
+// to key enum-value lookups and coloring rules (dataframe.go), which need the real field name —
+// not the header, which can carry a type prefix or a wrapping key for exploded map columns.
+func (dataModel *DataModel) addColumn(header, name, label, typ string) {
 	dataModel.Headers = append(dataModel.Headers, header)
 	dataModel.Label[header] = label
+	dataModel.Names[header] = name
 	dataModel.DataTypes[header] = typ
 }
 
@@ -82,7 +89,7 @@ func (dataModel *DataModel) mapValue(row map[string]interface{}, hdr string) (ma
 // scalar columns, and as the fallback for coltypes the converter doesn't otherwise special-case
 // (untyped MAP fields other than Properties, unknown types).
 func (dataModel *DataModel) addRawColumn(hdr string, typ string, lbl string, rows []interface{}) {
-	dataModel.addColumn(hdr, lbl, typ)
+	dataModel.addColumn(hdr, hdr, lbl, typ)
 
 	for i, r := range rows {
 		row, ok := dataModel.rowObject(r, hdr)
@@ -98,7 +105,7 @@ func (dataModel *DataModel) addRawColumn(hdr string, typ string, lbl string, row
 // becomes an empty slice, a stray scalar a one-element slice) so the frame builder can render
 // it as a JSON array.
 func (dataModel *DataModel) addArrayColumn(hdr string, typ string, lbl string, rows []interface{}) {
-	dataModel.addColumn(hdr, lbl, typ)
+	dataModel.addColumn(hdr, hdr, lbl, typ)
 
 	for i, r := range rows {
 		row, ok := dataModel.rowObject(r, hdr)
@@ -118,6 +125,63 @@ func (dataModel *DataModel) addArrayColumn(hdr string, typ string, lbl string, r
 	}
 }
 
+// addEnumColumn adds a scalar ENUM column, converting each value to an enum object. A null
+// stays null — wrapping it would store the zero enum (ordinal 0), which renders as the enum's
+// first value instead of null. header equals hdr except for Properties sub-columns, where the
+// header carries a type prefix.
+func (dataModel *DataModel) addEnumColumn(header, hdr string, lbl string, rows []interface{}) {
+	dataModel.addColumn(header, hdr, lbl, ENUM)
+
+	for index, r := range rows {
+		dataModel.Rows[index][header] = nil
+		row, ok := dataModel.rowObject(r, hdr)
+		if !ok {
+			continue
+		}
+		value := row[hdr]
+		if value == nil {
+			continue
+		}
+		enum, okEnum := toEnumObjectChecked(value)
+		if !okEnum {
+			dataModel.Issues.Add("column " + hdr + ": malformed enum value")
+		}
+		dataModel.Rows[index][header] = enum
+	}
+}
+
+// addEnumArrayColumn adds an ENUM[] column, converting each array element to an enum object
+// (malformed elements are recorded and nulled; a null or non-array value stays null).
+func (dataModel *DataModel) addEnumArrayColumn(hdr string, lbl string, rows []interface{}) {
+	dataModel.addColumn(hdr, hdr, lbl, ENUM_ARR)
+
+	for i, r := range rows {
+		dataModel.Rows[i][hdr] = nil
+		row, ok := dataModel.rowObject(r, hdr)
+		if !ok {
+			continue
+		}
+		value := row[hdr]
+		if value == nil {
+			continue
+		}
+		elements, ok := value.([]interface{})
+		if !ok {
+			dataModel.Issues.Add("column " + hdr + ": value is not an array")
+			continue
+		}
+		converted := make([]interface{}, 0, len(elements))
+		for _, element := range elements {
+			enum, okEnum := toEnumObjectChecked(element)
+			if !okEnum {
+				dataModel.Issues.Add("column " + hdr + ": malformed enum value in array")
+			}
+			converted = append(converted, enum)
+		}
+		dataModel.Rows[i][hdr] = converted
+	}
+}
+
 // explodeRange splits a RANGE column into two scalar columns, <hdr>_begin and <hdr>_end, each
 // typed by the range's element type. jKQL ranges are encoded as { "begin", "end" }; a generic
 // RANGE with no element type has its endpoints rendered as strings.
@@ -129,7 +193,7 @@ func (dataModel *DataModel) explodeRange(hdr string, rangeType string, lbl strin
 
 	for _, bound := range []string{"begin", "end"} {
 		header := hdr + "_" + bound
-		dataModel.addColumn(header, lbl+"_"+bound, elemType)
+		dataModel.addColumn(header, header, lbl+"_"+bound, elemType)
 
 		for i, r := range rows {
 			dataModel.Rows[i][header] = nil
@@ -235,7 +299,9 @@ func (dataModel *DataModel) fillMapColumn(header, hdr, key string, rows []interf
 
 // fillMixedMapColumn is the fill phase for one exploded key+type of a mixed map: a value is
 // copied only when the row's :_ValueTypes sibling confirms it has this column's type (the same
-// key can hold different types on different rows, one output column each).
+// key can hold different types on different rows, one output column each). An ENUM-typed key is
+// wrapped into a JkqlEnum, same as a top-level ENUM column, so it renders as a real enum instead
+// of the raw "ordinal#name" wire text.
 func (dataModel *DataModel) fillMixedMapColumn(header, hdr, key, typ string, rows []interface{}) {
 	hdrVT := hdr + SUFIX_VALUETYPES
 	for index, r := range rows {
@@ -252,6 +318,13 @@ func (dataModel *DataModel) fillMixedMapColumn(header, hdr, key, typ string, row
 		value := valueMap[key]
 		if value == nil || rowVT[key] != typ {
 			continue
+		}
+		if typ == ENUM {
+			enum, okEnum := toEnumObjectChecked(value)
+			if !okEnum {
+				dataModel.Issues.Add("column " + hdr + ": malformed enum value")
+			}
+			value = enum
 		}
 		dataModel.Rows[index][header] = value
 	}
@@ -278,6 +351,7 @@ func (dataModel *DataModel) explodeMixedMap(hdr string, lbl string, rows []inter
 		types := columnMap[column]
 		addTypeToLabel := len(types) > 1
 		for _, typ := range types {
+			name := hdr
 			header := ConvertDtToPrefix(typ) + ":" + hdr
 			var label string
 			wrappedColumn := "('" + column + "')"
@@ -285,13 +359,14 @@ func (dataModel *DataModel) explodeMixedMap(hdr string, lbl string, rows []inter
 				label = lbl
 			} else { // whole-map access: one column per discovered key
 				header += wrappedColumn
+				name += wrappedColumn
 				label = column
 			}
 			if addTypeToLabel {
 				label += " (" + CapitalizeStr(typ) + ")"
 			}
 
-			dataModel.addColumn(header, label, typ)
+			dataModel.addColumn(header, name, label, typ)
 			dataModel.fillMixedMapColumn(header, hdr, column, typ, rows)
 		}
 	}
@@ -311,6 +386,7 @@ func (dataModel *DataModel) explodeTypedMap(hdr string, dt string, lbl string, r
 	}
 
 	for _, column := range slices.Sorted(maps.Keys(columnMap)) {
+		name := hdr
 		header := ConvertDtToPrefix(dt) + ":" + hdr
 		var label string
 		wrappedColumn := "('" + column + "')"
@@ -318,10 +394,11 @@ func (dataModel *DataModel) explodeTypedMap(hdr string, dt string, lbl string, r
 			label = lbl
 		} else { // whole-map access: one column per discovered key
 			header += wrappedColumn
+			name += wrappedColumn
 			label = column
 		}
 
-		dataModel.addColumn(header, label, dt)
+		dataModel.addColumn(header, name, label, dt)
 		dataModel.fillMapColumn(header, hdr, column, rows)
 	}
 }
@@ -390,7 +467,7 @@ func (dataModel *DataModel) explodeMapForAggregateFunction(matches []string, lbl
 				label += " (" + CapitalizeStr(typ) + ")"
 			}
 
-			dataModel.addColumn(header, label, typ)
+			dataModel.addColumn(header, name, label, typ)
 			dataModel.fillMapColumn(header, hdr, column, rows)
 		}
 	}
@@ -428,7 +505,7 @@ func (dataModel *DataModel) explodeMixedMapForFunction(hdr string, lbl string, r
 				}
 			}
 
-			dataModel.addColumn(header, label, typ)
+			dataModel.addColumn(header, name, label, typ)
 			dataModel.fillMapColumn(header, hdr, column, rows)
 		}
 	}
@@ -452,7 +529,7 @@ func (dataModel *DataModel) explodeTypedMapForFunction(hdr string, lbl string, d
 			label = name
 		}
 
-		dataModel.addColumn(header, label, dt)
+		dataModel.addColumn(header, name, label, dt)
 		dataModel.fillMapColumn(header, hdr, column, rows)
 	}
 }
@@ -499,14 +576,17 @@ func newDataModel(parsedResultSet map[string]interface{}) DataModel {
 	// reports SUCCESS/WARNING/ERROR plus an optional message (e.g. row-limit truncation).
 	status, _ := parsedResultSet["status"].(string)
 	statusMsg, _ := parsedResultSet["status-msg"].(string)
+	itemType, _ := parsedResultSet["item-type"].(string)
 
 	model := DataModel{
 		RowCount:      int(rowCount64),
 		TotalRowCount: int(totalRowCount64),
 		Status:        status,
 		StatusMsg:     statusMsg,
+		ItemType:      itemType,
 		Headers:       make([]string, 0),
 		Label:         make(map[string]string),
+		Names:         make(map[string]string),
 		DataTypes:     make(map[string]string),
 		Rows:          make([]map[string]interface{}, int(rowCount64)),
 		Issues:        &ParseIssues{},
@@ -612,10 +692,13 @@ func (dataModel *DataModel) buildColumn(col resultColumn, rows []interface{}, ca
 		dataModel.addRawColumn(hdr, typ, label, rows)
 
 	case ENUM:
-		dataModel.addRawColumn(hdr, typ, label, rows)
+		dataModel.addEnumColumn(hdr, hdr, label, rows)
 
 	case STRING_ARR, BOOLEAN_ARR, DECIMAL_ARR, INTEGER_ARR, TIMEINTERVAL_ARR, TIMESTAMP_ARR, VARIANT_ARR, LABELSET_ARR, CLOB_ARR, BINARY_ARR:
 		dataModel.addArrayColumn(hdr, typ, label, rows)
+
+	case ENUM_ARR:
+		dataModel.addEnumArrayColumn(hdr, label, rows)
 
 	case RANGE_INTEGER, RANGE_DECIMAL, RANGE_TIMEINTERVAL, RANGE_TIMESTAMP, RANGE_GENERIC:
 		dataModel.explodeRange(hdr, typ, label, rows)
@@ -667,7 +750,11 @@ func (dataModel *DataModel) buildPropertiesColumn(hdr, typ, label string, rows [
 		// The header gets a type prefix (I:Properties('x')) so the same key requested with two
 		// types (via casts) stays two distinct columns, like an exploded mixed-map key.
 		header := ConvertDtToPrefix(typ) + ":" + hdr
-		dataModel.addColumn(header, label, typ)
+		if typ == ENUM {
+			dataModel.addEnumColumn(header, hdr, label, rows)
+			return
+		}
+		dataModel.addColumn(header, hdr, label, typ)
 		for index, r := range rows {
 			dataModel.Rows[index][header] = nil
 			row, ok := dataModel.rowObject(r, hdr)

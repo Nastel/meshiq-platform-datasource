@@ -1,7 +1,13 @@
 package jkql
 
-// This file holds the jKQL data-type system: the column data-type names and the field-name
-// constants the converter special-cases.
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
+// This file holds the jKQL data-type system: the column data-type names, the field-name
+// constants the converter special-cases, and the enum value encoding/decoding.
 
 // SUFIX_VALUETYPES is the suffix of a MAP column's sibling that reports each key's value type,
 // e.g. "Properties:_ValueTypes" alongside "Properties".
@@ -24,6 +30,7 @@ const (
 	CLOB         = "CLOB"
 
 	// array data types
+	ENUM_ARR         = "ENUM[]"
 	BOOLEAN_ARR      = "BOOLEAN[]"
 	DECIMAL_ARR      = "DECIMAL[]"
 	INTEGER_ARR      = "INTEGER[]"
@@ -66,10 +73,44 @@ const (
 	PROPERTIES FieldType = "Properties" // exploded into one column per key (see datamodel.go)
 	SCORE      FieldType = "Score"      // Solr score field, skipped
 
-	// metadata query columns (see the "Get Params" health check and the /repositories resource)
+	// metadata query columns (see the "Get Params" health check, the /repositories resource, and
+	// the "GET ENUMERATION FOR <field>" query used to build a dense enum value table)
+	ID      FieldType = "ID"
 	NAME    FieldType = "Name"
 	REPO_ID FieldType = "RepositoryID"
 )
+
+// JkqlEnum represents an enumerated jKQL value, encoded on the wire as "ordinal#name".
+type JkqlEnum struct {
+	Ordinal int    `json:"ordinal"`
+	Name    string `json:"name"`
+}
+
+// ToEnumObject parses the wire "ordinal#name" encoding into a JkqlEnum, tolerantly: a value
+// that doesn't follow the encoding keeps its whole text as the name (ordinal 0), so it still
+// displays instead of breaking the column.
+func ToEnumObject(value interface{}) JkqlEnum {
+	e, _ := toEnumObjectChecked(value)
+	return e
+}
+
+// toEnumObjectChecked is ToEnumObject reporting whether the value followed the "ordinal#name"
+// encoding, so converter call sites can record a parse issue for logging.
+func toEnumObjectChecked(value interface{}) (JkqlEnum, bool) {
+	if value == nil {
+		return JkqlEnum{}, true
+	}
+	valueStr := fmt.Sprint(value)
+	parts := strings.SplitN(valueStr, "#", 2)
+	if len(parts) != 2 {
+		return JkqlEnum{Ordinal: 0, Name: valueStr}, false
+	}
+	ordinal, err := strconv.Atoi(parts[0])
+	if err != nil {
+		return JkqlEnum{Ordinal: 0, Name: valueStr}, false
+	}
+	return JkqlEnum{Ordinal: ordinal, Name: parts[1]}, true
+}
 
 // ConvertDtToPrefix returns the single-letter data-type prefix jKQL uses in column headers for an
 // exploded map key (so the same key requested with two types, e.g. via casts, stays two distinct

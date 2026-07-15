@@ -4,22 +4,32 @@ import (
 	"encoding/json"
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 )
 
-// BuildDataFrame turns a DataModel into a Grafana data frame.
-func BuildDataFrame(model DataModel) *data.Frame {
+// EnumResolver returns the complete, ordinal-indexed value set of a built-in enum field (index =
+// jKQL ordinal, value = name), or nil/empty when it can't be resolved. Used to build a full enum
+// Text table so legends/value-mappings show every possible value, not just those in the result.
+type EnumResolver func(field string) []string
+
+// BuildDataFrame turns a DataModel into a Grafana data frame. enumValues may be nil; when
+// provided it supplies the complete value set for enum columns (see addEnumColumn).
+func BuildDataFrame(model DataModel, enumValues EnumResolver) *data.Frame {
 	frame := data.NewFrame("")
 
 	x := 0
 	for _, header := range model.Headers {
 		columnDataType := model.DataTypes[header]
-		if columnDataType == VARIANT {
+		switch columnDataType {
+		case VARIANT:
 			addVariantColumn(frame, model, &x, header)
-		} else {
+		case ENUM:
+			addEnumColumn(frame, model, &x, header, enumValues)
+		default:
 			addSimpleColumn(frame, model, &x, columnDataType, header)
 		}
 	}
@@ -112,6 +122,7 @@ func toTimeSeries(frame *data.Frame) *data.Frame {
 			addNotice(frame, data.NoticeSeverityWarning, "Could not format as time series: "+err.Error()+".")
 			return frame
 		}
+		restoreEnumConfigs(wide, frame)
 		if wide.Meta == nil {
 			wide.Meta = &data.FrameMeta{}
 		}
@@ -128,6 +139,59 @@ func toTimeSeries(frame *data.Frame) *data.Frame {
 			"Time series format needs a time field and at least one numeric field; showing as table.")
 		return frame
 	}
+}
+
+// restoreEnumConfigs re-attaches enum type configs to a wide frame after LongToWide, which preserves
+// each enum field's values and type but DROPS its EnumFieldConfig.Text table (leaving config: {}).
+// Without the table, graphing the wide frame crashes Grafana's enum handling, which reads
+// field.config.type.enum with a non-null assertion. Configs are matched to the original long frame's
+// fields by name (enum fields with the same name share the same enum type, so the same table).
+//
+// Self-deactivating: it only touches enum fields whose TypeConfig is MISSING. If a future SDK's
+// LongToWide starts preserving TypeConfig (the upstream fix), every wide enum field will already
+// carry it, hasMissingEnumConfig returns false, and this becomes a no-op — no overwriting, no need
+// to remove the workaround.
+func restoreEnumConfigs(wide, long *data.Frame) {
+	if !hasMissingEnumConfig(wide) {
+		return
+	}
+
+	configs := make(map[string]*data.FieldTypeConfig)
+	for _, f := range long.Fields {
+		if isEnumField(f) && f.Config != nil && f.Config.TypeConfig != nil {
+			configs[f.Name] = f.Config.TypeConfig
+		}
+	}
+
+	for _, f := range wide.Fields {
+		// Skip fields that already carry their type config (the state a fixed LongToWide would leave).
+		if !isEnumField(f) || (f.Config != nil && f.Config.TypeConfig != nil) {
+			continue
+		}
+		typeConfig, ok := configs[f.Name]
+		if !ok {
+			continue
+		}
+		if f.Config == nil {
+			f.Config = &data.FieldConfig{}
+		}
+		f.Config.TypeConfig = typeConfig
+	}
+}
+
+// hasMissingEnumConfig reports whether any enum field in the frame is missing its TypeConfig — the
+// condition restoreEnumConfigs exists to repair. Returns false once LongToWide preserves it.
+func hasMissingEnumConfig(frame *data.Frame) bool {
+	for _, f := range frame.Fields {
+		if isEnumField(f) && (f.Config == nil || f.Config.TypeConfig == nil) {
+			return true
+		}
+	}
+	return false
+}
+
+func isEnumField(f *data.Field) bool {
+	return f.Type() == data.FieldTypeEnum || f.Type() == data.FieldTypeNullableEnum
 }
 
 // sortFrameByTime stably reorders every row of a frame by the time field (ascending). jKQL results
@@ -263,6 +327,103 @@ func getVariantDataTypeAndValue(variant map[string]interface{}) (string, interfa
 	return dataType, value
 }
 
+// addEnumColumn builds a native Grafana Enum field (FieldTypeNullableEnum). Grafana's enum and
+// time-series code treats the EnumFieldConfig.Text table as a DENSE value set (one legend/axis entry
+// per slot) and assumes no gaps, so we cannot key Text by the raw jKQL ordinal (which is sparse: a
+// column showing only "INFO" at ordinal 3 would emit ["","","","INFO"], and the empty placeholder
+// slots break graphing).
+//
+// When enumValues resolves the field's complete value set (via "GET ENUMERATION FOR <field>"), we
+// use it directly as the Text table (indexed by ordinal — jKQL enum ordinals are contiguous, so it
+// is dense) and store each row's raw ordinal. This exposes every possible value in legends/filters,
+// not just those present in the result. Otherwise we fall back to remapping the distinct ordinals
+// actually seen to a compact 0..N-1 index, which is still gap-free.
+func addEnumColumn(frame *data.Frame, model DataModel, x *int, header string, enumValues EnumResolver) {
+	if text := resolveFullEnumText(model, header, enumValues); len(text) > 0 {
+		values := make([]*data.EnumItemIndex, model.RowCount)
+		for y, row := range model.Rows {
+			enum, ok := row[header].(JkqlEnum)
+			if !ok || enum.Ordinal < 0 || enum.Ordinal >= len(text) {
+				continue
+			}
+			v := data.EnumItemIndex(enum.Ordinal)
+			values[y] = &v
+		}
+		appendEnumField(frame, columnFieldName(model, header), model.Label[header], values, text)
+		*x++
+		return
+	}
+
+	// Fallback: compact the distinct ordinals seen in this column to a gap-free 0..N-1 table.
+	compact := make(map[int]data.EnumItemIndex) // jKQL ordinal -> compact index
+	text := make([]string, 0)
+	values := make([]*data.EnumItemIndex, model.RowCount)
+	for y, row := range model.Rows {
+		enum, ok := row[header].(JkqlEnum)
+		if !ok {
+			continue
+		}
+		index, seen := compact[enum.Ordinal]
+		if !seen {
+			index = data.EnumItemIndex(len(text))
+			compact[enum.Ordinal] = index
+			text = append(text, enum.Name)
+		}
+		v := index
+		values[y] = &v
+	}
+	appendEnumField(frame, columnFieldName(model, header), model.Label[header], values, text)
+	*x++
+}
+
+// columnFieldName returns the column's underlying jKQL field name (model.Names), falling back to
+// the raw header when there is no mapped name. Used to key color rules and enum lookups.
+func columnFieldName(model DataModel, header string) string {
+	if name := model.Names[header]; name != "" {
+		return name
+	}
+	return header
+}
+
+// resolveFullEnumText asks the resolver for the field's complete value set. The queried field is the
+// column's underlying jKQL field name (not its alias); a non-identifier name (e.g. a function or
+// custom expression) is skipped since it isn't a built-in enum type.
+func resolveFullEnumText(model DataModel, header string, enumValues EnumResolver) []string {
+	if enumValues == nil {
+		return nil
+	}
+	field := columnFieldName(model, header)
+	if !IdentifierRegExp.MatchString(field) {
+		return nil
+	}
+	return enumValues(field)
+}
+
+func appendEnumField(frame *data.Frame, fieldName, label string, values []*data.EnumItemIndex, text []string) {
+	field := data.NewField(label, nil, values)
+	colors := enumColors(fieldName, text)
+	enumConfig := &data.EnumFieldConfig{Text: text}
+	if colors != nil {
+		enumConfig.Color = colors
+	}
+	config := &data.FieldConfig{
+		TypeConfig: &data.FieldTypeConfig{Enum: enumConfig},
+	}
+	// Grafana's display processor uses config.type.enum.color values as-is, without resolving
+	// named theme colors (e.g. "semi-dark-red") the way it does for value mappings — so table/stat
+	// cells relying on that array render unstyled. Mirror the same colors as mappings (keyed by
+	// ordinal, checked before the enum branch, and theme-resolved) so the coloring actually shows.
+	if colors != nil {
+		mapper := data.ValueMapper{}
+		for i, name := range text {
+			mapper[strconv.Itoa(i)] = data.ValueMappingResult{Text: name, Color: colors[i]}
+		}
+		config.Mappings = data.ValueMappings{mapper}
+	}
+	field.SetConfig(config)
+	frame.Fields = append(frame.Fields, field)
+}
+
 func addSimpleColumn(frame *data.Frame, model DataModel, x *int, frameDataType string, header string) {
 	addEmptyField(frame, model, frameDataType, header)
 	setFrameValues(frame, model, x, frameDataType, header)
@@ -280,6 +441,16 @@ func addEmptyField(frame *data.Frame, model DataModel, frameDataType string, hea
 	if frameDataType == TIMEINTERVAL {
 		// jKQL time intervals are microseconds; tag the unit so Grafana renders "1.5 ms".
 		field.Config = &data.FieldConfig{Unit: "µs"}
+	}
+	// Color recognized string/labelset values (e.g. Allow -> green, Deny -> red) via value
+	// mappings. Only real STRING/LABELSET columns qualify, not VARIANT sub-columns.
+	if columnDataType == STRING || columnDataType == LABELSET {
+		if mappings := stringValueMappings(model, header); mappings != nil {
+			if field.Config == nil {
+				field.Config = &data.FieldConfig{}
+			}
+			field.Config.Mappings = mappings
+		}
 	}
 	frame.Fields = append(frame.Fields, field)
 }
@@ -364,12 +535,12 @@ func ConvertToGrafanaValue(value interface{}, dataType string) interface{} {
 	case STRING, LABELSET, CLOB:
 		return fmt.Sprint(value)
 	case ENUM:
-		// The wire encodes an enum as "ordinal#name"; keep just the name.
-		parts := strings.SplitN(fmt.Sprint(value), "#", 2)
-		if len(parts) == 2 {
-			return parts[1]
+		// Columns wrap enums in the data model; raw wire values ("ordinal#name") reach this
+		// case as elements of maps/arrays the model keeps unexploded.
+		if e, ok := value.(JkqlEnum); ok {
+			return e.Name
 		}
-		return parts[0]
+		return ToEnumObject(value).Name
 	case VARIANT:
 		// A VARIANT value is a {data-type, value} envelope. This case is hit for VARIANT[]
 		// elements (convertToJSONArray descends with elementType "VARIANT"); scalar VARIANT
