@@ -24,6 +24,10 @@ services:
       # Disable Grafana's rotation; we manage it via the entrypoint instead.
       # This keeps the log directory clean and avoids file handle corruption.
       GF_LOG_FILE_LOG_ROTATE: 'false'
+      # Save every raw dataservice response to ./logs/captures on the host (dev-only
+      # response capture, see pkg/plugin/capture.go). Comment out to disable; restart
+      # grafana to apply.
+      MESHIQ_CAPTURE_DIR: /var/log/grafana/captures
     # Startup prep (fresh logs + non-blocking livereload) lives in docker/entrypoint.sh, mounted
     # read-only below; it hands off to the image's real /entrypoint.sh. See that file for why.
     entrypoint: ['sh', '/docker/entrypoint.sh']
