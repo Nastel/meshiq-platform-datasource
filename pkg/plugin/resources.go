@@ -14,9 +14,11 @@ import (
 // newResourceHandler builds the CallResource handler exposing the frontend's non-query endpoints:
 //
 //	GET /repositories -> ["<name>$<org>", …]     (jKQL: Get Repository Fields …)
+//	GET /suggestions  -> autocomplete proxy      (see completion.go)
 func (d *Datasource) newResourceHandler() backend.CallResourceHandler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/repositories", d.handleRepositories)
+	mux.HandleFunc("/suggestions", d.handleSuggestions)
 	return httpadapter.New(mux)
 }
 
@@ -89,11 +91,24 @@ func writeResourceJSON(r *http.Request, w http.ResponseWriter, payload interface
 }
 
 // writeResourceError answers a resource request with a JSON error and logs it. The frontend
-// degrades quietly on these (an empty repository dropdown), so this log line is the only place a
-// failing /repositories call becomes visible.
+// degrades quietly on these (an empty repository dropdown, no suggestions), so this log line is
+// the only place a failing /repositories or /suggestions call becomes visible.
 func writeResourceError(r *http.Request, w http.ResponseWriter, status int, err error) {
 	log.DefaultLogger.FromContext(r.Context()).Warn("resource request failed",
 		"path", r.URL.Path, "status", status, "error", err)
+	writeResourceErrorBody(r, w, status, err)
+}
+
+// writeResourceErrorQuiet answers a resource request with a JSON error, without logging it.
+// Reserved for failures that are expected and frequent by design rather than actionable — a jKQL
+// autocomplete request rejected because the query is momentarily invalid mid-typing happens on
+// nearly every keystroke and would otherwise flood the server log with noise, for a feature that
+// already degrades silently (no suggestions) in the editor.
+func writeResourceErrorQuiet(r *http.Request, w http.ResponseWriter, status int, err error) {
+	writeResourceErrorBody(r, w, status, err)
+}
+
+func writeResourceErrorBody(r *http.Request, w http.ResponseWriter, status int, err error) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	body, _ := json.Marshal(map[string]string{"error": err.Error()})
