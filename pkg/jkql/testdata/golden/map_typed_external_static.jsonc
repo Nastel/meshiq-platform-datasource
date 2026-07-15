@@ -1,0 +1,274 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 10
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 10
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 2 Fields by 10 Rows
+//  +---------------------------------------------------------+-------------------------------------------------------------------------------------------------------------+
+//  | Name: Dimensions                                        | Name: SourceComps                                                                                           |
+//  | Labels:                                                 | Labels:                                                                                                     |
+//  | Type: []*json.RawMessage                                | Type: []*json.RawMessage                                                                                    |
+//  +---------------------------------------------------------+-------------------------------------------------------------------------------------------------------------+
+//  | {"partition":"8","topic":"jkreq-to-query"}              | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["TczKPzvBNiSk3jfjHD8Cnw=="],"NETADDR":["172.16.6.114"]} |
+//  | {"partition":"3","topic":"pending-schema-keys"}         | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["TczKPzvBNiSk3jfjHD8Cnw=="],"NETADDR":["172.16.6.114"]} |
+//  | {"partition":"7","topic":"pinot-event-topic"}           | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["TczKPzvBNiSk3jfjHD8Cnw=="],"NETADDR":["172.16.6.114"]} |
+//  | {"partition":"26","topic":"to-compute-handler-default"} | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["TczKPzvBNiSk3jfjHD8Cnw=="],"NETADDR":["172.16.6.114"]} |
+//  | {"partition":"4","topic":"jkreq-to-query"}              | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["n5lBj-977TLEfjZxDLxTZQ=="],"NETADDR":["172.16.6.113"]} |
+//  | {"partition":"12","topic":"to-sched-jkql-res-handler"}  | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["TczKPzvBNiSk3jfjHD8Cnw=="],"NETADDR":["172.16.6.114"]} |
+//  | {"partition":"23","topic":"raw-tnt4j-data"}             | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["TczKPzvBNiSk3jfjHD8Cnw=="],"NETADDR":["172.16.6.114"]} |
+//  | {"partition":"30","topic":"jkreq-to-query"}             | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["yMoRNRD8osxWxjB8GcGguA=="],"NETADDR":["172.16.6.112"]} |
+//  | {"partition":"9","topic":"jkql-item-defs-out"}          | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["yMoRNRD8osxWxjB8GcGguA=="],"NETADDR":["172.16.6.112"]} |
+//  | {"partition":"18","topic":"to-compute-handler-default"} | {"APPL":["Kafka-Brokers"],"BROKER":["2"],"CLUSTER":["yMoRNRD8osxWxjB8GcGguA=="],"NETADDR":["172.16.6.112"]} |
+//  +---------------------------------------------------------+-------------------------------------------------------------------------------------------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 10
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 10
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "Dimensions",
+            "type": "other",
+            "typeInfo": {
+              "frame": "json.RawMessage",
+              "nullable": true
+            }
+          },
+          {
+            "name": "SourceComps",
+            "type": "other",
+            "typeInfo": {
+              "frame": "json.RawMessage",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            {
+              "partition": "8",
+              "topic": "jkreq-to-query"
+            },
+            {
+              "partition": "3",
+              "topic": "pending-schema-keys"
+            },
+            {
+              "partition": "7",
+              "topic": "pinot-event-topic"
+            },
+            {
+              "partition": "26",
+              "topic": "to-compute-handler-default"
+            },
+            {
+              "partition": "4",
+              "topic": "jkreq-to-query"
+            },
+            {
+              "partition": "12",
+              "topic": "to-sched-jkql-res-handler"
+            },
+            {
+              "partition": "23",
+              "topic": "raw-tnt4j-data"
+            },
+            {
+              "partition": "30",
+              "topic": "jkreq-to-query"
+            },
+            {
+              "partition": "9",
+              "topic": "jkql-item-defs-out"
+            },
+            {
+              "partition": "18",
+              "topic": "to-compute-handler-default"
+            }
+          ],
+          [
+            {
+              "APPL": [
+                "Kafka-Brokers"
+              ],
+              "BROKER": [
+                "2"
+              ],
+              "CLUSTER": [
+                "TczKPzvBNiSk3jfjHD8Cnw=="
+              ],
+              "NETADDR": [
+                "172.16.6.114"
+              ]
+            },
+            {
+              "APPL": [
+                "Kafka-Brokers"
+              ],
+              "BROKER": [
+                "2"
+              ],
+              "CLUSTER": [
+                "TczKPzvBNiSk3jfjHD8Cnw=="
+              ],
+              "NETADDR": [
+                "172.16.6.114"
+              ]
+            },
+            {
+              "APPL": [
+                "Kafka-Brokers"
+              ],
+              "BROKER": [
+                "2"
+              ],
+              "CLUSTER": [
+                "TczKPzvBNiSk3jfjHD8Cnw=="
+              ],
+              "NETADDR": [
+                "172.16.6.114"
+              ]
+            },
+            {
+              "APPL": [
+                "Kafka-Brokers"
+              ],
+              "BROKER": [
+                "2"
+              ],
+              "CLUSTER": [
+                "TczKPzvBNiSk3jfjHD8Cnw=="
+              ],
+              "NETADDR": [
+                "172.16.6.114"
+              ]
+            },
+            {
+              "APPL": [
+                "Kafka-Brokers"
+              ],
+              "BROKER": [
+                "2"
+              ],
+              "CLUSTER": [
+                "n5lBj-977TLEfjZxDLxTZQ=="
+              ],
+              "NETADDR": [
+                "172.16.6.113"
+              ]
+            },
+            {
+              "APPL": [
+                "Kafka-Brokers"
+              ],
+              "BROKER": [
+                "2"
+              ],
+              "CLUSTER": [
+                "TczKPzvBNiSk3jfjHD8Cnw=="
+              ],
+              "NETADDR": [
+                "172.16.6.114"
+              ]
+            },
+            {
+              "APPL": [
+                "Kafka-Brokers"
+              ],
+              "BROKER": [
+                "2"
+              ],
+              "CLUSTER": [
+                "TczKPzvBNiSk3jfjHD8Cnw=="
+              ],
+              "NETADDR": [
+                "172.16.6.114"
+              ]
+            },
+            {
+              "APPL": [
+                "Kafka-Brokers"
+              ],
+              "BROKER": [
+                "2"
+              ],
+              "CLUSTER": [
+                "yMoRNRD8osxWxjB8GcGguA=="
+              ],
+              "NETADDR": [
+                "172.16.6.112"
+              ]
+            },
+            {
+              "APPL": [
+                "Kafka-Brokers"
+              ],
+              "BROKER": [
+                "2"
+              ],
+              "CLUSTER": [
+                "yMoRNRD8osxWxjB8GcGguA=="
+              ],
+              "NETADDR": [
+                "172.16.6.112"
+              ]
+            },
+            {
+              "APPL": [
+                "Kafka-Brokers"
+              ],
+              "BROKER": [
+                "2"
+              ],
+              "CLUSTER": [
+                "yMoRNRD8osxWxjB8GcGguA=="
+              ],
+              "NETADDR": [
+                "172.16.6.112"
+              ]
+            }
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 5
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 5
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 1 Fields by 5 Rows
+//  +---------------------------------------------------------+
+//  | Name: Quota                                             |
+//  | Labels:                                                 |
+//  | Type: []*json.RawMessage                                |
+//  +---------------------------------------------------------+
+//  | {"StreamBytesPerDay":84131116,"StreamMsgsPerDay":71338} |
+//  | {"StreamBytesPerDay":22018998,"StreamMsgsPerDay":18687} |
+//  | {"StreamBytesPerDay":73802600,"StreamMsgsPerDay":62515} |
+//  | {"StreamBytesPerDay":2535435,"StreamMsgsPerDay":2148}   |
+//  | {"StreamBytesPerDay":14054345,"StreamMsgsPerDay":11894} |
+//  +---------------------------------------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 5
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 5
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "Quota",
+            "type": "other",
+            "typeInfo": {
+              "frame": "json.RawMessage",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            {
+              "StreamBytesPerDay": 84131116,
+              "StreamMsgsPerDay": 71338
+            },
+            {
+              "StreamBytesPerDay": 22018998,
+              "StreamMsgsPerDay": 18687
+            },
+            {
+              "StreamBytesPerDay": 73802600,
+              "StreamMsgsPerDay": 62515
+            },
+            {
+              "StreamBytesPerDay": 2535435,
+              "StreamMsgsPerDay": 2148
+            },
+            {
+              "StreamBytesPerDay": 14054345,
+              "StreamMsgsPerDay": 11894
+            }
+          ]
+        ]
+      }
+    }
+  ]
+}

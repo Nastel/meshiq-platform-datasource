@@ -1,0 +1,65 @@
+{
+    "rows-found": 5,
+    "row-count": 5,
+    "total-row-count": 5,
+    "timezone": "GMT",
+    "locale": "en",
+    "status": "SUCCESS",
+    "time": 1784034477183018,
+    "item-type": "QuotaUsage",
+    "stmt-type": "Get",
+    "colhdr": [
+        "Quota"
+    ],
+    "coltype": {
+        "Quota": "MAP(INTEGER)"
+    },
+    "collabel": {
+        "Quota": "Quota"
+    },
+    "rows": [
+        {
+            "Quota": {
+                "StreamBytesPerDay": 84131116,
+                "StreamMsgsPerDay": 71338
+            }
+        },
+        {
+            "Quota": {
+                "StreamBytesPerDay": 22018998,
+                "StreamMsgsPerDay": 18687
+            }
+        },
+        {
+            "Quota": {
+                "StreamBytesPerDay": 73802600,
+                "StreamMsgsPerDay": 62515
+            }
+        },
+        {
+            "Quota": {
+                "StreamBytesPerDay": 2535435,
+                "StreamMsgsPerDay": 2148
+            }
+        },
+        {
+            "Quota": {
+                "StreamBytesPerDay": 14054345,
+                "StreamMsgsPerDay": 11894
+            }
+        }
+    ],
+    "overallStatistics": {
+        "json_string.time.usec": 281,
+        "pinot_request_build.time.usec": 209,
+        "pinot_request_exec.time.usec": 10607,
+        "pinot_result_proc.time.usec": 104,
+        "pinot_result_rows.count": 5,
+        "raw_result_post_process.time.usec": 4,
+        "request_wait.time.usec": 6546,
+        "rows_found.count": 5,
+        "rows_returned.count": 5,
+        "rows_total.count": 5,
+        "total_exec.time.usec": 11240
+    }
+}

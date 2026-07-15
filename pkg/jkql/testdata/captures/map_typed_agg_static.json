@@ -1,0 +1,57 @@
+{
+    "rows-found": 2,
+    "row-count": 2,
+    "total-row-count": 2,
+    "query-date-filter": "1783987200000000 TO 1784073599999999",
+    "timezone": "GMT",
+    "locale": "en",
+    "status": "SUCCESS",
+    "time": 1784034620719210,
+    "item-type": "Log",
+    "stmt-type": "Get",
+    "colhdr": [
+        "Severity",
+        "Percentile(Properties('jk_call_time'),95)"
+    ],
+    "coltype": {
+        "Severity": "ENUM",
+        "Percentile(Properties('jk_call_time'),95)": "MAP"
+    },
+    "collabel": {
+        "Severity": "Severity",
+        "Percentile(Properties('jk_call_time'),95)": "Percentile(Properties('jk_call_time'),95)"
+    },
+    "rows": [
+        {
+            "Severity": "3#INFO",
+            "Percentile(Properties('jk_call_time'),95)": {
+                "jk_call_time": 1784032380709.3613
+            },
+            "Percentile(Properties('jk_call_time'),95):_ValueTypes": {
+                "jk_call_time": "DECIMAL"
+            }
+        },
+        {
+            "Severity": "6#ERROR",
+            "Percentile(Properties('jk_call_time'),95)": {
+                "jk_call_time": 1784027263110.2002
+            },
+            "Percentile(Properties('jk_call_time'),95):_ValueTypes": {
+                "jk_call_time": "DECIMAL"
+            }
+        }
+    ],
+    "overallStatistics": {
+        "json_string.time.usec": 324,
+        "pinot_request_build.time.usec": 2756,
+        "pinot_request_exec.time.usec": 81497,
+        "pinot_result_proc.time.usec": 383,
+        "pinot_result_rows.count": 2,
+        "raw_result_post_process.time.usec": 3,
+        "request_wait.time.usec": 5869,
+        "rows_found.count": 2,
+        "rows_returned.count": 2,
+        "rows_total.count": 2,
+        "total_exec.time.usec": 85175
+    }
+}
