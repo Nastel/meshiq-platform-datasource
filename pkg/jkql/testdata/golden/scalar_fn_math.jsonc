@@ -1,0 +1,184 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 3
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 3
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 9 Fields by 3 Rows
+//  +------------------+------------------+----------------+--------------------+----------------+-------------------+--------------------+--------------------+----------------+
+//  | Name: ceil       | Name: floor      | Name: round    | Name: sqrt         | Name: abs      | Name: exp         | Name: ln           | Name: log10        | Name: power    |
+//  | Labels:          | Labels:          | Labels:        | Labels:            | Labels:        | Labels:           | Labels:            | Labels:            | Labels:        |
+//  | Type: []*float64 | Type: []*float64 | Type: []*int64 | Type: []*float64   | Type: []*int64 | Type: []*float64  | Type: []*float64   | Type: []*float64   | Type: []*int64 |
+//  +------------------+------------------+----------------+--------------------+----------------+-------------------+--------------------+--------------------+----------------+
+//  | 4                | 3                | 3              | 3.1622776601683795 | 10             | 2.718281828459045 | 2.302585092994046  | 1                  | 100            |
+//  | 21               | 20               | 20             | 7.810249675906654  | 61             | 2.718281828459045 | 4.110873864173311  | 1.7853298350107671 | 3721           |
+//  | 18               | 18               | 18             | 7.3484692283495345 | 54             | 2.718281828459045 | 3.9889840465642745 | 1.7323937598229686 | 2916           |
+//  +------------------+------------------+----------------+--------------------+----------------+-------------------+--------------------+--------------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 3
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 3
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "ceil",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "floor",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "round",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "sqrt",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "abs",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "exp",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "ln",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "log10",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "power",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            4,
+            21,
+            18
+          ],
+          [
+            3,
+            20,
+            18
+          ],
+          [
+            3,
+            20,
+            18
+          ],
+          [
+            3.1622776601683795,
+            7.810249675906654,
+            7.3484692283495345
+          ],
+          [
+            10,
+            61,
+            54
+          ],
+          [
+            2.718281828459045,
+            2.718281828459045,
+            2.718281828459045
+          ],
+          [
+            2.302585092994046,
+            4.110873864173311,
+            3.9889840465642745
+          ],
+          [
+            1,
+            1.7853298350107671,
+            1.7323937598229686
+          ],
+          [
+            100,
+            3721,
+            2916
+          ]
+        ]
+      }
+    }
+  ]
+}

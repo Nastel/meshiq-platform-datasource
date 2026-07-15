@@ -1,0 +1,106 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 3
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 3
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 3 Rows
+//  +-----------------+---------------------------------------------------------------+---------------------------------------------------------------+
+//  | Name: toStr     | Name: toClob                                                  | Name: toBin                                                   |
+//  | Labels:         | Labels:                                                       | Labels:                                                       |
+//  | Type: []*string | Type: []*string                                               | Type: []*string                                               |
+//  +-----------------+---------------------------------------------------------------+---------------------------------------------------------------+
+//  | 10              | GET Params                                                    | GET Params                                                    |
+//  | 61              | GET top 5 LOG FIELDS Properties('jk_call_time', '_WaitTime_') | GET top 5 LOG FIELDS Properties('jk_call_time', '_WaitTime_') |
+//  | 54              | Upsert Monitor MonitorName = 'Workgroup_Server_Status'        | Upsert Monitor MonitorName = 'Workgroup_Server_Status'        |
+//  +-----------------+---------------------------------------------------------------+---------------------------------------------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 3
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 3
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "toStr",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "toClob",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "toBin",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            "10",
+            "61",
+            "54"
+          ],
+          [
+            "GET Params",
+            "GET top 5 LOG FIELDS Properties('jk_call_time', '_WaitTime_')",
+            "Upsert Monitor MonitorName = 'Workgroup_Server_Status'"
+          ],
+          [
+            "GET Params",
+            "GET top 5 LOG FIELDS Properties('jk_call_time', '_WaitTime_')",
+            "Upsert Monitor MonitorName = 'Workgroup_Server_Status'"
+          ]
+        ]
+      }
+    }
+  ]
+}
