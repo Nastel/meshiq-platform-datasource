@@ -1,69 +1,70 @@
 import React, { ChangeEvent } from 'react';
 import { InlineField, Input, SecretInput } from '@grafana/ui';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
-import { MyDataSourceOptions, MySecureJsonData } from '../types';
+import { MeshIqDataSourceOptions, MeshIqSecureJsonData } from '../types';
 
-interface Props extends DataSourcePluginOptionsEditorProps<MyDataSourceOptions, MySecureJsonData> {}
+interface Props extends DataSourcePluginOptionsEditorProps<MeshIqDataSourceOptions, MeshIqSecureJsonData> {}
 
 export function ConfigEditor(props: Props) {
   const { onOptionsChange, options } = props;
   const { jsonData, secureJsonFields, secureJsonData } = options;
 
-  const onPathChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onOptionsChange({
-      ...options,
-      jsonData: {
-        ...jsonData,
-        path: event.target.value,
-      },
-    });
+  const onServiceUrlChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onOptionsChange({ ...options, jsonData: { ...jsonData, serviceUrl: event.target.value } });
   };
 
-  // Secure field (only sent to the backend)
-  const onAPIKeyChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onOptionsChange({
-      ...options,
-      secureJsonData: {
-        apiKey: event.target.value,
-      },
-    });
+  // Secure field (only sent to the backend).
+  const onAccessTokenChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onOptionsChange({ ...options, secureJsonData: { ...options.secureJsonData, accessToken: event.target.value } });
   };
 
-  const onResetAPIKey = () => {
+  const onResetAccessToken = () => {
     onOptionsChange({
       ...options,
-      secureJsonFields: {
-        ...options.secureJsonFields,
-        apiKey: false,
-      },
-      secureJsonData: {
-        ...options.secureJsonData,
-        apiKey: '',
-      },
+      secureJsonFields: { ...options.secureJsonFields, accessToken: false },
+      secureJsonData: { ...options.secureJsonData, accessToken: '' },
     });
   };
 
   return (
     <>
-      <InlineField label="Path" labelWidth={14} interactive tooltip={'Json field returned to frontend'}>
+      <InlineField
+        label="Service URL"
+        labelWidth={28}
+        required
+        interactive
+        invalid={!jsonData.serviceUrl}
+        error="Enter the service URL"
+        tooltip="Base URL of the meshIQ Platform"
+      >
         <Input
-          id="config-editor-path"
-          onChange={onPathChange}
-          value={jsonData.path}
-          placeholder="Enter the path, e.g. /api/v1"
+          id="config-editor-service-url"
+          onChange={onServiceUrlChange}
+          value={jsonData.serviceUrl ?? ''}
+          placeholder="https://your-meshIQ-host"
           width={40}
+          autoComplete="off"
         />
       </InlineField>
-      <InlineField label="API Key" labelWidth={14} interactive tooltip={'Secure json field (backend only)'}>
+      <InlineField
+        label="Access token"
+        labelWidth={28}
+        required
+        interactive
+        invalid={!secureJsonFields?.accessToken && !secureJsonData?.accessToken}
+        error="Enter the access token"
+        tooltip="API token for the meshIQ Platform"
+      >
         <SecretInput
           required
-          id="config-editor-api-key"
-          isConfigured={secureJsonFields.apiKey}
-          value={secureJsonData?.apiKey}
-          placeholder="Enter your API key"
+          id="config-editor-access-token"
+          isConfigured={!!secureJsonFields?.accessToken}
+          value={secureJsonData?.accessToken ?? ''}
+          placeholder="Enter your access token"
           width={40}
-          onReset={onResetAPIKey}
-          onChange={onAPIKeyChange}
+          onReset={onResetAccessToken}
+          onChange={onAccessTokenChange}
+          autoComplete="off"
         />
       </InlineField>
     </>
