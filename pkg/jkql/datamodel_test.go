@@ -31,7 +31,7 @@ func TestBuildDataModel_ScalarColumns(t *testing.T) {
 			{"Severity": "ERROR", "EventCount": 2}
 		]
 	}`
-	m := BuildDataModel(parseRS(t, raw))
+	m := BuildDataModel(parseRS(t, raw), nil)
 
 	if len(m.Headers) != 2 {
 		t.Fatalf("want 2 columns, got %d: %v", len(m.Headers), m.Headers)
@@ -58,7 +58,7 @@ func TestBuildDataModel_MissingLabelFallsBackToHeader(t *testing.T) {
 		"collabel": {},
 		"rows": [ {"Severity": "INFO"} ]
 	}`
-	m := BuildDataModel(parseRS(t, raw))
+	m := BuildDataModel(parseRS(t, raw), nil)
 
 	if got := m.Label["Severity"]; got != "Severity" {
 		t.Errorf("label = %q, want the header used as a fallback", got)
@@ -73,7 +73,7 @@ func TestBuildDataModel_ScoreColumnSkipped(t *testing.T) {
 		"collabel": {"Severity": "Severity", "Score": "Score"},
 		"rows": [ {"Severity": "INFO", "Score": 1.0} ]
 	}`
-	m := BuildDataModel(parseRS(t, raw))
+	m := BuildDataModel(parseRS(t, raw), nil)
 
 	if len(m.Headers) != 1 || m.Headers[0] != "Severity" {
 		t.Errorf("headers = %v, want just [Severity] (Score is a Solr internal field)", m.Headers)
@@ -91,7 +91,7 @@ func TestBuildDataModel_ArrayColumn(t *testing.T) {
 			{"Tags": null}
 		]
 	}`
-	m := BuildDataModel(parseRS(t, raw))
+	m := BuildDataModel(parseRS(t, raw), nil)
 
 	if m.DataTypes["Tags"] != STRING_ARR {
 		t.Fatalf("data type = %v, want %v", m.DataTypes["Tags"], STRING_ARR)
@@ -108,7 +108,7 @@ func TestBuildDataModel_ArrayColumn(t *testing.T) {
 
 func TestBuildDataModel_NoRows(t *testing.T) {
 	raw := `{"row-count": 0, "total-row-count": 0, "status": "SUCCESS", "colhdr": [], "coltype": {}, "collabel": {}, "rows": []}`
-	m := BuildDataModel(parseRS(t, raw))
+	m := BuildDataModel(parseRS(t, raw), nil)
 
 	if len(m.Headers) != 0 || len(m.Rows) != 0 {
 		t.Errorf("empty result set should yield no headers/rows, got %v / %v", m.Headers, m.Rows)

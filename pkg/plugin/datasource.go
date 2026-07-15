@@ -107,7 +107,9 @@ func (d *Datasource) query(ctx context.Context, pCtx backend.PluginContext, quer
 		return backend.ErrDataResponseWithSource(status, backend.ErrorSourceDownstream, err.Error())
 	}
 
-	dataModel := jkql.BuildDataModel(result)
+	// The function catalog is nil (the hardcoded default) until a later step loads it from the
+	// server.
+	dataModel := jkql.BuildDataModel(result, nil)
 	frame := jkql.BuildDataFrame(dataModel)
 	logParseIssues(ctx, *queryModel, dataModel)
 	frame = jkql.FinalizeFrame(frame, queryModel.JKQL)
@@ -130,7 +132,7 @@ func (d *Datasource) CheckHealth(ctx context.Context, req *backend.CheckHealthRe
 		return newHealthError(err), nil
 	}
 
-	dataModel := jkql.BuildDataModel(response)
+	dataModel := jkql.BuildDataModel(response, nil)
 	logParseIssues(ctx, BuildParamsQueryModel(), dataModel)
 	details, err := json.Marshal(buildCheckHealthResult(dataModel))
 	if err != nil {
