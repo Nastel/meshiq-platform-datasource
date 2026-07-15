@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -11,40 +12,156 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend/resource/httpadapter"
 )
 
+// tableInfo is one item type ("table") returned by /tables.
+type tableInfo struct {
+	Name string `json:"name"`
+}
+
+// fieldInfo is one field of an item type returned by /fields. Custom is true for fields derived
+// from the Properties map (as opposed to the static/built-in fields).
+type fieldInfo struct {
+	Name   string `json:"name"`
+	Type   string `json:"type"`
+	Custom bool   `json:"custom"`
+}
+
 // newResourceHandler builds the CallResource handler exposing the frontend's non-query endpoints:
 //
-//	GET /repositories -> ["<name>$<org>", …]     (jKQL: Get Repository Fields …)
-//	GET /suggestions  -> autocomplete proxy      (see completion.go)
+//	GET /repositories   -> ["<name>$<org>", …]    (jKQL: Get Repository Fields …)
+//	GET /tables         -> [{name}]               (jKQL: Get Items)
+//	GET /fields?table=X -> [{name,type,custom}]   (jKQL: Get Fields For X)
+//	GET /suggestions    -> autocomplete proxy     (see completion.go)
 func (d *Datasource) newResourceHandler() backend.CallResourceHandler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/repositories", d.handleRepositories)
+	mux.HandleFunc("/tables", d.handleTables)
+	mux.HandleFunc("/fields", d.handleFields)
 	mux.HandleFunc("/suggestions", d.handleSuggestions)
 	return httpadapter.New(mux)
 }
 
+// errInvalidOptions marks a metadata-query failure that happened before any dataservice call was
+// made (options parsing/validation) — a config problem on this end, not a downstream outage.
+var errInvalidOptions = errors.New("invalid datasource options")
+
 // handleRepositories lists the accessible repositories as "<RepositoryName>$<OrganizationName>"
 // identifier strings (the frontend splits on "$" to group by organization).
 func (d *Datasource) handleRepositories(w http.ResponseWriter, r *http.Request) {
-	pCtx := backend.PluginConfigFromContext(r.Context())
-	options, err := BuildMeshIqDataSourceOptions(pCtx.DataSourceInstanceSettings)
+	// Listing repositories is inherently cross-repository, so no default-repo scoping here.
+	model, err := d.runMetadataQuery(r, BuildRepositoriesQueryModel(), false)
 	if err != nil {
-		writeResourceError(r, w, http.StatusBadRequest, err)
+		writeResourceError(r, w, metadataQueryErrorStatus(err), err)
 		return
 	}
 
-	// Listing repositories is inherently cross-repository, so the query carries no repository
-	// of its own.
-	queryModel := BuildRepositoriesQueryModel()
+	writeResourceJSON(r, w, collectColumnStrings(model, jkql.REPO_ID))
+}
+
+// metadataQueryErrorStatus classifies a runMetadataQuery error the same way the main query path
+// does: an invalid local config is a client-side problem (400), a dataservice error envelope means
+// the dataservice itself rejected the query (400), and everything else (transport failure) is the
+// only case that's actually a gateway/downstream outage (502).
+func metadataQueryErrorStatus(err error) int {
+	if errors.Is(err, errInvalidOptions) {
+		return http.StatusBadRequest
+	}
+	var qe *queryError
+	if errors.As(err, &qe) {
+		return http.StatusBadRequest
+	}
+	return http.StatusBadGateway
+}
+
+// runMetadataQuery resolves the datasource options for the request and runs a jKQL query,
+// returning the parsed, exploded jkql.DataModel. useDefaultRepo scopes the query to the
+// datasource's default repository — metadata like custom fields is repository data, so without
+// it the token's implicit default repository would answer instead of the configured one.
+func (d *Datasource) runMetadataQuery(r *http.Request, queryModel QueryModel, useDefaultRepo bool) (jkql.DataModel, error) {
+	pCtx := backend.PluginConfigFromContext(r.Context())
+	options, err := BuildMeshIqDataSourceOptions(pCtx.DataSourceInstanceSettings)
+	if err != nil {
+		return jkql.DataModel{}, fmt.Errorf("%w: %w", errInvalidOptions, err)
+	}
+
+	if useDefaultRepo && queryModel.RepositoryID == "" {
+		queryModel.RepositoryID = options.RepositoryID
+	}
+
 	result, err := queryDataService(r.Context(), d.httpClient, queryModel, *options)
 	if err != nil {
-		writeResourceError(r, w, http.StatusBadGateway, err)
-		return
+		return jkql.DataModel{}, err
 	}
 
 	model := jkql.BuildDataModel(result, nil)
 	logParseIssues(r.Context(), queryModel, model)
+	return model, nil
+}
 
-	writeResourceJSON(r, w, collectColumnStrings(model, jkql.REPO_ID))
+// handleTables lists the queryable item types ("Get Items").
+func (d *Datasource) handleTables(w http.ResponseWriter, r *http.Request) {
+	model, err := d.runMetadataQuery(r, BuildItemsQueryModel(), true)
+	if err != nil {
+		writeResourceError(r, w, metadataQueryErrorStatus(err), err)
+		return
+	}
+
+	tables := make([]tableInfo, 0, model.RowCount)
+	for _, name := range collectColumnStrings(model, jkql.ITEM_NAME) {
+		tables = append(tables, tableInfo{Name: name})
+	}
+
+	writeResourceJSON(r, w, tables)
+}
+
+// handleFields lists the static and custom fields of the item type named by the "table" query
+// parameter ("Get Fields For <table>").
+func (d *Datasource) handleFields(w http.ResponseWriter, r *http.Request) {
+	itemType := r.URL.Query().Get("table")
+	if !jkql.IdentifierRegExp.MatchString(itemType) {
+		writeResourceError(r, w, http.StatusBadRequest, fmt.Errorf("missing or invalid 'table' parameter"))
+		return
+	}
+
+	model, err := d.runMetadataQuery(r, BuildFieldsQueryModel(itemType), true)
+	if err != nil {
+		writeResourceError(r, w, metadataQueryErrorStatus(err), err)
+		return
+	}
+
+	// jkql.BuildDataModel explodes the Properties MAP into per-key columns, so the isCustom flag
+	// lives in the exploded boolean column keyed by the jKQL name Properties('isCustom').
+	customHeader := findHeaderByName(model, "Properties('isCustom')")
+
+	fields := make([]fieldInfo, 0, model.RowCount)
+	for _, row := range model.Rows {
+		name, ok := grafanaString(model, row, jkql.FIELD_NAME)
+		if !ok || name == "" {
+			continue
+		}
+		dataType, _ := grafanaString(model, row, jkql.DATA_TYPE)
+		custom := false
+		if customHeader != "" {
+			custom, _ = row[customHeader].(bool)
+		}
+		fields = append(fields, fieldInfo{
+			Name:   name,
+			Type:   dataType,
+			Custom: custom,
+		})
+	}
+
+	writeResourceJSON(r, w, fields)
+}
+
+// findHeaderByName returns the (exploded) column header whose jKQL field name equals fieldName, or
+// "" if none matches. jkql.BuildDataModel keys each column by its jKQL name in model.Names.
+func findHeaderByName(model jkql.DataModel, fieldName string) string {
+	for header, name := range model.Names {
+		if name == fieldName {
+			return header
+		}
+	}
+	return ""
 }
 
 // grafanaString reads a single column value from a row and normalizes it to a string via the
@@ -109,8 +226,8 @@ func writeResourceJSON(r *http.Request, w http.ResponseWriter, payload interface
 }
 
 // writeResourceError answers a resource request with a JSON error and logs it. The frontend
-// degrades quietly on these (an empty repository dropdown, no suggestions), so this log line is
-// the only place a failing /repositories or /suggestions call becomes visible.
+// degrades quietly on these (empty dropdowns, no suggestions), so this log line is the only place
+// a failing /repositories, /tables, /fields or /suggestions call becomes visible.
 func writeResourceError(r *http.Request, w http.ResponseWriter, status int, err error) {
 	log.DefaultLogger.FromContext(r.Context()).Warn("resource request failed",
 		"path", r.URL.Path, "status", status, "error", err)

@@ -61,3 +61,19 @@ func BuildFunctionsQueryModel() QueryModel {
 func BuildEnumValuesQueryModel(field string) QueryModel {
 	return QueryModel{JKQL: "Get Enumeration For " + field}
 }
+
+// BuildItemsQueryModel builds the jKQL used to list item types (the "tables"). The result set's
+// ItemName column holds the queryable item type names (Log, Event, Snapshot, …). Excludes admin,
+// reference/catalog, and non-GET-able item types, none of which belong in a query editor's
+// item-type picker.
+func BuildItemsQueryModel() QueryModel {
+	return QueryModel{JKQL: "Get Items Where Properties('isAdmin') = false And Properties('isReference') = false And StatementType = 'GET'"}
+}
+
+// BuildFieldsQueryModel builds the jKQL used to list the fields of a single item type. Unlike a
+// bare "Get Fields" (which lists only the static/built-in fields), "Get Fields For <itemType>"
+// returns the static AND custom (Properties-derived) fields for that type — the custom ones are
+// flagged via each field's Properties.isCustom.
+func BuildFieldsQueryModel(itemType string) QueryModel {
+	return QueryModel{JKQL: "Get Fields For " + itemType}
+}
