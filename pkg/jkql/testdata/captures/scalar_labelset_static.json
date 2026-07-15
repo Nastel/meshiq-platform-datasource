@@ -1,0 +1,66 @@
+{
+    "rows-found": 10,
+    "row-count": 10,
+    "total-row-count": 10,
+    "query-date-filter": "1783987200000000 TO 1784073599999999",
+    "timezone": "GMT",
+    "locale": "en",
+    "status": "SUCCESS",
+    "time": 1784031442139298,
+    "item-type": "Log",
+    "stmt-type": "Get",
+    "colhdr": [
+        "ItemType"
+    ],
+    "coltype": {
+        "ItemType": "LABELSET"
+    },
+    "collabel": {
+        "ItemType": "ItemType"
+    },
+    "rows": [
+        {
+            "ItemType": "MONITOR"
+        },
+        {
+            "ItemType": "PARAMETER"
+        },
+        {
+            "ItemType": "IBMMQ_LISTENER"
+        },
+        {
+            "ItemType": "ENUMERATION"
+        },
+        {
+            "ItemType": "IBMMQ_LOCAL_QUEUE"
+        },
+        {
+            "ItemType": "IBMMQ_QUEUE_MANAGER"
+        },
+        {
+            "ItemType": "IBMMQ_CHANNEL"
+        },
+        {
+            "ItemType": "IBMMQ_LOCAL_QUEUE"
+        },
+        {
+            "ItemType": "IBMMQ_LOCAL_QUEUE"
+        },
+        {
+            "ItemType": "IBMMQ_LOCAL_QUEUE"
+        }
+    ],
+    "overallStatistics": {
+        "json_string.time.usec": 80,
+        "pinot_request_build.time.usec": 233,
+        "pinot_request_exec.time.usec": 4673,
+        "pinot_result_proc.time.usec": 42,
+        "pinot_result_rows.count": 10,
+        "raw_result_post_process.time.usec": 2,
+        "request_wait.time.usec": 2446,
+        "rows_found.count": 10,
+        "rows_returned.count": 10,
+        "rows_total.count": 10,
+        "total_exec.time.usec": 5122
+    }
+}

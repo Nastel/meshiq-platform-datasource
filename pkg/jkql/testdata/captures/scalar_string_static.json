@@ -1,0 +1,66 @@
+{
+    "rows-found": 10,
+    "row-count": 10,
+    "total-row-count": 10,
+    "query-date-filter": "1783987200000000 TO 1784073599999999",
+    "timezone": "GMT",
+    "locale": "en",
+    "status": "SUCCESS",
+    "time": 1784031398770545,
+    "item-type": "Log",
+    "stmt-type": "Get",
+    "colhdr": [
+        "ResourceName"
+    ],
+    "coltype": {
+        "ResourceName": "STRING"
+    },
+    "collabel": {
+        "ResourceName": "ResourceName"
+    },
+    "rows": [
+        {
+            "ResourceName": "THREAD=Embedded/ClientPool/task-5#JVM=1@0148a0212fd9#IP=172.19.0.8"
+        },
+        {
+            "ResourceName": "THREAD=Embedded/ClientPool/task-8#JVM=1@0148a0212fd9#IP=172.19.0.8"
+        },
+        {
+            "ResourceName": "THREAD=Embedded/StatusResPool/task-4#JVM=1@0148a0212fd9#IP=172.19.0.8"
+        },
+        {
+            "ResourceName": "THREAD=Embedded/QueryPool/task-8#JVM=1@0148a0212fd9#IP=172.19.0.8"
+        },
+        {
+            "ResourceName": "THREAD=Embedded/QueryPool/task-11#JVM=1@0148a0212fd9#IP=172.19.0.8"
+        },
+        {
+            "ResourceName": "THREAD=Embedded/QueryPool/task-15#JVM=1@0148a0212fd9#IP=172.19.0.8"
+        },
+        {
+            "ResourceName": "THREAD=Embedded/QueryPool/task-7#JVM=1@0148a0212fd9#IP=172.19.0.8"
+        },
+        {
+            "ResourceName": "THREAD=Embedded/QueryPool/task-4#JVM=1@0148a0212fd9#IP=172.19.0.8"
+        },
+        {
+            "ResourceName": "THREAD=Embedded/QueryPool/task-15#JVM=1@0148a0212fd9#IP=172.19.0.8"
+        },
+        {
+            "ResourceName": "THREAD=Embedded/QueryPool/task-11#JVM=1@0148a0212fd9#IP=172.19.0.8"
+        }
+    ],
+    "overallStatistics": {
+        "json_string.time.usec": 294,
+        "pinot_request_build.time.usec": 1574,
+        "pinot_request_exec.time.usec": 16044,
+        "pinot_result_proc.time.usec": 275,
+        "pinot_result_rows.count": 10,
+        "raw_result_post_process.time.usec": 2,
+        "request_wait.time.usec": 8624,
+        "rows_found.count": 10,
+        "rows_returned.count": 10,
+        "rows_total.count": 10,
+        "total_exec.time.usec": 19028
+    }
+}

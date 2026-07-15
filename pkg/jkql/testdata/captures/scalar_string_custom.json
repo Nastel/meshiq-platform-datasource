@@ -1,0 +1,117 @@
+{
+    "rows-found": 59,
+    "row-count": 10,
+    "total-row-count": 10,
+    "timezone": "GMT",
+    "locale": "en",
+    "status": "SUCCESS",
+    "time": 1784031193340047,
+    "item-type": "Log",
+    "stmt-type": "Get",
+    "colhdr": [
+        "Properties('MonitorName')"
+    ],
+    "coltype": {
+        "Properties('MonitorName')": "MAP"
+    },
+    "collabel": {
+        "Properties('MonitorName')": "MonitorName"
+    },
+    "rows": [
+        {
+            "Properties('MonitorName')": {
+                "MonitorName": "JMXKAFKA_kafkaserver_3mconst_attributes"
+            },
+            "Properties('MonitorName'):_ValueTypes": {
+                "MonitorName": "STRING"
+            }
+        },
+        {
+            "Properties('MonitorName')": {
+                "MonitorName": "JMXKFKA_kafkacluster_2mconst_multifilters_copy"
+            },
+            "Properties('MonitorName'):_ValueTypes": {
+                "MonitorName": "STRING"
+            }
+        },
+        {
+            "Properties('MonitorName')": {
+                "MonitorName": "WGS_Cache_Statistic_attribute_filter_single_success_metric"
+            },
+            "Properties('MonitorName'):_ValueTypes": {
+                "MonitorName": "STRING"
+            }
+        },
+        {
+            "Properties('MonitorName')": {
+                "MonitorName": "IBM_MQ_Topic_single_metric"
+            },
+            "Properties('MonitorName'):_ValueTypes": {
+                "MonitorName": "STRING"
+            }
+        },
+        {
+            "Properties('MonitorName')": {
+                "MonitorName": "collectdMetrics_cpu_2mc_multifilters_string"
+            },
+            "Properties('MonitorName'):_ValueTypes": {
+                "MonitorName": "STRING"
+            }
+        },
+        {
+            "Properties('MonitorName')": {
+                "MonitorName": "JMXKAFKA_javanio_2mcomp_nofilters_copy"
+            },
+            "Properties('MonitorName'):_ValueTypes": {
+                "MonitorName": "STRING"
+            }
+        },
+        {
+            "Properties('MonitorName')": {
+                "MonitorName": "WGS_Node_Connection_Statistic_attribute_filter_2metric_filter_copy"
+            },
+            "Properties('MonitorName'):_ValueTypes": {
+                "MonitorName": "STRING"
+            }
+        },
+        {
+            "Properties('MonitorName')": {
+                "MonitorName": "WGS_Cache_Statistic_attribute_filter_single_success_metric_copy"
+            },
+            "Properties('MonitorName'):_ValueTypes": {
+                "MonitorName": "STRING"
+            }
+        },
+        {
+            "Properties('MonitorName')": {
+                "MonitorName": "WGS_Node_Connection_Statistic_multifilter_2metric_const"
+            },
+            "Properties('MonitorName'):_ValueTypes": {
+                "MonitorName": "STRING"
+            }
+        },
+        {
+            "Properties('MonitorName')": {
+                "MonitorName": "Test"
+            },
+            "Properties('MonitorName'):_ValueTypes": {
+                "MonitorName": "STRING"
+            }
+        }
+    ],
+    "overallStatistics": {
+        "apply_limit.time.usec": 28,
+        "json_string.time.usec": 874,
+        "pinot_request_build.time.usec": 971,
+        "pinot_request_exec.time.usec": 25707,
+        "pinot_result_proc.time.usec": 1371,
+        "pinot_result_rows.count": 59,
+        "raw_result_post_process.time.usec": 4,
+        "request_wait.time.usec": 6741,
+        "rows_found.count": 59,
+        "rows_returned.count": 10,
+        "rows_total.count": 10,
+        "sort_time.time.usec": 23,
+        "total_exec.time.usec": 28518
+    }
+}

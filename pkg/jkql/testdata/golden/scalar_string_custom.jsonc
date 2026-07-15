@@ -1,0 +1,94 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 10
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 10
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 1 Fields by 10 Rows
+//  +--------------------------------------------------------------------+
+//  | Name: MonitorName                                                  |
+//  | Labels:                                                            |
+//  | Type: []*string                                                    |
+//  +--------------------------------------------------------------------+
+//  | JMXKAFKA_kafkaserver_3mconst_attributes                            |
+//  | JMXKFKA_kafkacluster_2mconst_multifilters_copy                     |
+//  | WGS_Cache_Statistic_attribute_filter_single_success_metric         |
+//  | IBM_MQ_Topic_single_metric                                         |
+//  | collectdMetrics_cpu_2mc_multifilters_string                        |
+//  | JMXKAFKA_javanio_2mcomp_nofilters_copy                             |
+//  | WGS_Node_Connection_Statistic_attribute_filter_2metric_filter_copy |
+//  | WGS_Cache_Statistic_attribute_filter_single_success_metric_copy    |
+//  | WGS_Node_Connection_Statistic_multifilter_2metric_const            |
+//  | Test                                                               |
+//  +--------------------------------------------------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 10
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 10
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "MonitorName",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            "JMXKAFKA_kafkaserver_3mconst_attributes",
+            "JMXKFKA_kafkacluster_2mconst_multifilters_copy",
+            "WGS_Cache_Statistic_attribute_filter_single_success_metric",
+            "IBM_MQ_Topic_single_metric",
+            "collectdMetrics_cpu_2mc_multifilters_string",
+            "JMXKAFKA_javanio_2mcomp_nofilters_copy",
+            "WGS_Node_Connection_Statistic_attribute_filter_2metric_filter_copy",
+            "WGS_Cache_Statistic_attribute_filter_single_success_metric_copy",
+            "WGS_Node_Connection_Statistic_multifilter_2metric_const",
+            "Test"
+          ]
+        ]
+      }
+    }
+  ]
+}
