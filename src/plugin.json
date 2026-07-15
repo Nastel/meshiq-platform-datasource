@@ -11,15 +11,25 @@
   "info": {
     "description": "meshIQ Platform datasource plugin for Grafana",
     "author": {
-      "name": "meshIQ"
+      "name": "meshIQ",
+      "url": "https://www.meshiq.com/"
     },
     "keywords": ["datasource", "meshIQ", "jKQL", "messaging", "observability"],
     "logos": {
       "small": "img/logo-owl.svg",
-      "large": "img/logo-meshiq.svg"
+      "large": "img/logo-owl.svg"
     },
-    "links": [],
-    "screenshots": [],
+    "links": [
+      { "name": "Source and issues", "url": "https://github.com/Nastel/meshiq-platform-datasource" },
+      { "name": "meshIQ", "url": "https://www.meshiq.com/" }
+    ],
+    "screenshots": [
+      { "name": "Query editor and results", "path": "img/screenshots/query-editor.png" },
+      { "name": "IBM MQ dashboard", "path": "img/screenshots/dashboard-ibmmq.png" },
+      { "name": "Kafka dashboard", "path": "img/screenshots/dashboard-kafka.png" },
+      { "name": "TIBCO EMS dashboard", "path": "img/screenshots/dashboard-ems.png" },
+      { "name": "Configuration", "path": "img/screenshots/config.png" }
+    ],
     "version": "%VERSION%",
     "updated": "%TODAY%"
   },

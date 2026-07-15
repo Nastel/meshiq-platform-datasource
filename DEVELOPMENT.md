@@ -76,9 +76,11 @@ Start `Run: dev`, then pick a config in the **Run and Debug** view (defined in
 
 | Path | What |
 |---|---|
-| [src/](src/) | frontend — datasource, query & config editors (TypeScript/React) |
-| [pkg/plugin/](pkg/plugin/) | backend — query handling, dataservice HTTP client, health check (Go) |
+| [src/](src/) | frontend — datasource, query & config editors, jKQL completion (TypeScript/React) |
+| [pkg/plugin/](pkg/plugin/) | backend — query handling, dataservice HTTP client, resources, health check (Go) |
+| [pkg/jkql/](pkg/jkql/) | backend — jKQL result-set → data-frame conversion and type handling |
 | [provisioning/](provisioning/) | dev datasource auto-loaded into the container |
+| [tests/](tests/) | end-to-end tests (`@grafana/plugin-e2e`) |
 | [docker-compose.yaml](docker-compose.yaml), [docker/](docker/) | the dev Grafana container and its startup script |
 | [scripts/](scripts/) | delve attach helpers (used by the debug configs) |
 | [.config/](.config/) | build config managed by create-plugin — **don't edit** |

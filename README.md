@@ -10,10 +10,22 @@ variables, and back alert rules.
 - Grafana >= 12.3.0
 - Access to a meshIQ dataservice endpoint and an access token.
 
+## Configuration
+
+Add a **meshIQ Platform** data source and provide:
+
+- **Service URL** — the base URL of the meshIQ dataservice.
+- **Access Token** — an API token for the dataservice (stored in `secureJsonData`).
+
+Click **Save & Test** to verify the connection.
+
+Full user documentation — query examples, template variables, provisioning — is in
+[src/README.md](src/README.md) (the page shown in the Grafana plugin catalog).
+
 ## Development
 
 See [DEVELOPMENT.md](DEVELOPMENT.md) for the dev loop (devcontainer, `docker-compose up`,
-watch/debug scripts).
+watch/debug scripts) and the test suites.
 
 ## License
 
