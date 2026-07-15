@@ -1,0 +1,952 @@
+{
+  "uid": "meshiq-kafka-live",
+  "title": "Kafka — Live Overview",
+  "description": "Live state of Kafka clusters (brokers, topics, consumer groups, lag) served by the meshIQ Platform datasource. Drill down into consumer lag, broker health, and topic hygiene.",
+  "tags": [
+    "showcase",
+    "meshiq",
+    "kafka"
+  ],
+  "timezone": "browser",
+  "editable": true,
+  "graphTooltip": 0,
+  "refresh": "30s",
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "schemaVersion": 39,
+  "templating": {
+    "list": [
+      {
+        "name": "cluster",
+        "label": "Cluster",
+        "type": "query",
+        "datasource": {
+          "type": "meshiq-platform-datasource",
+          "uid": "meshiq-platform"
+        },
+        "query": {
+          "type": "query",
+          "jkql": "Get KafkaCluster Fields Name Sort By Name",
+          "refId": "variable-cluster"
+        },
+        "multi": true,
+        "includeAll": true,
+        "refresh": 1,
+        "sort": 0,
+        "current": {
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ],
+          "selected": true
+        },
+        "options": []
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "row",
+      "title": "Overview",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": []
+    },
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Clusters",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get Number Of KafkaCluster Where Name In ($cluster)",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Brokers",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get Number Of KafkaBroker Where WgsClusterName In ($cluster)",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Topics",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get Number Of KafkaTopic Where WgsClusterName In ($cluster) And Name Not Starts With '__'",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Partitions",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get Number Of KafkaPartition Where WgsClusterName In ($cluster) And topicName Not Starts With '__'",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Consumer Groups",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get Number Of KafkaConsumerGroup Where WgsClusterName In ($cluster)",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Consumers",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get Number Of KafkaConsumer Where WgsClusterName In ($cluster)",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "type": "row",
+      "title": "Consumer Lag",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "panels": []
+    },
+    {
+      "id": 7,
+      "type": "table",
+      "title": "Top 10 Consumer Lag by Partition",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 14,
+        "x": 0,
+        "y": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get KafkaConsumer Fields WgsClusterName As 'Cluster', groupId As 'Group', topicName As 'Topic', partitionId As 'Partition', lag As 'Lag', currentOffset As 'Consumer Offset', partitionEndOffset As 'LEO' Where WgsClusterName In ($cluster) And topicName Not Starts With '__' Sort By lag Desc Range 1,10",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Partition"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 70
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Lag"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 70
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Consumer Offset"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LEO"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 70
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "type": "piechart",
+      "title": "Consumer Group State",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 14,
+        "y": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get Number Of KafkaConsumerGroup Where WgsClusterName In ($cluster) Group By state",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "pieType": "pie",
+        "displayLabels": [
+          "name",
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "right"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "NumberOf"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "${__cell_0}"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "STABLE"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "semi-dark-green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PREPARING_REBALANCE"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "semi-dark-blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "COMPLETING_REBALANCE"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "semi-dark-blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DEAD"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "semi-dark-red"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "EMPTY"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "UNKNOWN"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "gray"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "type": "table",
+      "title": "Group Metrics",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 19,
+        "y": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get KafkaConsumerGroup Fields Name As 'Group', memberCount As 'Members', topicCount As 'Topics' Where WgsClusterName In ($cluster) Sort By Name",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Members"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 70
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Topics"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 70
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "row",
+      "title": "Broker Health",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
+      "panels": []
+    },
+    {
+      "id": 10,
+      "type": "table",
+      "title": "Per-Broker State",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 18,
+        "x": 0,
+        "y": 15
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get KafkaBroker Fields Name As 'Broker', WgsClusterName As 'Cluster', state As 'State', isController As 'Controller', partitionCount As 'Partitions', partitionLeaderReplicaCount As 'Leader Partitions' Where WgsClusterName In ($cluster) Sort By Name",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "State"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Controller"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Partitions"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Leader Partitions"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "table",
+      "title": "Per-Cluster Aggregates",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 15
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get KafkaBroker Fields avg(cpuLoad) As 'Avg CPU Load', sum(partitionCount) As 'Total Partitions' Where WgsClusterName In ($cluster) Group By WgsClusterName",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Avg CPU Load"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total Partitions"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "row",
+      "title": "Topic Hygiene",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "panels": []
+    },
+    {
+      "id": 12,
+      "type": "table",
+      "title": "Topic Health",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get KafkaTopic Fields WgsClusterName As 'Cluster', Name As 'Topic', replicationFactor As 'Replication Factor', notInSyncReplicaPartitions As 'Not In Sync' Where WgsClusterName In ($cluster) And Name Not Starts With '__' Sort By notInSyncReplicaPartitions Desc",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Not In Sync"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "thresholds"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Replication Factor"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
