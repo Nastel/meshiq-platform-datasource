@@ -151,7 +151,7 @@ func (d *Datasource) query(ctx context.Context, pCtx backend.PluginContext, quer
 	dataModel := jkql.BuildDataModel(result, d.functionCatalog(ctx, *options))
 	frame := jkql.BuildDataFrame(dataModel)
 	logParseIssues(ctx, *queryModel, dataModel)
-	frame = jkql.FinalizeFrame(frame, queryModel.JKQL)
+	frame = jkql.FinalizeFrame(frame, queryModel.JKQL, queryModel.Format)
 	frame.RefID = query.RefID
 	response.Frames = append(response.Frames, frame)
 

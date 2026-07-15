@@ -3,6 +3,7 @@ package jkql
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -76,14 +77,135 @@ func buildStatusNotice(model DataModel) *data.Notice {
 	return &data.Notice{Severity: severity, Text: text}
 }
 
-// FinalizeFrame applies query-level metadata after a frame is built: the executed jKQL, shown in
-// the query inspector.
-func FinalizeFrame(frame *data.Frame, executedQuery string) *data.Frame {
+// Frame formats FinalizeFrame accepts (the query editor's "Format as" option).
+const (
+	FormatTable      = "table"
+	FormatTimeSeries = "timeseries"
+)
+
+// FinalizeFrame applies query-level metadata after a frame is built: the executed jKQL (shown in
+// the query inspector) and the requested format — "timeseries" reshapes to a time-series frame,
+// anything else stays a table. It takes primitives rather than the query model so the converter
+// stays independent of the query layer.
+func FinalizeFrame(frame *data.Frame, executedQuery string, format string) *data.Frame {
 	if frame.Meta == nil {
 		frame.Meta = &data.FrameMeta{}
 	}
 	frame.Meta.ExecutedQueryString = executedQuery
+
+	if format == FormatTimeSeries {
+		frame = toTimeSeries(frame)
+	}
 	return frame
+}
+
+// toTimeSeries reshapes a frame for graphing when "Format as: Time series" is selected. Long
+// results (time + value + label columns) are pivoted to wide multi-series via LongToWide; already
+// wide results pass through; anything that isn't a time series stays a table with an explanation.
+func toTimeSeries(frame *data.Frame) *data.Frame {
+	schema := frame.TimeSeriesSchema()
+	switch schema.Type {
+	case data.TimeSeriesTypeLong:
+		sortFrameByTime(frame, schema.TimeIndex)
+		wide, err := data.LongToWide(frame, nil)
+		if err != nil {
+			addNotice(frame, data.NoticeSeverityWarning, "Could not format as time series: "+err.Error()+".")
+			return frame
+		}
+		if wide.Meta == nil {
+			wide.Meta = &data.FrameMeta{}
+		}
+		wide.Meta.Type = data.FrameTypeTimeSeriesWide
+		wide.Meta.PreferredVisualization = data.VisTypeGraph
+		return wide
+	case data.TimeSeriesTypeWide:
+		sortFrameByTime(frame, schema.TimeIndex)
+		frame.Meta.Type = data.FrameTypeTimeSeriesWide
+		frame.Meta.PreferredVisualization = data.VisTypeGraph
+		return frame
+	default:
+		addNotice(frame, data.NoticeSeverityInfo,
+			"Time series format needs a time field and at least one numeric field; showing as table.")
+		return frame
+	}
+}
+
+// sortFrameByTime stably reorders every row of a frame by the time field (ascending). jKQL results
+// aren't guaranteed to be time-ordered, and Grafana time series need monotonic time (LongToWide
+// requires it, and graph panels render unsorted points as zig-zags).
+func sortFrameByTime(frame *data.Frame, timeIndex int) {
+	if timeIndex < 0 || timeIndex >= len(frame.Fields) {
+		return
+	}
+
+	timeField := frame.Fields[timeIndex]
+	n := timeField.Len()
+	if n < 2 {
+		return
+	}
+
+	order := make([]int, n)
+	for i := range order {
+		order[i] = i
+	}
+	sort.SliceStable(order, func(a, b int) bool {
+		return timeBefore(timeField.At(order[a]), timeField.At(order[b]))
+	})
+
+	alreadySorted := true
+	for i, idx := range order {
+		if i != idx {
+			alreadySorted = false
+			break
+		}
+	}
+	if alreadySorted {
+		return
+	}
+
+	for _, field := range frame.Fields {
+		reordered := make([]interface{}, n)
+		for newIdx, oldIdx := range order {
+			reordered[newIdx] = field.CopyAt(oldIdx)
+		}
+		for i := 0; i < n; i++ {
+			field.Set(i, reordered[i])
+		}
+	}
+}
+
+// timeBefore orders time values ascending; null/unknown times sort first.
+func timeBefore(a, b interface{}) bool {
+	ta, aok := asTime(a)
+	tb, bok := asTime(b)
+	if !aok {
+		return bok
+	}
+	if !bok {
+		return false
+	}
+	return ta.Before(tb)
+}
+
+func asTime(v interface{}) (time.Time, bool) {
+	switch t := v.(type) {
+	case time.Time:
+		return t, true
+	case *time.Time:
+		if t == nil {
+			return time.Time{}, false
+		}
+		return *t, true
+	default:
+		return time.Time{}, false
+	}
+}
+
+func addNotice(frame *data.Frame, severity data.NoticeSeverity, text string) {
+	if frame.Meta == nil {
+		frame.Meta = &data.FrameMeta{}
+	}
+	frame.Meta.Notices = append(frame.Meta.Notices, data.Notice{Severity: severity, Text: text})
 }
 
 // addVariantColumn splits a VARIANT column into one sub-column per underlying type actually seen

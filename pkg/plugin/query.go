@@ -14,7 +14,9 @@ type QueryModel struct {
 	Timezone     string `json:"timezone"`
 	RepositoryID string `json:"repositoryID"`
 	MaxRows      int    `json:"maxRows"`
-	Date         string `json:"-"`
+	// Format selects the frame shape: jkql.FormatTable (default) or jkql.FormatTimeSeries.
+	Format string `json:"format"`
+	Date   string `json:"-"`
 }
 
 // BuildQueryModel unmarshals a Grafana query and derives the jKQL date range.
