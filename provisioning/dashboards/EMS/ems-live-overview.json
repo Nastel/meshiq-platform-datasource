@@ -1,0 +1,536 @@
+{
+  "uid": "meshiq-ems-live",
+  "title": "EMS — Live Overview",
+  "description": "Live state of IBM EMS servers, connections, queues, and topics served by the meshIQ Platform datasource. Focus on backlog visualization and stuck queue detection.",
+  "tags": [
+    "showcase",
+    "meshiq",
+    "ems"
+  ],
+  "timezone": "browser",
+  "editable": true,
+  "graphTooltip": 0,
+  "refresh": "30s",
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "schemaVersion": 39,
+  "templating": {
+    "list": [
+      {
+        "name": "server",
+        "label": "EMS Server",
+        "type": "query",
+        "datasource": {
+          "type": "meshiq-platform-datasource",
+          "uid": "meshiq-platform"
+        },
+        "query": {
+          "type": "query",
+          "jkql": "Get EmsServer Fields Name Sort By Name",
+          "refId": "variable-server"
+        },
+        "multi": true,
+        "includeAll": true,
+        "refresh": 1,
+        "sort": 0,
+        "current": {
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ],
+          "selected": true
+        },
+        "options": []
+      },
+      {
+        "name": "queue",
+        "label": "Queue",
+        "type": "query",
+        "datasource": {
+          "type": "meshiq-platform-datasource",
+          "uid": "meshiq-platform"
+        },
+        "query": {
+          "type": "query",
+          "jkql": "Get EmsQueue Fields Name Where WgsManagerName In ($server) Sort By Name",
+          "refId": "variable-queue"
+        },
+        "multi": false,
+        "includeAll": false,
+        "refresh": 1,
+        "sort": 0,
+        "current": {},
+        "options": []
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "row",
+      "title": "Overview",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": []
+    },
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "EMS Servers",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get Number Of EmsServer",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Connections",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get Number Of EmsConnection Where WgsManagerName In ($server)",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Sessions",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get EmsServer Fields sum(sessionCount) As 'Sessions' Where Name In ($server)",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Queues",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get Number Of EmsQueue Where WgsManagerName In ($server)",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Topics",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get Number Of EmsTopic Where WgsManagerName In ($server)",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "type": "row",
+      "title": "Server Health",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "panels": []
+    },
+    {
+      "id": 6,
+      "type": "table",
+      "title": "Server Status",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 14,
+        "x": 0,
+        "y": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get EmsServer Fields Name As 'Server Name', WgsEmsState As 'Server State', connectionCount As 'Connections', pendingMsgCount As 'Pending Messages', inboundMsgRate As 'In Rate (msg/s)', outboundMsgRate As 'Out Rate (msg/s)' Where Name In ($server) Sort By Name",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Server State"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "color-text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "type": "piechart",
+      "title": "Server State Distribution",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 10,
+        "x": 14,
+        "y": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get Number Of EmsServer Where Name In ($server) Group By WgsEmsState",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "pieType": "pie",
+        "displayLabels": [
+          "name",
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "right"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "row",
+      "title": "Stuck Queues (Backlog)",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
+      "panels": []
+    },
+    {
+      "id": 8,
+      "type": "table",
+      "title": "Top 10 Queues by Pending Messages (No Consumers)",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get EmsQueue Fields WgsManagerName As 'Server', Name As 'Queue', pendingMsgCount As 'Pending Messages', consumerCount As 'Consumer Count', inStatMessageRate As 'In Rate (msg/s)', outStatMessageRate As 'Out Rate (msg/s)' Where WgsManagerName In ($server) And consumerCount = 0 Sort By pendingMsgCount Desc Range 1,10",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Pending Messages"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "thresholds"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 100
+                    },
+                    {
+                      "color": "red",
+                      "value": 1000
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
