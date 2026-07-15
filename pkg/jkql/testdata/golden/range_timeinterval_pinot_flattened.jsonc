@@ -1,0 +1,159 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 25
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 1337
+//          }
+//      ],
+//      "notices": [
+//          {
+//              "severity": "warning",
+//              "text": "Only returning 25 of 1,337 rows"
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 2 Fields by 25 Rows
+//  +-------------------+----------------+
+//  | Name: ElapsedTime | Name: NumberOf |
+//  | Labels:           | Labels:        |
+//  | Type: []*int64    | Type: []*int64 |
+//  +-------------------+----------------+
+//  | 0                 | 23             |
+//  | 10897             | 1              |
+//  | 43395             | 1              |
+//  | 5692              | 1              |
+//  | 108650            | 1              |
+//  | 6248              | 1              |
+//  | 108871            | 1              |
+//  | 11147             | 1              |
+//  | 26757             | 1              |
+//  | ...               | ...            |
+//  +-------------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 25
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 1337
+            }
+          ],
+          "notices": [
+            {
+              "severity": "warning",
+              "text": "Only returning 25 of 1,337 rows"
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "ElapsedTime",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            },
+            "config": {
+              "unit": "µs"
+            }
+          },
+          {
+            "name": "NumberOf",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            0,
+            10897,
+            43395,
+            5692,
+            108650,
+            6248,
+            108871,
+            11147,
+            26757,
+            29831,
+            29866,
+            25020,
+            190007,
+            22595,
+            79250,
+            21588,
+            8304,
+            14089,
+            105591,
+            31175,
+            14714,
+            38516,
+            28444,
+            94052,
+            5930
+          ],
+          [
+            23,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            1,
+            1,
+            1,
+            1
+          ]
+        ]
+      }
+    }
+  ]
+}

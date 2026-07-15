@@ -1,0 +1,200 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 32
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 32
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 32 Rows
+//  +----------------------------+--------------------------+----------------+
+//  | Name: partitionCount_begin | Name: partitionCount_end | Name: NumberOf |
+//  | Labels:                    | Labels:                  | Labels:        |
+//  | Type: []*int64             | Type: []*int64           | Type: []*int64 |
+//  +----------------------------+--------------------------+----------------+
+//  | 2007                       | 2493                     | 1              |
+//  | 2494                       | 2980                     | 0              |
+//  | 2981                       | 3467                     | 0              |
+//  | 3468                       | 3954                     | 0              |
+//  | 3955                       | 4441                     | 0              |
+//  | 4442                       | 4928                     | 0              |
+//  | 4929                       | 5415                     | 0              |
+//  | 5416                       | 5902                     | 0              |
+//  | 5903                       | 6389                     | 0              |
+//  | ...                        | ...                      | ...            |
+//  +----------------------------+--------------------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 32
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 32
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "partitionCount_begin",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "partitionCount_end",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "NumberOf",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            2007,
+            2494,
+            2981,
+            3468,
+            3955,
+            4442,
+            4929,
+            5416,
+            5903,
+            6390,
+            6877,
+            7364,
+            7851,
+            8338,
+            8825,
+            9312,
+            9799,
+            10286,
+            10773,
+            11260,
+            11747,
+            12234,
+            12721,
+            13208,
+            13695,
+            14182,
+            14669,
+            15156,
+            15643,
+            16130,
+            16617,
+            17104
+          ],
+          [
+            2493,
+            2980,
+            3467,
+            3954,
+            4441,
+            4928,
+            5415,
+            5902,
+            6389,
+            6876,
+            7363,
+            7850,
+            8337,
+            8824,
+            9311,
+            9798,
+            10285,
+            10772,
+            11259,
+            11746,
+            12233,
+            12720,
+            13207,
+            13694,
+            14181,
+            14668,
+            15155,
+            15642,
+            16129,
+            16616,
+            17103,
+            17590
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            25
+          ]
+        ]
+      }
+    }
+  ]
+}

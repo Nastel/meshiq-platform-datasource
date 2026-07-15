@@ -1,0 +1,156 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 25
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 78
+//          }
+//      ],
+//      "notices": [
+//          {
+//              "severity": "warning",
+//              "text": "Only returning 25 of 78 rows"
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 2 Fields by 25 Rows
+//  +--------------------+----------------+
+//  | Name: jk_call_time | Name: NumberOf |
+//  | Labels:            | Labels:        |
+//  | Type: []*int64     | Type: []*int64 |
+//  +--------------------+----------------+
+//  | 1784140340578      | 1              |
+//  | 1784140371254      | 1              |
+//  | 1784140522876      | 1              |
+//  | 1784140385592      | 1              |
+//  | 1784108042831      | 1              |
+//  | 1784092321520      | 1              |
+//  | 1784094316990      | 1              |
+//  | 1784094555406      | 1              |
+//  | 1784155628668      | 1              |
+//  | ...                | ...            |
+//  +--------------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 25
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 78
+            }
+          ],
+          "notices": [
+            {
+              "severity": "warning",
+              "text": "Only returning 25 of 78 rows"
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "jk_call_time",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "NumberOf",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1784140340578,
+            1784140371254,
+            1784140522876,
+            1784140385592,
+            1784108042831,
+            1784092321520,
+            1784094316990,
+            1784094555406,
+            1784155628668,
+            1784155641483,
+            1784094290862,
+            1784140250778,
+            1784140467533,
+            1784094272111,
+            1784140259833,
+            1784140374695,
+            1784094520646,
+            1784140276318,
+            1784094532251,
+            1784106124569,
+            1784140276354,
+            1784155622177,
+            1784140516569,
+            1784107910670,
+            1784094544267
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        ]
+      }
+    }
+  ]
+}

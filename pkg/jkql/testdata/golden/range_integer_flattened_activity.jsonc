@@ -1,0 +1,102 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 6
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 6
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 2 Fields by 6 Rows
+//  +------------------+----------------+
+//  | Name: EventCount | Name: NumberOf |
+//  | Labels:          | Labels:        |
+//  | Type: []*int64   | Type: []*int64 |
+//  +------------------+----------------+
+//  | 0                | 3002           |
+//  | 3                | 6004           |
+//  | 5                | 2              |
+//  | 1                | 3002           |
+//  | 4                | 2990           |
+//  | 2                | 9008           |
+//  +------------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 6
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 6
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "EventCount",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "NumberOf",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            0,
+            3,
+            5,
+            1,
+            4,
+            2
+          ],
+          [
+            3002,
+            6004,
+            2,
+            3002,
+            2990,
+            9008
+          ]
+        ]
+      }
+    }
+  ]
+}
