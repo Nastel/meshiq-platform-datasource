@@ -2,7 +2,7 @@ import { CoreApp, DataQueryRequest, DataQueryResponse, DataSourceInstanceSetting
 import { DataSourceWithBackend, HealthCheckResult, HealthStatus, getTemplateSrv } from '@grafana/runtime';
 import { Observable } from 'rxjs';
 
-import { DEFAULT_QUERY, MeshIqDataSourceOptions, MeshIqQuery, MAX_ROWS_LIMIT } from './types';
+import { DEFAULT_QUERY, MeshIqDataSourceOptions, MeshIqQuery, MeshIqCompletionItem, MAX_ROWS_LIMIT } from './types';
 
 export class DataSource extends DataSourceWithBackend<MeshIqQuery, MeshIqDataSourceOptions> {
   private readonly defaultRepositoryID: string;
@@ -90,6 +90,27 @@ export class DataSource extends DataSourceWithBackend<MeshIqQuery, MeshIqDataSou
 
   getDefaultRepositoryID(): string {
     return this.defaultRepositoryID;
+  }
+
+  // ---- jKQL autocomplete ---------------------------------------------------
+
+  /**
+   * Fetches jKQL completions for the text up to `caretIndex`, proxied through the backend
+   * `/suggestions` resource to the configured autocomplete service. Falls back to no suggestions
+   * (rather than surfacing an error in the editor) when completion is disabled or the service is
+   * unreachable.
+   */
+  async getSuggestions(jkql: string, caretIndex: number, repositoryID?: string): Promise<MeshIqCompletionItem[]> {
+    try {
+      const params: Record<string, string | number> = { jk_query: jkql, jk_position: caretIndex };
+      const repo = repositoryID || this.defaultRepositoryID;
+      if (repo) {
+        params.jk_repo = repo;
+      }
+      return await this.getResource<MeshIqCompletionItem[]>('suggestions', params);
+    } catch {
+      return [];
+    }
   }
 
   applyTemplateVariables(query: MeshIqQuery, scopedVars: ScopedVars): MeshIqQuery {

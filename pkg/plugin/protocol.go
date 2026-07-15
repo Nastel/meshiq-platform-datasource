@@ -1,8 +1,9 @@
 package plugin
 
 // This file holds the dataservice wire contract: the jk_* query-parameter and response-field names.
-// The jk_* string values are the on-the-wire protocol and must not be renamed. They live here so
-// the query client (client.go) has one place to look them up.
+// The jk_* string values are the on-the-wire protocol and must not be renamed. They are shared by
+// the query client (client.go) and the separate autocomplete client (completion.go), so they live
+// here rather than in either client.
 
 // RequestParameter enumerates the dataservice HTTP query parameters.
 type RequestParameter = string
