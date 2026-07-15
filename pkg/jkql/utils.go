@@ -3,6 +3,7 @@ package jkql
 import (
 	"encoding/json"
 	"math"
+	"strings"
 )
 
 // ToInt64 normalizes a wire numeric value to an int64. Result sets are decoded with
@@ -59,4 +60,39 @@ func ToFloat64(value interface{}) (float64, bool) {
 	default:
 		return 0, false
 	}
+}
+
+// Contains reports whether slice contains value.
+func Contains(slice []string, value string) bool {
+	for _, s := range slice {
+		if s == value {
+			return true
+		}
+	}
+	return false
+}
+
+// dedupeStrings returns slice with later duplicates removed, keeping first-occurrence order.
+func dedupeStrings(slice []string) []string {
+	seen := make(map[string]bool, len(slice))
+	result := make([]string, 0, len(slice))
+	for _, s := range slice {
+		if !seen[s] {
+			seen[s] = true
+			result = append(result, s)
+		}
+	}
+	return result
+}
+
+// CapitalizeStr upper-cases the first rune and lower-cases the rest.
+func CapitalizeStr(value string) string {
+	length := len(value)
+	if length <= 0 {
+		return value
+	}
+	if length > 1 {
+		return strings.ToUpper(value[0:1]) + strings.ToLower(value[1:length])
+	}
+	return strings.ToUpper(value)
 }

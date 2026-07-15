@@ -77,7 +77,7 @@ func TestBuildDataFrame_FieldsMatchModel(t *testing.T) {
 			{"Severity": "ERROR", "EventCount": 2}
 		]
 	}`
-	m := BuildDataModel(parseRS(t, raw))
+	m := BuildDataModel(parseRS(t, raw), nil)
 	frame := BuildDataFrame(m)
 
 	if len(frame.Fields) != 2 {
@@ -100,7 +100,7 @@ func TestBuildDataFrame_FieldsMatchModel(t *testing.T) {
 }
 
 func TestFinalizeFrame_SetsExecutedQuery(t *testing.T) {
-	m := BuildDataModel(parseRS(t, `{"row-count": 0, "total-row-count": 0, "status": "SUCCESS", "colhdr": [], "coltype": {}, "collabel": {}, "rows": []}`))
+	m := BuildDataModel(parseRS(t, `{"row-count": 0, "total-row-count": 0, "status": "SUCCESS", "colhdr": [], "coltype": {}, "collabel": {}, "rows": []}`), nil)
 	frame := BuildDataFrame(m)
 
 	frame = FinalizeFrame(frame, "Get Events")
