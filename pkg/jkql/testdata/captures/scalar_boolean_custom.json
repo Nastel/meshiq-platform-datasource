@@ -1,0 +1,112 @@
+{
+    "rows-found": 133,
+    "row-count": 10,
+    "total-row-count": 133,
+    "timezone": "GMT",
+    "locale": "en",
+    "status": "SUCCESS",
+    "time": 1784032158092410,
+    "item-type": "SolaceQueue",
+    "stmt-type": "Get",
+    "colhdr": [
+        "Properties('incEnbl')"
+    ],
+    "coltype": {
+        "Properties('incEnbl')": "MAP"
+    },
+    "collabel": {
+        "Properties('incEnbl')": "incEnbl"
+    },
+    "rows": [
+        {
+            "Properties('incEnbl')": {
+                "incEnbl": true
+            },
+            "Properties('incEnbl'):_ValueTypes": {
+                "incEnbl": "BOOLEAN"
+            }
+        },
+        {
+            "Properties('incEnbl')": {
+                "incEnbl": true
+            },
+            "Properties('incEnbl'):_ValueTypes": {
+                "incEnbl": "BOOLEAN"
+            }
+        },
+        {
+            "Properties('incEnbl')": {
+                "incEnbl": true
+            },
+            "Properties('incEnbl'):_ValueTypes": {
+                "incEnbl": "BOOLEAN"
+            }
+        },
+        {
+            "Properties('incEnbl')": {
+                "incEnbl": true
+            },
+            "Properties('incEnbl'):_ValueTypes": {
+                "incEnbl": "BOOLEAN"
+            }
+        },
+        {
+            "Properties('incEnbl')": {
+                "incEnbl": true
+            },
+            "Properties('incEnbl'):_ValueTypes": {
+                "incEnbl": "BOOLEAN"
+            }
+        },
+        {
+            "Properties('incEnbl')": {
+                "incEnbl": false
+            },
+            "Properties('incEnbl'):_ValueTypes": {
+                "incEnbl": "BOOLEAN"
+            }
+        },
+        {
+            "Properties('incEnbl')": {
+                "incEnbl": false
+            },
+            "Properties('incEnbl'):_ValueTypes": {
+                "incEnbl": "BOOLEAN"
+            }
+        },
+        {
+            "Properties('incEnbl')": {
+                "incEnbl": false
+            },
+            "Properties('incEnbl'):_ValueTypes": {
+                "incEnbl": "BOOLEAN"
+            }
+        },
+        {
+            "Properties('incEnbl')": {
+                "incEnbl": false
+            },
+            "Properties('incEnbl'):_ValueTypes": {
+                "incEnbl": "BOOLEAN"
+            }
+        },
+        {
+            "Properties('incEnbl')": {
+                "incEnbl": false
+            },
+            "Properties('incEnbl'):_ValueTypes": {
+                "incEnbl": "BOOLEAN"
+            }
+        }
+    ],
+    "overallStatistics": {
+        "apply_range.time.usec": 8,
+        "ext_data_src_exec.time.usec": 3121,
+        "json_string.time.usec": 84,
+        "raw_result_post_process.time.usec": 158,
+        "request_wait.time.usec": 1953,
+        "rows_found.count": 133,
+        "rows_returned.count": 10,
+        "rows_total.count": 133
+    }
+}

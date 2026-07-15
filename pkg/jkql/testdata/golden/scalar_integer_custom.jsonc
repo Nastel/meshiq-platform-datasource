@@ -1,0 +1,94 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 10
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 10
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 1 Fields by 10 Rows
+//  +--------------------+
+//  | Name: jk_call_time |
+//  | Labels:            |
+//  | Type: []*int64     |
+//  +--------------------+
+//  | 1784011079057      |
+//  | 1784011079536      |
+//  | 1784011079850      |
+//  | 1784011118569      |
+//  | 1784011195761      |
+//  | 1784011198751      |
+//  | 1784011216239      |
+//  | 1784011216478      |
+//  | 1784011216566      |
+//  | 1784011287322      |
+//  +--------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 10
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 10
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "jk_call_time",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1784011079057,
+            1784011079536,
+            1784011079850,
+            1784011118569,
+            1784011195761,
+            1784011198751,
+            1784011216239,
+            1784011216478,
+            1784011216566,
+            1784011287322
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+    "rows-found": 10,
+    "row-count": 10,
+    "total-row-count": 10,
+    "query-date-filter": "1783987200000000 TO 1784073599999999",
+    "timezone": "GMT",
+    "locale": "en",
+    "status": "SUCCESS",
+    "time": 1784032203236844,
+    "item-type": "Log",
+    "stmt-type": "Get",
+    "colhdr": [
+        "Severity"
+    ],
+    "coltype": {
+        "Severity": "ENUM"
+    },
+    "collabel": {
+        "Severity": "Severity"
+    },
+    "rows": [
+        {
+            "Severity": "3#INFO"
+        },
+        {
+            "Severity": "3#INFO"
+        },
+        {
+            "Severity": "3#INFO"
+        },
+        {
+            "Severity": "3#INFO"
+        },
+        {
+            "Severity": "3#INFO"
+        },
+        {
+            "Severity": "5#WARNING"
+        },
+        {
+            "Severity": "6#ERROR"
+        },
+        {
+            "Severity": "6#ERROR"
+        },
+        {
+            "Severity": "6#ERROR"
+        },
+        {
+            "Severity": "6#ERROR"
+        }
+    ],
+    "overallStatistics": {
+        "json_string.time.usec": 54,
+        "pinot_request_build.time.usec": 270,
+        "pinot_request_exec.time.usec": 6404,
+        "pinot_result_proc.time.usec": 40,
+        "pinot_result_rows.count": 5,
+        "raw_result_post_process.time.usec": 1,
+        "request_wait.time.usec": 1971,
+        "rows_found.count": 5,
+        "rows_returned.count": 5,
+        "rows_total.count": 5,
+        "total_exec.time.usec": 6975
+    }
+}
