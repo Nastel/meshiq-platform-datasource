@@ -65,8 +65,10 @@ type FieldType = string
 const (
 	PROPERTIES FieldType = "Properties" // exploded into one column per key (see datamodel.go)
 	SCORE      FieldType = "Score"      // Solr score field, skipped
-	// metadata query columns (see the "Get Params" health check)
-	NAME FieldType = "Name"
+
+	// metadata query columns (see the "Get Params" health check and the /repositories resource)
+	NAME    FieldType = "Name"
+	REPO_ID FieldType = "RepositoryID"
 
 	// Map fields other than Properties: whole-map access (bare field name, no key) stays a single
 	// raw JSON column instead of exploding one column per key. A named key still always unwraps/

@@ -11,7 +11,9 @@ import (
 // Secrets (the access token) live in DecryptedSecureJSONData, not jsonData.
 type MeshIqDataSourceOptions struct {
 	ServiceUrl string `json:"serviceUrl"`
-	Token      string `json:"-"`
+	// RepositoryID is the default repository applied to queries that don't specify one.
+	RepositoryID string `json:"repositoryID"`
+	Token        string `json:"-"`
 }
 
 // BuildMeshIqDataSourceOptions parses and validates the datasource settings.
