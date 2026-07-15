@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"sync"
 
 	"github.com/Nastel/meshiq-platform-datasource/pkg/jkql"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
@@ -46,6 +47,11 @@ var (
 type Datasource struct {
 	httpClient      *http.Client
 	resourceHandler backend.CallResourceHandler
+
+	// functionCatalogCache is the jKQL function set loaded from the server ("get functions"),
+	// memoized for the instance lifetime; nil until first loaded. See functions.go.
+	functionCatalogCacheMu sync.RWMutex
+	functionCatalogCache   *jkql.FunctionCatalog
 }
 
 // NewDatasource creates a new datasource instance with an HTTP client configured from
@@ -137,9 +143,7 @@ func (d *Datasource) query(ctx context.Context, pCtx backend.PluginContext, quer
 		return backend.ErrDataResponseWithSource(status, backend.ErrorSourceDownstream, err.Error())
 	}
 
-	// The function catalog is nil (the hardcoded default) until a later step loads it from the
-	// server.
-	dataModel := jkql.BuildDataModel(result, nil)
+	dataModel := jkql.BuildDataModel(result, d.functionCatalog(ctx, *options))
 	frame := jkql.BuildDataFrame(dataModel)
 	logParseIssues(ctx, *queryModel, dataModel)
 	frame = jkql.FinalizeFrame(frame, queryModel.JKQL)
