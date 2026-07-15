@@ -1,0 +1,602 @@
+{
+  "uid": "meshiq-ibmmq-queue",
+  "title": "IBM MQ — Queue Detail",
+  "description": "Detailed live state of one IBM MQ local queue. Opened from the IBM MQ — Live State overview (deepest queues / queues near capacity), or standalone via the queue-manager and queue variables.",
+  "tags": [
+    "showcase",
+    "meshiq",
+    "ibm-mq"
+  ],
+  "timezone": "browser",
+  "editable": true,
+  "graphTooltip": 0,
+  "refresh": "30s",
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "schemaVersion": 39,
+  "templating": {
+    "list": [
+      {
+        "name": "qmgr",
+        "label": "Queue manager",
+        "type": "query",
+        "datasource": {
+          "type": "meshiq-platform-datasource",
+          "uid": "meshiq-platform"
+        },
+        "query": {
+          "type": "query",
+          "jkql": "Get IbmmqQueueManager Fields Name Where nodeType = 'Connection Manager' Sort By Name",
+          "refId": "variable-qmgr"
+        },
+        "multi": false,
+        "includeAll": false,
+        "refresh": 1,
+        "sort": 0,
+        "current": {},
+        "options": []
+      },
+      {
+        "name": "queue",
+        "label": "Queue",
+        "type": "query",
+        "datasource": {
+          "type": "meshiq-platform-datasource",
+          "uid": "meshiq-platform"
+        },
+        "query": {
+          "type": "query",
+          "jkql": "Get IbmmqLocalQueue Fields Name Where WgsQueueManagerName = '$qmgr' Sort By Name",
+          "refId": "variable-queue"
+        },
+        "multi": false,
+        "includeAll": false,
+        "refresh": 1,
+        "sort": 0,
+        "current": {},
+        "options": []
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 100,
+      "type": "row",
+      "title": "Queue $queue on $qmgr",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": []
+    },
+    {
+      "id": 1,
+      "type": "gauge",
+      "title": "Depth used",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get IbmmqLocalQueue Fields curQDepth * 100 / maxDepth As 'Depth Used' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Depth (current / max)",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get IbmmqLocalQueue Fields curQDepth As 'Current', maxDepth As 'Max' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "horizontal"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Oldest message age",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 12,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get IbmmqLocalQueue Fields oldestMsgAge As 'Oldest Message Age' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Open handles (input / output)",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 16,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get IbmmqLocalQueue Fields openInputCount As 'Input', openOutputCount As 'Output' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "horizontal"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Uncommitted messages",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 20,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get IbmmqLocalQueue Fields uncommittedMsgs As 'Uncommitted' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Messages since counter reset (enqueued / dequeued)",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get IbmmqLocalQueue Fields msgEnqCount As 'Enqueued', msgDeqCount As 'Dequeued' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "horizontal"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 7,
+      "type": "table",
+      "title": "Last activity",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 6,
+        "y": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get IbmmqLocalQueue Fields lastPutDate As 'Last Put Date', lastPutTime As 'Last Put Time', lastGetDate As 'Last Get Date', lastGetTime As 'Last Get Time', timeSinceReset As 'Since Reset' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          },
+          "custom": {
+            "cellOptions": {
+              "type": "color-text"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Since Reset"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "type": "table",
+      "title": "Configuration",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 10,
+        "x": 14,
+        "y": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get IbmmqLocalQueue Fields usage As 'Usage', defPersistence As 'Default Persistence', inhibitGet As 'Get Inhibited', inhibitPut As 'Put Inhibited', maxMsgLength As 'Max Message Length', depthHighLimit As 'Depth High Limit', triggerType As 'Trigger Type', backoutThreshold As 'Backout Threshold', backoutReQName As 'Backout Requeue Queue' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          },
+          "custom": {
+            "cellOptions": {
+              "type": "color-text"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Max Message Length"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 101,
+      "type": "row",
+      "title": "Other queues with messages on $qmgr",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "panels": []
+    },
+    {
+      "id": 9,
+      "type": "table",
+      "title": "Queues with messages",
+      "description": "Click a row to switch this dashboard to that queue.",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get IbmmqLocalQueue Fields Name As 'Queue', curQDepth As 'Current Depth', maxDepth As 'Max Depth', openInputCount As 'Open Input', openOutputCount As 'Open Output', oldestMsgAge As 'Oldest Message Age', uncommittedMsgs As 'Uncommitted' Where WgsQueueManagerName = '$qmgr' And curQDepth > 0 Sort By 'Current Depth' Desc",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": [
+            {
+              "title": "Show this queue",
+              "url": "/d/meshiq-ibmmq-queue?var-qmgr=${qmgr}&var-queue=${__data.fields[0]}"
+            }
+          ],
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          },
+          "custom": {
+            "cellOptions": {
+              "type": "color-text"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Oldest Message Age"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

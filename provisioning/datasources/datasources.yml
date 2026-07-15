@@ -8,12 +8,20 @@ apiVersion: 1
 datasources:
   - name: 'meshIQ Platform'
     type: 'meshiq-platform-datasource'
+    # Fixed uid so the provisioned showcase dashboards can reference this datasource.
+    uid: meshiq-platform
     access: proxy
     isDefault: true
     orgId: 1
-    version: 1
+    # Bump this whenever the settings below change: provisioning only re-applies the
+    # datasource when the file version is higher than the stored one.
+    version: 2
     editable: true
     jsonData:
       serviceUrl: '$MESHIQ_SERVICE_URL'
+      # Default repository for all queries that don't pick their own. The real value is
+      # DefaultRepo$meshIQ — the $ must be escaped as $$ or Grafana's provisioning would
+      # expand "$meshIQ" as an (empty) environment variable, leaving just "DefaultRepo".
+      repositoryID: 'DefaultRepo$$meshIQ'
     secureJsonData:
       accessToken: '$MESHIQ_ACCESS_TOKEN'
