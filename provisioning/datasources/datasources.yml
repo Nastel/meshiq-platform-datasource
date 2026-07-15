@@ -11,9 +11,14 @@ datasources:
     access: proxy
     isDefault: true
     orgId: 1
-    version: 1
+    # Bump this whenever the settings below change: provisioning only re-applies the
+    # datasource when the file version is higher than the stored one.
+    version: 2
     editable: true
     jsonData:
       serviceUrl: '$MESHIQ_SERVICE_URL'
+      # Unquoted so the substituted true/false text parses as a real YAML/JSON boolean, not a string.
+      enableCompletion: $MESHIQ_ENABLE_COMPLETION
+      completionServiceUrl: '$MESHIQ_COMPLETION_SERVICE_URL'
     secureJsonData:
       accessToken: '$MESHIQ_ACCESS_TOKEN'

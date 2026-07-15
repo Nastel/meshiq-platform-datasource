@@ -17,6 +17,8 @@ services:
     environment:
       MESHIQ_SERVICE_URL: ${MESHIQ_SERVICE_URL:-}
       MESHIQ_ACCESS_TOKEN: ${MESHIQ_ACCESS_TOKEN:-}
+      MESHIQ_ENABLE_COMPLETION: ${MESHIQ_ENABLE_COMPLETION:-false}
+      MESHIQ_COMPLETION_SERVICE_URL: ${MESHIQ_COMPLETION_SERVICE_URL:-}
       # Log to a file (in addition to the console) so the Grafana + captured plugin logs
       # can be inspected directly at ./logs/grafana.log on the host. Plain-text format.
       GF_LOG_MODE: 'console file'

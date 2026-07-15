@@ -9,8 +9,8 @@ import (
 )
 
 // logParseIssues logs, once per result set, any wire-shape violations the converter recorded in
-// model.Issues. The line carries the executed query and its date range, so the exact result set
-// can be requested again to reproduce the issue.
+// model.Issues. The line carries the executed query, its date range, and the repository, so the
+// exact result set can be requested again to reproduce the issue.
 func logParseIssues(ctx context.Context, queryModel QueryModel, model jkql.DataModel) {
 	issues := model.Issues.List()
 	if len(issues) == 0 {
@@ -20,6 +20,7 @@ func logParseIssues(ctx context.Context, queryModel QueryModel, model jkql.DataM
 		"issues", strings.Join(issues, "; "),
 		"query", queryModel.JKQL,
 		"date", queryModel.Date,
+		"repo", queryModel.RepositoryID,
 	)
 }
 

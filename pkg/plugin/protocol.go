@@ -19,6 +19,7 @@ const (
 	REQ_QUERY    RequestParameter = "jk_query"
 	REQ_TIMEZONE RequestParameter = "jk_tz"
 	REQ_LOCALE   RequestParameter = "jk_locale"
+	REQ_REPO     RequestParameter = "jk_repo"
 	REQ_DATE     RequestParameter = "jk_date"
 	REQ_MAXROWS  RequestParameter = "jk_maxrows"
 )

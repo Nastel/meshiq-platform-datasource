@@ -105,6 +105,10 @@ func buildUrlParams(queryModel QueryModel) url.Values {
 		params.Set(REQ_TIMEZONE, queryModel.Timezone)
 	}
 
+	if queryModel.RepositoryID != "" {
+		params.Set(REQ_REPO, queryModel.RepositoryID)
+	}
+
 	if queryModel.Date != "" {
 		params.Set(REQ_DATE, queryModel.Date)
 	}
