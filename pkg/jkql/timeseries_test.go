@@ -30,6 +30,46 @@ func TestFinalizeFrame_TimeSeries_PivotsLongToWide(t *testing.T) {
 	}
 }
 
+// TestFinalizeFrame_TimeSeries_RestoresEnumConfig is the LongToWide enum-config workaround: Grafana's
+// LongToWide keeps an enum field's values but drops its EnumFieldConfig.Text table, which crashes
+// graphing (it's read with a non-null assertion). This pins that the dense Text table survives the
+// pivot.
+func TestFinalizeFrame_TimeSeries_RestoresEnumConfig(t *testing.T) {
+	t0 := time.Unix(1000, 0).UTC()
+	t1 := time.Unix(2000, 0).UTC()
+
+	one := data.EnumItemIndex(1)
+	enumField := data.NewField("Severity", nil, []*data.EnumItemIndex{&one, &one})
+	enumField.SetConfig(&data.FieldConfig{
+		TypeConfig: &data.FieldTypeConfig{Enum: &data.EnumFieldConfig{Text: []string{"INFO", "ERROR"}}},
+	})
+
+	frame := data.NewFrame("",
+		data.NewField("Time", nil, []time.Time{t0, t1}),
+		data.NewField("Value", nil, []float64{1, 2}),
+		enumField,
+	)
+
+	result := FinalizeFrame(frame, "Get Events", FormatTimeSeries)
+
+	var found *data.Field
+	for _, f := range result.Fields {
+		if f.Name == "Severity" {
+			found = f
+			break
+		}
+	}
+	if found == nil {
+		t.Fatal("expected a Severity field to survive the pivot")
+	}
+	if found.Config == nil || found.Config.TypeConfig == nil || found.Config.TypeConfig.Enum == nil {
+		t.Fatal("expected the Severity field to keep its enum TypeConfig after LongToWide")
+	}
+	if len(found.Config.TypeConfig.Enum.Text) != 2 {
+		t.Errorf("Severity enum Text table = %v, want the original 2-entry table restored", found.Config.TypeConfig.Enum.Text)
+	}
+}
+
 // TestFinalizeFrame_Table_DoesNotPivot verifies the default ("table") format leaves the frame
 // untouched — no LongToWide, no time-series metadata.
 func TestFinalizeFrame_Table_DoesNotPivot(t *testing.T) {
