@@ -1,0 +1,144 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 3
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 3
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 5 Fields by 3 Rows
+//  +----------------+-----------------------------------------------------------------+--------------------------------------------------------------------------+-----------------+----------------------------------------------------------------------------+
+//  | Name: position | Name: replace                                                   | Name: concat                                                             | Name: concatWS  | Name: tokenize                                                             |
+//  | Labels:        | Labels:                                                         | Labels:                                                                  | Labels:         | Labels:                                                                    |
+//  | Type: []*int64 | Type: []*string                                                 | Type: []*string                                                          | Type: []*string | Type: []*json.RawMessage                                                   |
+//  +----------------+-----------------------------------------------------------------+--------------------------------------------------------------------------+-----------------+----------------------------------------------------------------------------+
+//  | 53             | THR=Embedded/QueryPool/task-17#JVM=1@0148a0212fd9#IP=172.19.0.8 | ERROR-THREAD=Embedded/QueryPool/task-17#JVM=1@0148a0212fd9#IP=172.19.0.8 | ERROR-LOG       | ["THREAD=Embedded/QueryPool/task-17","JVM=1@0148a0212fd9","IP=172.19.0.8"] |
+//  | 53             | THR=Embedded/ClientPool/task-3#JVM=1@0148a0212fd9#IP=172.19.0.8 | ERROR-THREAD=Embedded/ClientPool/task-3#JVM=1@0148a0212fd9#IP=172.19.0.8 | ERROR           | ["THREAD=Embedded/ClientPool/task-3","JVM=1@0148a0212fd9","IP=172.19.0.8"] |
+//  | 53             | THR=Embedded/ClientPool/task-5#JVM=1@0148a0212fd9#IP=172.19.0.8 | ERROR-THREAD=Embedded/ClientPool/task-5#JVM=1@0148a0212fd9#IP=172.19.0.8 | ERROR-MONITOR   | ["THREAD=Embedded/ClientPool/task-5","JVM=1@0148a0212fd9","IP=172.19.0.8"] |
+//  +----------------+-----------------------------------------------------------------+--------------------------------------------------------------------------+-----------------+----------------------------------------------------------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 3
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 3
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "position",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "replace",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "concat",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "concatWS",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "tokenize",
+            "type": "other",
+            "typeInfo": {
+              "frame": "json.RawMessage",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            53,
+            53,
+            53
+          ],
+          [
+            "THR=Embedded/QueryPool/task-17#JVM=1@0148a0212fd9#IP=172.19.0.8",
+            "THR=Embedded/ClientPool/task-3#JVM=1@0148a0212fd9#IP=172.19.0.8",
+            "THR=Embedded/ClientPool/task-5#JVM=1@0148a0212fd9#IP=172.19.0.8"
+          ],
+          [
+            "ERROR-THREAD=Embedded/QueryPool/task-17#JVM=1@0148a0212fd9#IP=172.19.0.8",
+            "ERROR-THREAD=Embedded/ClientPool/task-3#JVM=1@0148a0212fd9#IP=172.19.0.8",
+            "ERROR-THREAD=Embedded/ClientPool/task-5#JVM=1@0148a0212fd9#IP=172.19.0.8"
+          ],
+          [
+            "ERROR-LOG",
+            "ERROR",
+            "ERROR-MONITOR"
+          ],
+          [
+            [
+              "THREAD=Embedded/QueryPool/task-17",
+              "JVM=1@0148a0212fd9",
+              "IP=172.19.0.8"
+            ],
+            [
+              "THREAD=Embedded/ClientPool/task-3",
+              "JVM=1@0148a0212fd9",
+              "IP=172.19.0.8"
+            ],
+            [
+              "THREAD=Embedded/ClientPool/task-5",
+              "JVM=1@0148a0212fd9",
+              "IP=172.19.0.8"
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

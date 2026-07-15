@@ -533,6 +533,15 @@ func ConvertToGrafanaValue(value interface{}, dataType string) interface{} {
 		}
 		return nil
 	case STRING, LABELSET, CLOB:
+		// A Properties('key')-sourced value can reach here still wrapped in its single-key map
+		// envelope (e.g. from Coalesce(Properties('key'), ...)) when the header doesn't match the
+		// patterns BuildDataModel unwraps upfront. Unwrap it here too, rather than falling through
+		// to fmt.Sprint and rendering Go's "map[key:val]" syntax as if it were the real value.
+		if m, ok := value.(map[string]interface{}); ok && len(m) == 1 {
+			for _, v := range m {
+				return fmt.Sprint(v)
+			}
+		}
 		return fmt.Sprint(value)
 	case ENUM:
 		// Columns wrap enums in the data model; raw wire values ("ordinal#name") reach this

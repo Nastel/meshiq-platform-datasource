@@ -12,6 +12,16 @@ func TestConvertToGrafanaValue_Labelset(t *testing.T) {
 	}
 }
 
+func TestConvertToGrafanaValue_StringUnwrapsSingleKeyMap(t *testing.T) {
+	// A Properties('key') value can reach here still wrapped in its single-key map envelope
+	// (e.g. via Coalesce(Properties('key'), ...)) when the header doesn't match the patterns
+	// BuildDataModel unwraps upfront. Must extract the real value, not stringify the Go map.
+	value := map[string]interface{}{"UserName": "Administrator"}
+	if got := ConvertToGrafanaValue(value, STRING); got != "Administrator" {
+		t.Errorf("STRING with single-key map envelope = %#v, want the unwrapped value", got)
+	}
+}
+
 func TestConvertToGrafanaValue_Variant(t *testing.T) {
 	cases := []struct {
 		name     string

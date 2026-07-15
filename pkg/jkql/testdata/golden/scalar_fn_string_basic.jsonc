@@ -1,0 +1,158 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 3
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 3
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 7 Fields by 3 Rows
+//  +--------------------------------------------------------------------+--------------------------------------------------------------------+-----------------+-----------------+-----------------+----------------+--------------------+
+//  | Name: upper                                                        | Name: lower                                                        | Name: left      | Name: right     | Name: substr    | Name: length   | Name: strAt        |
+//  | Labels:                                                            | Labels:                                                            | Labels:         | Labels:         | Labels:         | Labels:        | Labels:            |
+//  | Type: []*string                                                    | Type: []*string                                                    | Type: []*string | Type: []*string | Type: []*string | Type: []*int64 | Type: []*string    |
+//  +--------------------------------------------------------------------+--------------------------------------------------------------------+-----------------+-----------------+-----------------+----------------+--------------------+
+//  | THREAD=EMBEDDED/CLIENTPOOL/TASK-1#JVM=1@A59DC41F4B6E#IP=172.19.0.7 | thread=embedded/clientpool/task-1#jvm=1@a59dc41f4b6e#ip=172.19.0.7 | THREA           | 9.0.7           | HREAD=Embe      | 66             | JVM=1@a59dc41f4b6e |
+//  | THREAD=EMBEDDED/QUERYPOOL/TASK-4#JVM=1@A59DC41F4B6E#IP=172.19.0.7  | thread=embedded/querypool/task-4#jvm=1@a59dc41f4b6e#ip=172.19.0.7  | THREA           | 9.0.7           | HREAD=Embe      | 65             | JVM=1@a59dc41f4b6e |
+//  | THREAD=EMBEDDED/CLIENTPOOL/TASK-5#JVM=1@0148A0212FD9#IP=172.19.0.8 | thread=embedded/clientpool/task-5#jvm=1@0148a0212fd9#ip=172.19.0.8 | THREA           | 9.0.8           | HREAD=Embe      | 66             | JVM=1@0148a0212fd9 |
+//  +--------------------------------------------------------------------+--------------------------------------------------------------------+-----------------+-----------------+-----------------+----------------+--------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 3
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 3
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "upper",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "lower",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "left",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "right",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "substr",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "length",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "strAt",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            "THREAD=EMBEDDED/CLIENTPOOL/TASK-1#JVM=1@A59DC41F4B6E#IP=172.19.0.7",
+            "THREAD=EMBEDDED/QUERYPOOL/TASK-4#JVM=1@A59DC41F4B6E#IP=172.19.0.7",
+            "THREAD=EMBEDDED/CLIENTPOOL/TASK-5#JVM=1@0148A0212FD9#IP=172.19.0.8"
+          ],
+          [
+            "thread=embedded/clientpool/task-1#jvm=1@a59dc41f4b6e#ip=172.19.0.7",
+            "thread=embedded/querypool/task-4#jvm=1@a59dc41f4b6e#ip=172.19.0.7",
+            "thread=embedded/clientpool/task-5#jvm=1@0148a0212fd9#ip=172.19.0.8"
+          ],
+          [
+            "THREA",
+            "THREA",
+            "THREA"
+          ],
+          [
+            "9.0.7",
+            "9.0.7",
+            "9.0.8"
+          ],
+          [
+            "HREAD=Embe",
+            "HREAD=Embe",
+            "HREAD=Embe"
+          ],
+          [
+            66,
+            65,
+            66
+          ],
+          [
+            "JVM=1@a59dc41f4b6e",
+            "JVM=1@a59dc41f4b6e",
+            "JVM=1@0148a0212fd9"
+          ]
+        ]
+      }
+    }
+  ]
+}
