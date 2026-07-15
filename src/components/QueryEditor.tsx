@@ -4,6 +4,13 @@ import { QueryEditorProps } from '@grafana/data';
 import { DataSource } from '../datasource';
 import { MeshIqDataSourceOptions, MeshIqQuery } from '../types';
 import { buildRepositoriesComboboxOptions } from '../utils';
+import {
+  clearJkqlCompletionHandler,
+  JKQL_LANGUAGE_ID,
+  registerJkqlLanguage,
+  setJkqlCompletionHandler,
+  SuggestionResolver,
+} from '../completion';
 
 type Props = QueryEditorProps<DataSource, MeshIqQuery, MeshIqDataSourceOptions>;
 
@@ -53,17 +60,34 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
   const repositoryValue = query.repositoryID ?? datasource.getDefaultRepositoryID();
 
   // Keep the latest props in refs for every callback CodeEditor binds once at mount — the Monaco
-  // command and onChange (registered via model.onDidChangeContent, never re-bound). Those
-  // callbacks must observe current values through the refs: a direct closure would spread the
-  // mount-time query and revert fields changed since mount.
+  // command, the completion resolver, and onChange (registered via model.onDidChangeContent, never
+  // re-bound). Those callbacks must observe current values through the refs: a direct closure
+  // would spread the mount-time query and revert fields changed since mount.
   const onRunQueryRef = useRef(onRunQuery);
+  const repositoryRef = useRef(repositoryValue);
+  const datasourceRef = useRef(datasource);
   const queryRef = useRef(query);
   const onChangeRef = useRef(onChange);
   useEffect(() => {
     onRunQueryRef.current = onRunQuery;
+    repositoryRef.current = repositoryValue;
+    datasourceRef.current = datasource;
     queryRef.current = query;
     onChangeRef.current = onChange;
   });
+
+  // One stable resolver per editor (fresh values via the refs above; useState's lazy initializer
+  // guarantees the identity never changes). The stable identity lets the unmount cleanup release
+  // the shared handler only when this editor still owns it — deleting one query row must not kill
+  // completion in a sibling row.
+  const [resolver] = useState<SuggestionResolver>(
+    () => (text: string, caret: number) => datasourceRef.current.getSuggestions(text, caret, repositoryRef.current)
+  );
+  useEffect(() => () => clearJkqlCompletionHandler(resolver), [resolver]);
+
+  const activateCompletion = () => {
+    setJkqlCompletionHandler(resolver);
+  };
 
   const onJkqlChange = (value: string) => {
     onChangeRef.current({ ...queryRef.current, jkql: value });
@@ -85,6 +109,7 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
         onRunQueryRef.current();
       }
     });
+    activateCompletion();
   };
 
   const onRepositoryChange = (selected: ComboboxOption) => {
@@ -102,7 +127,7 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
       >
         <div style={{ width: '100%' }}>
           <CodeEditor
-            language="plaintext"
+            language={JKQL_LANGUAGE_ID}
             value={query.jkql || ''}
             height={90}
             showLineNumbers={false}
@@ -114,7 +139,9 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
               wordWrap: 'on',
               fontSize: 13,
             }}
+            onBeforeEditorMount={registerJkqlLanguage}
             onEditorDidMount={onEditorDidMount}
+            onFocus={activateCompletion}
             onChange={onJkqlChange}
             onBlur={onJkqlBlur}
           />

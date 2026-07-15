@@ -119,3 +119,30 @@ func TestQueryDataService_CrossHostRedirectRefused(t *testing.T) {
 		t.Errorf("token must never reach the redirect target, got %s header %q", HDR_API_KEY, attackerGotHeader)
 	}
 }
+
+// TestCheckHealth_CompletionEnabledWithoutUrlFails pins that enabling completion with no
+// completion service URL configured fails the health check, instead of quietly reporting a
+// healthy datasource while the query editor gets no suggestions.
+func TestCheckHealth_CompletionEnabledWithoutUrlFails(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"row-count": 0, "total-row-count": 0, "status": "SUCCESS", "colhdr": [], "coltype": {}, "collabel": {}, "rows": []}`))
+	}))
+	defer server.Close()
+
+	ds := &Datasource{httpClient: server.Client()}
+	settings := backend.DataSourceInstanceSettings{
+		JSONData:                []byte(`{"serviceUrl":"` + server.URL + `","enableCompletion":true}`),
+		DecryptedSecureJSONData: map[string]string{"accessToken": "t"},
+	}
+
+	result, err := ds.CheckHealth(context.Background(), &backend.CheckHealthRequest{
+		PluginContext: backend.PluginContext{DataSourceInstanceSettings: &settings},
+	})
+	if err != nil {
+		t.Fatalf("CheckHealth: %v", err)
+	}
+	if result.Status != backend.HealthStatusError {
+		t.Errorf("status = %v, want HealthStatusError (completion enabled with no URL configured)", result.Status)
+	}
+}

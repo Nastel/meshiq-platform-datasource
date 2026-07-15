@@ -68,7 +68,8 @@ func NewDatasource(ctx context.Context, settings backend.DataSourceInstanceSetti
 	return d, nil
 }
 
-// CallResource serves the frontend's non-query endpoints: /repositories. See resources.go.
+// CallResource serves the frontend's non-query endpoints: /repositories and the /suggestions
+// autocomplete proxy. See resources.go and completion.go.
 func (d *Datasource) CallResource(ctx context.Context, req *backend.CallResourceRequest, sender backend.CallResourceResponseSender) error {
 	return d.resourceHandler.CallResource(ctx, req, sender)
 }
@@ -160,6 +161,17 @@ func (d *Datasource) CheckHealth(ctx context.Context, req *backend.CheckHealthRe
 	response, err := testDataService(ctx, d.httpClient, *options)
 	if err != nil {
 		return newHealthError(err), nil
+	}
+
+	if options.EnableCompletion {
+		if options.CompletionServiceUrl == "" {
+			// Completion is turned on but has nowhere to call — without this, Save & Test would
+			// report a healthy datasource while the query editor silently gets no suggestions.
+			return newHealthError(errors.New("completion is enabled but no completion service URL is set")), nil
+		}
+		if err := testCompletionService(ctx, d.httpClient, *options); err != nil {
+			return newHealthError(err), nil
+		}
 	}
 
 	dataModel := jkql.BuildDataModel(response, nil)
