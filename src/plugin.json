@@ -4,6 +4,7 @@
   "name": "meshIQ Platform",
   "id": "meshiq-platform-datasource",
   "alerting": true,
+  "annotations": true,
   "metrics": true,
   "backend": true,
   "executable": "gpx_platform",
