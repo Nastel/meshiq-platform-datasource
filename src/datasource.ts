@@ -37,6 +37,10 @@ export class DataSource extends DataSourceWithBackend<MeshIqQuery, MeshIqDataSou
     super(instanceSettings);
     this.defaultRepositoryID = instanceSettings.jsonData.repositoryID || '';
     this.variables = new MeshIqVariableSupport(this);
+    // Annotation support with default processing: annotation queries are edited with the regular
+    // query editor and run through the normal query path; Grafana maps the resulting frame's
+    // time and text columns onto dashboard annotations.
+    this.annotations = {};
   }
 
   getDefaultQuery(_: CoreApp): Partial<MeshIqQuery> {
