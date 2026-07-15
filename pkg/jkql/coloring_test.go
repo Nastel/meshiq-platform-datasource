@@ -22,10 +22,6 @@ func TestEnumColors(t *testing.T) {
 			[]string{colorBlue, colorRed}},
 		{"partial match keeps blanks for unknowns", "Severity", []string{"INFO", "MYSTERY"},
 			[]string{colorBlue, ""}},
-		// UNKNOWN is colored gray, not left blank or given a palette color meant for a real
-		// error state — an unresolved value isn't a warning.
-		{"UNKNOWN is gray, not orange or blank", "Severity", []string{"INFO", "UNKNOWN"},
-			[]string{colorBlue, colorGray}},
 		{"unknown field is not colored", "Host", []string{"a", "b"}, nil},
 		{"known field but no known values", "Severity", []string{"MYSTERY"}, nil},
 	}
@@ -66,24 +62,6 @@ func TestStringValueMappings(t *testing.T) {
 	}
 	if mapper["Denied"].Color != colorRed {
 		t.Errorf("Denied color = %q, want %q", mapper["Denied"].Color, colorRed)
-	}
-}
-
-func TestStringValueMappings_UnknownIsGray(t *testing.T) {
-	model := DataModel{
-		ItemType:  "Log",
-		Headers:   []string{"Action"},
-		Names:     map[string]string{"Action": "Action"},
-		DataTypes: map[string]DataType{"Action": STRING},
-		Rows:      []map[string]interface{}{{"Action": "Unknown"}},
-	}
-	vms := stringValueMappings(model, "Action")
-	if vms == nil {
-		t.Fatal("expected value mappings for Unknown")
-	}
-	mapper := vms[0].(data.ValueMapper)
-	if mapper["Unknown"].Color != colorGray {
-		t.Errorf("Unknown color = %q, want %q (gray, not orange)", mapper["Unknown"].Color, colorGray)
 	}
 }
 

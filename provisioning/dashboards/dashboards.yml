@@ -1,0 +1,16 @@
+apiVersion: 1
+
+# Loads every dashboard JSON under this directory, one Grafana folder per technology
+# subdirectory (<technology>/*.json). The showcase dashboards reference the provisioned
+# datasource by its fixed uid (meshiq-platform, see ../datasources).
+# foldersFromFilesStructure requires folder/folderUid to stay unset (Grafana provisioning docs).
+providers:
+  - name: 'meshIQ showcase'
+    orgId: 1
+    type: file
+    disableDeletion: false
+    allowUiUpdates: true
+    updateIntervalSeconds: 30
+    options:
+      path: /etc/grafana/provisioning/dashboards
+      foldersFromFilesStructure: true

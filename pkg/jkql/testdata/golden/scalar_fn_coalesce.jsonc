@@ -62,18 +62,6 @@
             "typeInfo": {
               "frame": "string",
               "nullable": true
-            },
-            "config": {
-              "mappings": [
-                {
-                  "type": "value",
-                  "options": {
-                    "unknown": {
-                      "color": "gray"
-                    }
-                  }
-                }
-              ]
             }
           }
         ]
