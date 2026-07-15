@@ -1,0 +1,110 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 1
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 1
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 2 Fields by 1 Rows
+//  +----------------+----------------+
+//  | Name: Severity | Name: NumberOf |
+//  | Labels:        | Labels:        |
+//  | Type: []*enum  | Type: []*int64 |
+//  +----------------+----------------+
+//  | 0              | 3              |
+//  +----------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 1
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 1
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "Severity",
+            "type": "enum",
+            "typeInfo": {
+              "frame": "enum",
+              "nullable": true
+            },
+            "config": {
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "0": {
+                      "text": "INFO",
+                      "color": "semi-dark-blue"
+                    }
+                  }
+                }
+              ],
+              "type": {
+                "enum": {
+                  "text": [
+                    "INFO"
+                  ],
+                  "color": [
+                    "semi-dark-blue"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": "NumberOf",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            0
+          ],
+          [
+            3
+          ]
+        ]
+      }
+    }
+  ]
+}
