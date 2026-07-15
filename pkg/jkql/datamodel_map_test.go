@@ -153,6 +153,29 @@ func TestBuildDataModel_MixedMapKeyWithTwoTypesGetsTypeSuffix(t *testing.T) {
 	}
 }
 
+func TestBuildDataModel_MixedMapKeyWithTwoArrayTypesGetsTypeSuffix(t *testing.T) {
+	// Same shape as TestBuildDataModel_MixedMapKeyWithTwoTypesGetsTypeSuffix, but with two ARRAY
+	// types on the same key (both reachable only via :_ValueTypes, never a top-level coltype).
+	// Before ConvertDtToPrefix had cases for array types, both mapped to the same empty prefix,
+	// so the two columns shared one header and the second silently overwrote the first.
+	raw := `{
+		"row-count": 2, "total-row-count": 2, "status": "SUCCESS",
+		"colhdr": ["Properties"],
+		"coltype": {"Properties": "MAP"},
+		"collabel": {"Properties": "Properties"},
+		"rows": [
+			{"Properties": {"Tags": ["a","b"]}, "Properties:_ValueTypes": {"Tags": "STRING[]"}},
+			{"Properties": {"Tags": [1,2]}, "Properties:_ValueTypes": {"Tags": "INTEGER[]"}}
+		]
+	}`
+	m := BuildDataModel(parseRS(t, raw), nil)
+
+	want := []string{"Tags (Integer[])", "Tags (String[])"}
+	if got := labelsOf(m); !reflect.DeepEqual(got, want) {
+		t.Errorf("labels = %v, want %v", got, want)
+	}
+}
+
 func TestBuildDataModel_AggregateOverMapLabels(t *testing.T) {
 	// Avg over a whole map explodes per key; each column keeps the aggregate and drops the field
 	// name (Avg(Quota) -> "Avg(<key>)"), so Avg vs Sum stay distinct when both are queried.
@@ -170,6 +193,43 @@ func TestBuildDataModel_AggregateOverMapLabels(t *testing.T) {
 	want := []string{"Avg(BytesPerDay)", "Avg(MsgsPerDay)"}
 	if got := labelsOf(m); !reflect.DeepEqual(got, want) {
 		t.Errorf("labels = %v, want %v", got, want)
+	}
+}
+
+func TestBuildDataModel_AggregateOverMapKeyArrayValueType(t *testing.T) {
+	// list() over a single Properties key produces a whole-map result whose coltype stays the
+	// generic "MAP" (the server never emits "MAP(STRING[])"), but the per-row :_ValueTypes
+	// sidecar reports "STRING[]" for that key. The exploded column must pick up STRING_ARR from
+	// the sidecar (not fall back to a scalar type) and get its own header prefix ("SA"), so a
+	// second key of a different array type can't collide with it under the same header.
+	raw := `{
+		"row-count": 1, "total-row-count": 1, "status": "SUCCESS",
+		"colhdr": ["List(Properties('jk_call_time'))"],
+		"coltype": {"List(Properties('jk_call_time'))": "MAP"},
+		"collabel": {"List(Properties('jk_call_time'))": "List(Properties('jk_call_time'))"},
+		"rows": [ {
+			"List(Properties('jk_call_time'))": {"jk_call_time": ["1784697162137", "1784697162490"]},
+			"List(Properties('jk_call_time')):_ValueTypes": {"jk_call_time": "STRING[]"}
+		} ]
+	}`
+	m := BuildDataModel(parseRS(t, raw), nil)
+
+	header := "SA:List(Properties('jk_call_time'))"
+	if m.DataTypes[header] != STRING_ARR {
+		t.Fatalf("data type = %v, want %v", m.DataTypes[header], STRING_ARR)
+	}
+	got, ok := m.Rows[0][header].([]interface{})
+	if !ok {
+		t.Fatalf("row value = %#v (%T), want []interface{}", m.Rows[0][header], m.Rows[0][header])
+	}
+	want := []string{"1784697162137", "1784697162490"}
+	if len(got) != len(want) {
+		t.Fatalf("row value = %#v, want %v", got, want)
+	}
+	for i, v := range want {
+		if got[i] != v {
+			t.Errorf("row value[%d] = %#v, want %q", i, got[i], v)
+		}
 	}
 }
 

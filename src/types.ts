@@ -22,6 +22,40 @@ export const DEFAULT_QUERY: Partial<MeshIqQuery> = {
   format: 'table',
 };
 
+/** Fallback item type for a "fields" template-variable query that doesn't name a table. */
+export const DEFAULT_ITEM_TYPE = 'Log';
+
+/**
+ * How a template-variable query resolves its values.
+ * - `tables`: list item types via /tables (jKQL `get items`).
+ * - `fields`: list a table's fields via /fields (jKQL `get fields for <table>`).
+ * - `query`: run a raw jKQL query; the first column becomes the values.
+ */
+export type MeshIqVariableQueryType = 'tables' | 'fields' | 'query';
+
+export interface MeshIqVariableQuery extends DataQuery {
+  type: MeshIqVariableQueryType;
+  table?: string; // used by the `fields` type
+  jkql?: string; // used by the `query` type
+}
+
+export const DEFAULT_VARIABLE_QUERY: Partial<MeshIqVariableQuery> = {
+  type: 'query',
+  jkql: '',
+};
+
+/** One item type ("table") returned by /tables. */
+export interface MeshIqTable {
+  name: string;
+}
+
+/** One field returned by /fields. `custom` marks Properties-derived fields. */
+export interface MeshIqField {
+  name: string;
+  type: string;
+  custom: boolean;
+}
+
 /**
  * Options configured for each meshIQ Platform data source instance.
  */
