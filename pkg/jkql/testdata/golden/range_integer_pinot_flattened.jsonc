@@ -1,0 +1,156 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 25
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 85
+//          }
+//      ],
+//      "notices": [
+//          {
+//              "severity": "warning",
+//              "text": "Only returning 25 of 85 rows"
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 2 Fields by 25 Rows
+//  +-----------------+----------------+
+//  | Name: MsgLength | Name: NumberOf |
+//  | Labels:         | Labels:        |
+//  | Type: []*int64  | Type: []*int64 |
+//  +-----------------+----------------+
+//  | null            | 24             |
+//  | 83              | 2              |
+//  | 147             | 1              |
+//  | 179             | 2              |
+//  | 56              | 10             |
+//  | 40              | 6              |
+//  | 91              | 3              |
+//  | 27              | 6              |
+//  | 48              | 7              |
+//  | ...             | ...            |
+//  +-----------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 25
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 85
+            }
+          ],
+          "notices": [
+            {
+              "severity": "warning",
+              "text": "Only returning 25 of 85 rows"
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "MsgLength",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "NumberOf",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            null,
+            83,
+            147,
+            179,
+            56,
+            40,
+            91,
+            27,
+            48,
+            112,
+            187,
+            110,
+            19,
+            126,
+            102,
+            104,
+            225,
+            152,
+            168,
+            75,
+            46,
+            53,
+            61,
+            32,
+            224
+          ],
+          [
+            24,
+            2,
+            1,
+            2,
+            10,
+            6,
+            3,
+            6,
+            7,
+            3,
+            13,
+            2,
+            7,
+            3,
+            1,
+            17,
+            4,
+            2,
+            8,
+            338,
+            1,
+            1,
+            6,
+            4,
+            6
+          ]
+        ]
+      }
+    }
+  ]
+}
