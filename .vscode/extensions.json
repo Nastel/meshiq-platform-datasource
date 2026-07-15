@@ -1,0 +1,5 @@
+{
+  // Recommended for anyone opening this folder — with or without the shipped dev container
+  // (the container also installs these via devcontainer.json customizations).
+  "recommendations": ["golang.go", "dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+}
