@@ -1,0 +1,174 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 5
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 5
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 7 Fields by 5 Rows
+//  +-----------------------------+------------------+----------------+------------------+-------------------+------------------+--------------------+
+//  | Name: Properties('INTEGER') | Name: _EndTime_  | Name: _Expiry_ | Name: _RecvTime_ | Name: _StartTime_ | Name: _WaitTime_ | Name: jk_call_time |
+//  | Labels:                     | Labels:          | Labels:        | Labels:          | Labels:           | Labels:          | Labels:            |
+//  | Type: []*string             | Type: []*int64   | Type: []*int64 | Type: []*int64   | Type: []*int64    | Type: []*int64   | Type: []*int64     |
+//  +-----------------------------+------------------+----------------+------------------+-------------------+------------------+--------------------+
+//  | null                        | 1781787542938602 | 0              | 1781787542864996 | 1781787542862837  | 5864             | null               |
+//  | null                        | 1783083621285181 | null           | 1783083621285184 | 1783083621283337  | 1847             | 1783083621282      |
+//  | null                        | 1783083621935755 | null           | 1783083621935762 | 1783083621932694  | 3068             | 1783083621930      |
+//  | null                        | 1783083609900593 | null           | 1783083609900596 | 1783083609899319  | 1277             | 1783083609892      |
+//  | null                        | 1781847513882074 | null           | 1781847513882079 | 1781847513879081  | 2998             | null               |
+//  +-----------------------------+------------------+----------------+------------------+-------------------+------------------+--------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 5
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 5
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "Properties('INTEGER')",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "_EndTime_",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "_Expiry_",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "_RecvTime_",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "_StartTime_",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "_WaitTime_",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "jk_call_time",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            1781787542938602,
+            1783083621285181,
+            1783083621935755,
+            1783083609900593,
+            1781847513882074
+          ],
+          [
+            0,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            1781787542864996,
+            1783083621285184,
+            1783083621935762,
+            1783083609900596,
+            1781847513882079
+          ],
+          [
+            1781787542862837,
+            1783083621283337,
+            1783083621932694,
+            1783083609899319,
+            1781847513879081
+          ],
+          [
+            5864,
+            1847,
+            3068,
+            1277,
+            2998
+          ],
+          [
+            null,
+            1783083621282,
+            1783083621930,
+            1783083609892,
+            null
+          ]
+        ]
+      }
+    }
+  ]
+}

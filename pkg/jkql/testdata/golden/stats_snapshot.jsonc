@@ -1,0 +1,56 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 0
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 0
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 0 Fields by 0 Rows
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 0
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 0
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": []
+      },
+      "data": {
+        "values": []
+      }
+    }
+  ]
+}

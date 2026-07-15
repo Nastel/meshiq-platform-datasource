@@ -1,0 +1,426 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 16
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 16
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 13 Fields by 16 Rows
+//  +-------------------+----------------+------------------+----------------+--------------------------+----------------------+-----------------+-----------------+---------------+---------------+---------------------+-------------------+-----------------------+
+//  | Name: FieldName   | Name: DataType | Name: SourceName | Name: isCustom | Name: isDefaultDateField | Name: isDefaultField | Name: isDerived | Name: isIDField | Name: isKey   | Name: isList  | Name: isMLSupported | Name: isNameField | Name: isPropsRequired |
+//  | Labels:           | Labels:        | Labels:          | Labels:        | Labels:                  | Labels:              | Labels:         | Labels:         | Labels:       | Labels:       | Labels:             | Labels:           | Labels:               |
+//  | Type: []*string   | Type: []*enum  | Type: []*string  | Type: []*bool  | Type: []*bool            | Type: []*bool        | Type: []*bool   | Type: []*bool   | Type: []*bool | Type: []*bool | Type: []*bool       | Type: []*bool     | Type: []*bool         |
+//  +-------------------+----------------+------------------+----------------+--------------------------+----------------------+-----------------+-----------------+---------------+---------------+---------------------+-------------------+-----------------------+
+//  | Ancestor          | 0              | null             | false          | false                    | false                | false           | false           | false         | false         | false               | false             | false                 |
+//  | ChildSensorCount  | 1              | m6               | false          | false                    | false                | false           | false           | false         | false         | false               | false             | false                 |
+//  | ParentID          | 0              | null             | false          | false                    | true                 | false           | false           | false         | false         | false               | false             | false                 |
+//  | ParentSensorOid   | 0              | m6               | false          | false                    | false                | false           | false           | false         | false         | false               | false             | false                 |
+//  | PolicyID          | 0              | m6               | false          | false                    | false                | false           | false           | false         | false         | false               | false             | false                 |
+//  | PolicyManagerName | 0              | m6               | false          | false                    | true                 | false           | false           | true          | false         | false               | false             | false                 |
+//  | PolicyName        | 0              | m6               | false          | false                    | true                 | false           | false           | true          | false         | false               | false             | false                 |
+//  | Properties        | 2              | null             | false          | false                    | true                 | false           | false           | false         | false         | false               | false             | false                 |
+//  | SensorHealth      | 3              | m6               | false          | false                    | false                | false           | false           | false         | false         | false               | false             | false                 |
+//  | ...               | ...            | ...              | ...            | ...                      | ...                  | ...             | ...             | ...           | ...           | ...                 | ...               | ...                   |
+//  +-------------------+----------------+------------------+----------------+--------------------------+----------------------+-----------------+-----------------+---------------+---------------+---------------------+-------------------+-----------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 16
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 16
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "FieldName",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "DataType",
+            "type": "enum",
+            "typeInfo": {
+              "frame": "enum",
+              "nullable": true
+            },
+            "config": {
+              "type": {
+                "enum": {
+                  "text": [
+                    "STRING",
+                    "INTEGER",
+                    "MAP",
+                    "DECIMAL",
+                    "ENUM",
+                    "VARIANT"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": "SourceName",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "isCustom",
+            "type": "boolean",
+            "typeInfo": {
+              "frame": "bool",
+              "nullable": true
+            }
+          },
+          {
+            "name": "isDefaultDateField",
+            "type": "boolean",
+            "typeInfo": {
+              "frame": "bool",
+              "nullable": true
+            }
+          },
+          {
+            "name": "isDefaultField",
+            "type": "boolean",
+            "typeInfo": {
+              "frame": "bool",
+              "nullable": true
+            }
+          },
+          {
+            "name": "isDerived",
+            "type": "boolean",
+            "typeInfo": {
+              "frame": "bool",
+              "nullable": true
+            }
+          },
+          {
+            "name": "isIDField",
+            "type": "boolean",
+            "typeInfo": {
+              "frame": "bool",
+              "nullable": true
+            }
+          },
+          {
+            "name": "isKey",
+            "type": "boolean",
+            "typeInfo": {
+              "frame": "bool",
+              "nullable": true
+            }
+          },
+          {
+            "name": "isList",
+            "type": "boolean",
+            "typeInfo": {
+              "frame": "bool",
+              "nullable": true
+            }
+          },
+          {
+            "name": "isMLSupported",
+            "type": "boolean",
+            "typeInfo": {
+              "frame": "bool",
+              "nullable": true
+            }
+          },
+          {
+            "name": "isNameField",
+            "type": "boolean",
+            "typeInfo": {
+              "frame": "bool",
+              "nullable": true
+            }
+          },
+          {
+            "name": "isPropsRequired",
+            "type": "boolean",
+            "typeInfo": {
+              "frame": "bool",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            "Ancestor",
+            "ChildSensorCount",
+            "ParentID",
+            "ParentSensorOid",
+            "PolicyID",
+            "PolicyManagerName",
+            "PolicyName",
+            "Properties",
+            "SensorHealth",
+            "SensorID",
+            "SensorName",
+            "SensorOid",
+            "SensorPath",
+            "SensorStatus",
+            "SensorValue",
+            "Severity"
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            3,
+            0,
+            0,
+            0,
+            0,
+            4,
+            5,
+            4
+          ],
+          [
+            null,
+            "m6",
+            null,
+            "m6",
+            "m6",
+            "m6",
+            "m6",
+            null,
+            "m6",
+            "m6",
+            "m6",
+            "m6",
+            "m6",
+            "m6",
+            "m6",
+            null
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            true,
+            false,
+            false,
+            true,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            true,
+            true
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ]
+      }
+    }
+  ]
+}

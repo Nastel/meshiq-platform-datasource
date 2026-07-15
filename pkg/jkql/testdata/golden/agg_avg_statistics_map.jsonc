@@ -1,0 +1,286 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 1
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 1
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 18 Fields by 1 Rows
+//  +----------------+----------------------------------+----------------------------------------+----------------------------------+----------------------------------------------+-----------------------------------+-----------------------------+--------------------------------+-----------------------------+---------------------------------+-----------------------------------------+-------------------------------------------+----------------------------------------+-----------------------------------------+----------------------------------+---------------------------------------+--------------------------------+---------------------------------+
+//  | Name: Severity | Name: Avg(apply_limit.time.usec) | Name: Avg(ext_data_src_exec.time.usec) | Name: Avg(json_string.time.usec) | Name: Avg(raw_result_post_process.time.usec) | Name: Avg(request_wait.time.usec) | Name: Avg(rows_found.count) | Name: Avg(rows_returned.count) | Name: Avg(rows_total.count) | Name: Avg(solr_empty_doc.count) | Name: Avg(solr_request_build.time.usec) | Name: Avg(solr_request_elapsed.time.usec) | Name: Avg(solr_request_exec.time.usec) | Name: Avg(solr_request_qtime.time.usec) | Name: Avg(solr_result_doc.count) | Name: Avg(solr_result_proc.time.usec) | Name: Avg(sort_time.time.usec) | Name: Avg(total_exec.time.usec) |
+//  | Labels:        | Labels:                          | Labels:                                | Labels:                          | Labels:                                      | Labels:                           | Labels:                     | Labels:                        | Labels:                     | Labels:                         | Labels:                                 | Labels:                                   | Labels:                                | Labels:                                 | Labels:                          | Labels:                               | Labels:                        | Labels:                         |
+//  | Type: []*enum  | Type: []*float64                 | Type: []*float64                       | Type: []*float64                 | Type: []*float64                             | Type: []*float64                  | Type: []*float64            | Type: []*float64               | Type: []*float64            | Type: []*float64                | Type: []*float64                        | Type: []*float64                          | Type: []*float64                       | Type: []*float64                        | Type: []*float64                 | Type: []*float64                      | Type: []*float64               | Type: []*float64                |
+//  +----------------+----------------------------------+----------------------------------------+----------------------------------+----------------------------------------------+-----------------------------------+-----------------------------+--------------------------------+-----------------------------+---------------------------------+-----------------------------------------+-------------------------------------------+----------------------------------------+-----------------------------------------+----------------------------------+---------------------------------------+--------------------------------+---------------------------------+
+//  | 0              | 16.75                            | 259832.8                               | 763.7456140350877                | 113.69026548672566                           | 25217.701754385966                | 42.72566371681416           | 10.342105263157896             | 10.460176991150442          | 4                               | 4193.064935064935                       | 14194.805194805194                        | 14702.51948051948                      | 3207.7922077922076                      | 34.84313725490196                | 548.8571428571429                     | 95.3225806451613               | 17086.128440366974              |
+//  +----------------+----------------------------------+----------------------------------------+----------------------------------+----------------------------------------------+-----------------------------------+-----------------------------+--------------------------------+-----------------------------+---------------------------------+-----------------------------------------+-------------------------------------------+----------------------------------------+-----------------------------------------+----------------------------------+---------------------------------------+--------------------------------+---------------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 1
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 1
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "Severity",
+            "type": "enum",
+            "typeInfo": {
+              "frame": "enum",
+              "nullable": true
+            },
+            "config": {
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "0": {
+                      "text": "INFO",
+                      "color": "semi-dark-blue"
+                    }
+                  }
+                }
+              ],
+              "type": {
+                "enum": {
+                  "text": [
+                    "INFO"
+                  ],
+                  "color": [
+                    "semi-dark-blue"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": "Avg(apply_limit.time.usec)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(ext_data_src_exec.time.usec)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(json_string.time.usec)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(raw_result_post_process.time.usec)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(request_wait.time.usec)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(rows_found.count)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(rows_returned.count)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(rows_total.count)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(solr_empty_doc.count)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(solr_request_build.time.usec)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(solr_request_elapsed.time.usec)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(solr_request_exec.time.usec)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(solr_request_qtime.time.usec)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(solr_result_doc.count)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(solr_result_proc.time.usec)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(sort_time.time.usec)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Avg(total_exec.time.usec)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            0
+          ],
+          [
+            16.75
+          ],
+          [
+            259832.8
+          ],
+          [
+            763.7456140350877
+          ],
+          [
+            113.69026548672566
+          ],
+          [
+            25217.701754385966
+          ],
+          [
+            42.72566371681416
+          ],
+          [
+            10.342105263157896
+          ],
+          [
+            10.460176991150442
+          ],
+          [
+            4
+          ],
+          [
+            4193.064935064935
+          ],
+          [
+            14194.805194805194
+          ],
+          [
+            14702.51948051948
+          ],
+          [
+            3207.7922077922076
+          ],
+          [
+            34.84313725490196
+          ],
+          [
+            548.8571428571429
+          ],
+          [
+            95.3225806451613
+          ],
+          [
+            17086.128440366974
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 1
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 1
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 8 Fields by 1 Rows
+//  +-----------------+----------------+--------------------+-------------------------------+--------------------------------------+-------------------------------------------------------+--------------------------------------+----------------------------------+
+//  | Name: Host      | Name: Port     | Name: RepositoryID | Name: StartTime               | Name: EndTime                        | Name: Quota                                           | Name: UpdateTime                     | Name: ExpireTime                 |
+//  | Labels:         | Labels:        | Labels:            | Labels:                       | Labels:                              | Labels:                                               | Labels:                              | Labels:                          |
+//  | Type: []*string | Type: []*int64 | Type: []*string    | Type: []*time.Time            | Type: []*time.Time                   | Type: []*string                                       | Type: []*time.Time                   | Type: []*time.Time               |
+//  +-----------------+----------------+--------------------+-------------------------------+--------------------------------------+-------------------------------------------------------+--------------------------------------+----------------------------------+
+//  | 172.18.0.8      | 6580           | DefaultRepo$meshIQ | 2026-06-18 13:00:00 +0000 UTC | 2026-06-18 13:59:59.999999 +0000 UTC | {"StreamBytesPerDay":2229027,"StreamMsgsPerDay":3120} | 2026-06-18 14:00:24.749202 +0000 UTC | 2026-08-18 00:00:24.77 +0000 UTC |
+//  +-----------------+----------------+--------------------+-------------------------------+--------------------------------------+-------------------------------------------------------+--------------------------------------+----------------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 1
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 1
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "Host",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Port",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "RepositoryID",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "StartTime",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time",
+              "nullable": true
+            }
+          },
+          {
+            "name": "EndTime",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Quota",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "UpdateTime",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time",
+              "nullable": true
+            }
+          },
+          {
+            "name": "ExpireTime",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            "172.18.0.8"
+          ],
+          [
+            6580
+          ],
+          [
+            "DefaultRepo$meshIQ"
+          ],
+          [
+            1781787600000
+          ],
+          [
+            1781791199999
+          ],
+          [
+            "{\"StreamBytesPerDay\":2229027,\"StreamMsgsPerDay\":3120}"
+          ],
+          [
+            1781791224749
+          ],
+          [
+            1787011224770
+          ]
+        ],
+        "nanos": [
+          null,
+          null,
+          null,
+          null,
+          [
+            999000
+          ],
+          null,
+          [
+            202000
+          ],
+          null
+        ]
+      }
+    }
+  ]
+}

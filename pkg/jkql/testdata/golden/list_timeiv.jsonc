@@ -1,0 +1,93 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 1
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 1
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 1 Fields by 1 Rows
+//  +---------------------------------------------------------------------------------------------------------------+
+//  | Name: elapsed                                                                                                 |
+//  | Labels:                                                                                                       |
+//  | Type: []*json.RawMessage                                                                                      |
+//  +---------------------------------------------------------------------------------------------------------------+
+//  | [52408,67979,83848,99361,109995,115537,119311,131725,145258,154731,256967,293189,314276,379259,497250,684315] |
+//  +---------------------------------------------------------------------------------------------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 1
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 1
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "elapsed",
+            "type": "other",
+            "typeInfo": {
+              "frame": "json.RawMessage",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            [
+              52408,
+              67979,
+              83848,
+              99361,
+              109995,
+              115537,
+              119311,
+              131725,
+              145258,
+              154731,
+              256967,
+              293189,
+              314276,
+              379259,
+              497250,
+              684315
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
