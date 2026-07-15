@@ -473,9 +473,9 @@ func buildFrameDataType(dataType string, size int) interface{} {
 	case STRING, ENUM, LABELSET, CLOB:
 		return make([]*string, size)
 	default:
-		// Any array coltype carries JSON; unknown scalars render as text. Must agree with
-		// ConvertToGrafanaValue's default.
-		if strings.HasSuffix(dataType, "[]") {
+		// Any array or map coltype (enumerated or not, e.g. MAP(STRING[])) carries JSON;
+		// unknown scalars render as text. Must agree with ConvertToGrafanaValue's default.
+		if strings.HasSuffix(dataType, "[]") || dataType == MAP || strings.HasPrefix(dataType, "MAP(") {
 			return make([]*json.RawMessage, size)
 		}
 		return make([]*string, size)
@@ -564,10 +564,13 @@ func ConvertToGrafanaValue(value interface{}, dataType string) interface{} {
 		}
 		return nil
 	default:
-		// Covers array coltypes and anything not enumerated above: render as JSON/text
-		// rather than dropping the column or printing Go map/slice syntax.
-		if strings.HasSuffix(dataType, "[]") {
+		// Covers every array and map coltype (enumerated or not, e.g. MAP(STRING[])) plus
+		// unknown types. Containers of unknown type render as JSON text, never Go syntax.
+		switch {
+		case strings.HasSuffix(dataType, "[]"):
 			return convertToJSONArray(value, dataType)
+		case dataType == MAP || strings.HasPrefix(dataType, "MAP("):
+			return convertToJSONMap(value, dataType)
 		}
 		switch value.(type) {
 		case map[string]interface{}, []interface{}:
@@ -595,6 +598,33 @@ func convertToJSONArray(value interface{}, arrType string) interface{} {
 	}
 
 	raw, err := json.Marshal(converted)
+	if err != nil {
+		return nil
+	}
+	return json.RawMessage(raw)
+}
+
+// convertToJSONMap marshals a non-exploded MAP column value into a json.RawMessage. For typed maps
+// each value is normalized by its element type (timestamps -> RFC3339, etc.); untyped MAP values
+// are already scalar and marshaled as-is. json.Marshal sorts keys, so output is stable.
+func convertToJSONMap(value interface{}, dataType string) interface{} {
+	m, ok := value.(map[string]interface{})
+	if !ok {
+		return nil
+	}
+
+	if strings.HasPrefix(dataType, "MAP(") && strings.HasSuffix(dataType, ")") {
+		// Derive the element type from the coltype itself so nested shapes work too:
+		// MAP(STRING[]) -> STRING[] elements render as JSON arrays, not stringified slices.
+		elementType := strings.TrimSuffix(strings.TrimPrefix(dataType, "MAP("), ")")
+		normalized := make(map[string]interface{}, len(m))
+		for k, v := range m {
+			normalized[k] = ConvertToGrafanaValue(v, elementType)
+		}
+		m = normalized
+	}
+
+	raw, err := json.Marshal(m)
 	if err != nil {
 		return nil
 	}
