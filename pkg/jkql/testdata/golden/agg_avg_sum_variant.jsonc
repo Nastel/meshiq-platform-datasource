@@ -1,0 +1,87 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 1
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 1
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 2 Fields by 1 Rows
+//  +--------------------+------------------------+
+//  | Name: avgVal       | Name: sumVal (DECIMAL) |
+//  | Labels:            | Labels:                |
+//  | Type: []*float64   | Type: []*float64       |
+//  +--------------------+------------------------+
+//  | 15280.482496484821 | 3.4839500091985394e+06 |
+//  +--------------------+------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 1
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 1
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "avgVal",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "sumVal (DECIMAL)",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            15280.482496484821
+          ],
+          [
+            3483950.0091985394
+          ]
+        ]
+      }
+    }
+  ]
+}
