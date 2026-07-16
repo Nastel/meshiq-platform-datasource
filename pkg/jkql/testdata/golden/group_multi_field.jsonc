@@ -1,0 +1,175 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "table",
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "stats": [
+//          {
+//              "displayName": "Rows returned",
+//              "value": 10
+//          },
+//          {
+//              "displayName": "Total rows matched",
+//              "value": 15
+//          }
+//      ],
+//      "notices": [
+//          {
+//              "severity": "warning",
+//              "text": "Only returning 10 of 15 rows"
+//          }
+//      ],
+//      "preferredVisualisationType": "table"
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 10 Rows
+//  +----------------+-----------------+----------------+
+//  | Name: Severity | Name: ItemType  | Name: NumberOf |
+//  | Labels:        | Labels:         | Labels:        |
+//  | Type: []*enum  | Type: []*string | Type: []*int64 |
+//  +----------------+-----------------+----------------+
+//  | 0              | ACCESS_TOKEN    | 3              |
+//  | 0              | REPOSITORY      | 6              |
+//  | 0              | ACTIVITY        | 1              |
+//  | 0              | SNAPSHOT        | 1              |
+//  | 0              | LOG             | 22             |
+//  | 0              | RELATIVE        | 1              |
+//  | 0              | ORGANIZATION    | 66             |
+//  | 1              | null            | 1              |
+//  | 0              | TEAM            | 4              |
+//  | 0              | DATASET         | 1              |
+//  +----------------+-----------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "type": "table",
+          "typeVersion": [
+            0,
+            0
+          ],
+          "stats": [
+            {
+              "displayName": "Rows returned",
+              "value": 10
+            },
+            {
+              "displayName": "Total rows matched",
+              "value": 15
+            }
+          ],
+          "notices": [
+            {
+              "severity": "warning",
+              "text": "Only returning 10 of 15 rows"
+            }
+          ],
+          "preferredVisualisationType": "table"
+        },
+        "fields": [
+          {
+            "name": "Severity",
+            "type": "enum",
+            "typeInfo": {
+              "frame": "enum",
+              "nullable": true
+            },
+            "config": {
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "0": {
+                      "text": "INFO",
+                      "color": "semi-dark-blue"
+                    },
+                    "1": {
+                      "text": "ERROR",
+                      "color": "semi-dark-red"
+                    }
+                  }
+                }
+              ],
+              "type": {
+                "enum": {
+                  "text": [
+                    "INFO",
+                    "ERROR"
+                  ],
+                  "color": [
+                    "semi-dark-blue",
+                    "semi-dark-red"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": "ItemType",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "NumberOf",
+            "type": "number",
+            "typeInfo": {
+              "frame": "int64",
+              "nullable": true
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            "ACCESS_TOKEN",
+            "REPOSITORY",
+            "ACTIVITY",
+            "SNAPSHOT",
+            "LOG",
+            "RELATIVE",
+            "ORGANIZATION",
+            null,
+            "TEAM",
+            "DATASET"
+          ],
+          [
+            3,
+            6,
+            1,
+            1,
+            22,
+            1,
+            66,
+            1,
+            4,
+            1
+          ]
+        ]
+      }
+    }
+  ]
+}
