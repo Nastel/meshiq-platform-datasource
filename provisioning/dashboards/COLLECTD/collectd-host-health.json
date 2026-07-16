@@ -1,0 +1,652 @@
+{
+  "uid": "meshiq-collectd-host-health",
+  "title": "COLLECTD — Host Health",
+  "description": "Time-series system metrics (CPU, memory, load, disk, network, swap) collected via collectd and served by the meshIQ Platform datasource.",
+  "tags": [
+    "showcase",
+    "meshiq",
+    "collectd"
+  ],
+  "timezone": "browser",
+  "editable": true,
+  "graphTooltip": 1,
+  "refresh": "30s",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "schemaVersion": 39,
+  "templating": {
+    "list": [
+      {
+        "name": "host",
+        "label": "Host",
+        "type": "query",
+        "datasource": {
+          "type": "meshiq-platform-datasource",
+          "uid": "meshiq-platform"
+        },
+        "query": {
+          "type": "query",
+          "jkql": "Get Number Of COLLECTD.CPU Group By SourceComps('NETADDR')",
+          "refId": "variable-host"
+        },
+        "multi": true,
+        "includeAll": true,
+        "refresh": 1,
+        "sort": 0,
+        "current": {
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ],
+          "selected": true
+        },
+        "options": []
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "row",
+      "title": "CPU",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": []
+    },
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "CPU Usage by Core (User)",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "timeseries",
+          "jkql": "Get COLLECTD.CPU Field MetricTime, Name, cpu.user.value Where SourceComps('NETADDR') In ($host) And cpu.user.value Exists Sort By MetricTime",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "spanNulls": true
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "CPU Usage by Core (System + Wait)",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "timeseries",
+          "jkql": "Get COLLECTD.CPU Field MetricTime, Name, cpu.system.value Where SourceComps('NETADDR') In ($host) And cpu.system.value Exists Sort By MetricTime",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        },
+        {
+          "refId": "B",
+          "format": "timeseries",
+          "jkql": "Get COLLECTD.CPU Field MetricTime, Name, cpu.wait.value Where SourceComps('NETADDR') In ($host) And cpu.wait.value Exists Sort By MetricTime",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "spanNulls": true
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "type": "row",
+      "title": "Load Average",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "panels": []
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "System Load Average",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "timeseries",
+          "jkql": "Get COLLECTD.LOAD Field MetricTime, load.shortterm As 'Load (1m)', load.midterm As 'Load (5m)', load.longterm As 'Load (15m)' Where SourceComps('NETADDR') In ($host) Sort By MetricTime",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "spanNulls": true
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "type": "row",
+      "title": "Memory & Swap",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "panels": []
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Memory Used / Free / Cached",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 19
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "timeseries",
+          "jkql": "Get COLLECTD.MEMORY Field MetricTime, memory.used.value As 'Used', memory.free.value As 'Free', memory.cached.value As 'Cached' Where SourceComps('NETADDR') In ($host) Sort By MetricTime",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 15,
+            "spanNulls": true,
+            "stacking": {
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Swap Used / Free",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 19
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "timeseries",
+          "jkql": "Get COLLECTD.SWAP Field MetricTime, swap.used.value As 'Used', swap.free.value As 'Free' Where SourceComps('NETADDR') In ($host) Sort By MetricTime",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 15,
+            "spanNulls": true
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "type": "row",
+      "title": "Disk",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "panels": []
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Disk Throughput (Read)",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 28
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "timeseries",
+          "jkql": "Get COLLECTD.DISK Field MetricTime, Name, disk_octets.read Where SourceComps('NETADDR') In ($host) And disk_octets.read Exists Sort By MetricTime",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "spanNulls": true
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Disk Throughput (Write)",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 28
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "timeseries",
+          "jkql": "Get COLLECTD.DISK Field MetricTime, Name, disk_octets.write Where SourceComps('NETADDR') In ($host) And disk_octets.write Exists Sort By MetricTime",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "spanNulls": true
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": "table",
+      "title": "Filesystem Usage",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 36
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "jkql": "Get COLLECTD.DF Field Name As 'Mount', df_complex.used.value As 'Used', df_complex.free.value As 'Free', df_complex.reserved.value As 'Reserved' Where SourceComps('NETADDR') In ($host) And df_complex.used.value Exists Sort By MetricTime Desc Range 1,20",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "custom": {
+            "align": "auto",
+            "displayMode": "color-background",
+            "cellOptions": {
+              "type": "color-background"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Mount"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "auto"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "row",
+      "title": "Network",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 44
+      },
+      "panels": []
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Network Throughput (Received)",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 45
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "timeseries",
+          "jkql": "Get COLLECTD.INTERFACE Field MetricTime, Name, if_octets.rx Where SourceComps('NETADDR') In ($host) And if_octets.rx Exists Sort By MetricTime",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "spanNulls": true
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Network Throughput (Transmitted)",
+      "datasource": {
+        "type": "meshiq-platform-datasource",
+        "uid": "meshiq-platform"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 45
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "timeseries",
+          "jkql": "Get COLLECTD.INTERFACE Field MetricTime, Name, if_octets.tx Where SourceComps('NETADDR') In ($host) And if_octets.tx Exists Sort By MetricTime",
+          "datasource": {
+            "type": "meshiq-platform-datasource",
+            "uid": "meshiq-platform"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "spanNulls": true
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    }
+  ]
+}
