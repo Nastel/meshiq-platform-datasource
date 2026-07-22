@@ -156,6 +156,9 @@ func (d *Datasource) query(ctx context.Context, pCtx backend.PluginContext, quer
 	})
 	// Frame building can add issues too (variant envelopes), so log after it, once per query.
 	logParseIssues(ctx, *queryModel, dataModel)
+	if queryModel.DebugRawResponse {
+		attachRawResponse(frame, result)
+	}
 	frame = jkql.FinalizeFrame(frame, queryModel.JKQL, queryModel.Format)
 	frame.RefID = query.RefID
 	response.Frames = append(response.Frames, frame)

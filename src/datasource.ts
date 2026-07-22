@@ -57,6 +57,7 @@ export class DataSource extends DataSourceWithBackend<MeshIqQuery, MeshIqDataSou
       ...target,
       maxRows,
       repositoryID: target.repositoryID || this.defaultRepositoryID || undefined,
+      debugRawResponse: request.app === CoreApp.Explore,
     }));
 
     return super.query({ ...request, targets });
