@@ -17,6 +17,10 @@ type QueryModel struct {
 	// Format selects the frame shape: jkql.FormatTable (default) or jkql.FormatTimeSeries.
 	Format string `json:"format"`
 	Date   string `json:"-"`
+	// DebugRawResponse is set by the frontend only for Explore-originated queries (see
+	// DataSource.query() in datasource.ts); it asks attachRawResponse to carry the dataservice's
+	// raw response on the frame, viewable in the Query Inspector's JSON tab.
+	DebugRawResponse bool `json:"debugRawResponse"`
 }
 
 // BuildQueryModel unmarshals a Grafana query and derives the jKQL date range.
