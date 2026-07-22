@@ -16,6 +16,10 @@ export interface MeshIqQuery extends DataQuery {
   format?: MeshIqFormat;
   repositoryID?: string;
   maxRows?: number;
+  /** Set by DataSource.query() for Explore-originated requests; asks the backend to attach the
+   * dataservice's raw response (Query Inspector JSON tab) — skipped for dashboards/alerting so a
+   * panel with many queries doesn't carry the extra payload back on every load. */
+  debugRawResponse?: boolean;
 }
 
 export const DEFAULT_QUERY: Partial<MeshIqQuery> = {
