@@ -134,9 +134,11 @@ func toEnumObjectChecked(value interface{}) (JkqlEnum, bool) {
 	return JkqlEnum{Ordinal: ordinal, Name: parts[1]}, true
 }
 
-// ConvertDtToPrefix returns the single-letter data-type prefix jKQL uses in column headers for an
-// exploded map key (so the same key requested with two types, e.g. via casts, stays two distinct
-// columns).
+// ConvertDtToPrefix returns the data-type prefix jKQL uses in column headers for an exploded map
+// key (so the same key requested with two types, e.g. via casts, stays two distinct columns).
+// Scalars get a single letter; the array counterpart of each scalar adds a trailing "A" (e.g.
+// STRING -> "S", STRING[] -> "SA") so an array-typed key can't collide with its own scalar form
+// or with a different array type on the same key.
 func ConvertDtToPrefix(dataType string) string {
 	switch dataType {
 	case BOOLEAN:
@@ -161,9 +163,34 @@ func ConvertDtToPrefix(dataType string) string {
 		return "C"
 	case LABELSET:
 		return "L"
+	case BOOLEAN_ARR:
+		return "BA"
+	case INTEGER_ARR:
+		return "IA"
+	case DECIMAL_ARR:
+		return "DA"
+	case TIMESTAMP_ARR:
+		return "TA"
+	case TIMEINTERVAL_ARR:
+		return "VA"
+	case STRING_ARR:
+		return "SA"
+	case ENUM_ARR:
+		return "EA"
+	case BINARY_ARR:
+		return "XA"
+	case VARIANT_ARR:
+		return "AA"
+	case CLOB_ARR:
+		return "CA"
+	case LABELSET_ARR:
+		return "LA"
 	default:
 		// An unknown type can reach here via a map's :_ValueTypes sibling, which carries
-		// arbitrary server-side type names. No prefix is better than a wrong one.
+		// arbitrary server-side type names (e.g. a coltype the server introduces later). No
+		// prefix is better than a wrong one — but note this means two DIFFERENT unrecognized
+		// types on the same map key still collide (same empty prefix -> same header), silently
+		// dropping one column. Add a case above for any new type as soon as it's seen live.
 		return ""
 	}
 }

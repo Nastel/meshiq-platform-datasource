@@ -1,0 +1,48 @@
+{
+    "rows-found": 1,
+    "row-count": 1,
+    "total-row-count": 1,
+    "query-date-filter": "1784678400000000 TO 1784764799999999",
+    "timezone": "GMT",
+    "locale": "en",
+    "status": "SUCCESS",
+    "time": 1784704477300667,
+    "item-type": "collectd.cpu",
+    "stmt-type": "Get",
+    "colhdr": [
+        "List(Properties('cpu.user.value'))"
+    ],
+    "coltype": {
+        "List(Properties('cpu.user.value'))": "MAP"
+    },
+    "collabel": {
+        "List(Properties('cpu.user.value'))": "List(Properties('cpu.user.value'))"
+    },
+    "rows": [
+        {
+            "List(Properties('cpu.user.value'))": {
+                "cpu.user.value": [
+                    "13.0166584842429",
+                    "13.2499850798993",
+                    "13.2666094065766"
+                ]
+            },
+            "List(Properties('cpu.user.value')):_ValueTypes": {
+                "cpu.user.value": "STRING[]"
+            }
+        }
+    ],
+    "overallStatistics": {
+        "json_string.time.usec": 4753,
+        "pinot_request_build.time.usec": 271,
+        "pinot_request_exec.time.usec": 24025,
+        "pinot_result_proc.time.usec": 1716,
+        "pinot_result_rows.count": 1,
+        "raw_result_post_process.time.usec": 3,
+        "request_wait.time.usec": 3037,
+        "rows_found.count": 1,
+        "rows_returned.count": 1,
+        "rows_total.count": 1,
+        "total_exec.time.usec": 26244
+    }
+}
