@@ -98,9 +98,13 @@ jobs:
           # Disabled here; run `npm run e2e` locally against docker-compose instead.
           echo "has-e2e=false" >> $GITHUB_OUTPUT
 
+      # TODO: re-enable once the plugin is submitted to and approved by the Grafana catalog.
+      # Currently fails with "409 Field is required: rootUrls" — that field is only required for
+      # private-plugin signing, but public/catalog signing isn't available until Grafana assigns
+      # a signature level, which only happens post-approval.
       - name: Sign plugin
         run: npm run sign
-        if: ${{ env.GRAFANA_ACCESS_POLICY_TOKEN != '' }}
+        if: false
 
       - name: Get plugin metadata
         id: metadata
