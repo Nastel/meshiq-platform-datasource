@@ -60,6 +60,16 @@ jobs:
         with:
           go-version-file: go.mod
 
+      - name: Check GO_VERSION matches go.mod
+        if: steps.check-for-backend.outputs.has-backend == 'true'
+        run: |
+          MOD_VERSION=$(sed -n 's/^go //p' go.mod)
+          COMPOSE_VERSION=$(sed -n 's/.*GO_VERSION:-\([0-9.]*\)}.*/\1/p' docker-compose.yaml)
+          if [ "$MOD_VERSION" != "$COMPOSE_VERSION" ]; then
+            echo "::error::docker-compose.yaml's GO_VERSION default ($COMPOSE_VERSION) doesn't match go.mod's go directive ($MOD_VERSION)."
+            exit 1
+          fi
+
       - name: Lint backend
         if: steps.check-for-backend.outputs.has-backend == 'true'
         uses: golangci/golangci-lint-action@82606bf257cbaff209d206a39f5134f0cfbfd2ee # v9.2.1
