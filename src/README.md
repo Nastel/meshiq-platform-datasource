@@ -8,8 +8,8 @@ IBM MQ, RabbitMQ, Solace, TIBCO EMS, ActiveMQ, and more).
 ## Features
 
 - **jKQL query editor** with syntax highlighting and optional autocomplete.
-- **Table, time series, and logs** result formats. Time-bucketed results pivot into series for
-  graph panels; log results render in Explore's logs view.
+- **Table and time series** result formats. Time-bucketed results pivot into series for graph
+  panels.
 - **Template variables** — drive dashboard variables from a jKQL query, or list item types and
   fields. Multi-value variables expand to a quoted list, ready for `In ($variable)`.
 - **Alerting and annotations** — alert rules evaluate on the backend; annotation queries can
@@ -42,7 +42,7 @@ Click **Save & Test**. On success the page also shows the server's **version** a
 Type a jKQL statement and press **Ctrl/Cmd+Enter** (or click away) to run it:
 
 ```sql
--- Recent log entries (choose "Format as: Logs" in Explore)
+-- Recent log entries
 Get Log
 
 -- Errors only
