@@ -70,7 +70,7 @@ export function ConfigEditor(props: Props) {
     return () => {
       cancelled = true;
     };
-  }, [datasource, configured, options.version]);
+  }, [datasource, configured, datasourceVersion, options.version]);
 
   // On the connection becoming valid, pre-select the conventional default repository
   // ("DefaultRepo$<org>") if present and none is chosen yet, so the required field is satisfied.
