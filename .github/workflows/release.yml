@@ -15,14 +15,14 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
 
       # TODO: pass policy_token again once the plugin is submitted to and approved by the Grafana
       # catalog. Signing fails until then (see ci.yml's disabled "Sign plugin" step for why) — a
       # tagged release currently builds and packages unsigned.
-      - uses: grafana/plugin-actions/build-plugin@build-plugin/v1.0.2
+      - uses: grafana/plugin-actions/build-plugin@build-plugin/v1.2.0
         # Requires a Grafana Cloud access policy token with the plugins:write scope,
         # saved as the GRAFANA_ACCESS_POLICY_TOKEN repository secret.
         # https://grafana.com/developers/plugin-tools/publish-a-plugin/sign-a-plugin#generate-an-access-policy-token

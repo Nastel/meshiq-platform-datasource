@@ -10,7 +10,7 @@ services:
       # GO_VERSION env var (or .env entry) instead of editing this file if you need to test
       # a different toolchain version.
       args:
-        GO_VERSION: ${GO_VERSION:-1.26.4}
+        GO_VERSION: ${GO_VERSION:-1.26.5}
     # Dataservice credentials for the provisioned "meshIQ Platform" datasource.
     # Compose substitutes these from a gitignored .env file (see .env.example); the empty
     # defaults keep `docker compose` quiet when .env is absent. Merged with the base env.
