@@ -6,9 +6,11 @@ services:
     build:
       # Only used by the optional DEVELOPMENT=true image (the managed .config/Dockerfile
       # defaults to an older Go than go.mod needs). Ignored by the plain image the dev loop
-      # uses. Keep in sync with the `go` directive in go.mod.
+      # uses. Default below must match the `go` directive in go.mod; override with a
+      # GO_VERSION env var (or .env entry) instead of editing this file if you need to test
+      # a different toolchain version.
       args:
-        GO_VERSION: 1.26.5
+        GO_VERSION: ${GO_VERSION:-1.26.5}
     # Dataservice credentials for the provisioned "meshIQ Platform" datasource.
     # Compose substitutes these from a gitignored .env file (see .env.example); the empty
     # defaults keep `docker compose` quiet when .env is absent. Merged with the base env.
