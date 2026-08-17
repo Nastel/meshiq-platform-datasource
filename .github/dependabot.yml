@@ -42,6 +42,9 @@ updates:
         update-types:
           - 'minor'
           - 'patch'
+      npm-other:
+        patterns:
+          - '*'
 
   - package-ecosystem: 'github-actions'
     directory: '/'
@@ -50,6 +53,10 @@ updates:
     commit-message:
       prefix: 'chore(ci)'
     open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        patterns:
+          - '*'
 
   - package-ecosystem: 'gomod'
     directory: '/'
