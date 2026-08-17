@@ -32,6 +32,17 @@ export function VariableQueryEditor({ query, onChange, datasource }: Props) {
   // tables.length can't distinguish "still fetching" from a settled empty/failed fetch; without
   // this flag the combobox would show a loading spinner forever in the settled cases.
   const [tablesLoading, setTablesLoading] = useState(false);
+  // The type a fetch is in flight for (or has last settled for), so a render can tell "type just
+  // changed to fields, a fetch needs to start" apart from "already loading/loaded for this type" —
+  // set during render (React's documented pattern for adjusting state as a prop changes), not
+  // inside the effect, so the effect's own setState calls stay confined to its async callbacks.
+  const [fetchType, setFetchType] = useState<MeshIqVariableQueryType>();
+  if (model.type === 'fields' && fetchType !== 'fields') {
+    setFetchType('fields');
+    setTablesLoading(true);
+  } else if (model.type !== 'fields' && fetchType !== undefined) {
+    setFetchType(undefined);
+  }
 
   // Load the item type list when the editor switches to (or opens on) the Fields type.
   useEffect(() => {
@@ -39,7 +50,6 @@ export function VariableQueryEditor({ query, onChange, datasource }: Props) {
       return;
     }
     let cancelled = false;
-    setTablesLoading(true);
     datasource
       .fetchTables()
       .then((rows) => {
