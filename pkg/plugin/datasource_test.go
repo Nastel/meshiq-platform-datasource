@@ -68,6 +68,31 @@ func TestQuery_BackendOnlyQueryFallsBackToDefaultRepository(t *testing.T) {
 	}
 }
 
+// A blocked item type must be rejected with 403 before any request reaches the dataservice.
+func TestQuery_RejectsBlockedItemTypeWithoutCallingDataservice(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		t.Fatal("dataservice must not be called for a rejected query")
+	}))
+	defer server.Close()
+
+	ds := &Datasource{httpClient: server.Client(), enumCache: make(map[string][]string)}
+	settings := backend.DataSourceInstanceSettings{
+		JSONData:                []byte(`{"serviceUrl":"` + server.URL + `","repositoryID":"DefaultRepo$Org"}`),
+		DecryptedSecureJSONData: map[string]string{"accessToken": "t"},
+	}
+	pCtx := backend.PluginContext{DataSourceInstanceSettings: &settings}
+
+	query := backend.DataQuery{RefID: "A", JSON: []byte(`{"jkql":"get users"}`)}
+	resp := ds.query(context.Background(), pCtx, query)
+
+	if resp.Error == nil {
+		t.Fatal("expected the query to be rejected")
+	}
+	if resp.Status != backend.StatusForbidden {
+		t.Errorf("resp.Status = %v, want %v", resp.Status, backend.StatusForbidden)
+	}
+}
+
 // TestRejectCrossHostRedirect_SameHostAllowed pins that a same-host, same-scheme redirect (e.g.
 // the dataservice itself issuing a 307 for its own reasons) is still followed.
 func TestRejectCrossHostRedirect_SameHostAllowed(t *testing.T) {

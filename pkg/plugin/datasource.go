@@ -122,6 +122,10 @@ func (d *Datasource) query(ctx context.Context, pCtx backend.PluginContext, quer
 		return response
 	}
 
+	if err := validateUserQuery(queryModel.JKQL); err != nil {
+		return backend.ErrDataResponse(backend.StatusForbidden, err.Error())
+	}
+
 	options, err := BuildMeshIqDataSourceOptions(pCtx.DataSourceInstanceSettings)
 	if err != nil {
 		logger := log.DefaultLogger.FromContext(ctx)
