@@ -89,6 +89,14 @@ describe('DataSource.applyTemplateVariables (jKQL quoting via formatJkqlVariable
 
     expect(ds.applyTemplateVariables(query, scopedVars).jkql).toBe("Get Events WHERE Message = 'it\\'s a \\\\test'");
   });
+
+  it('interpolates an empty multi-value selection as a value that matches nothing, not a bare IN()', () => {
+    const ds = makeDataSource();
+    const query: MeshIqQuery = { refId: 'A', jkql: 'Get Events WHERE Severity IN ($sev)' };
+    const scopedVars: ScopedVars = { sev: { text: '', value: [] } };
+
+    expect(ds.applyTemplateVariables(query, scopedVars).jkql).toBe("Get Events WHERE Severity IN ('$__no_selection__$')");
+  });
 });
 
 describe('DataSource.metricFindQuery scopedVars threading', () => {

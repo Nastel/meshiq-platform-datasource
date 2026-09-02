@@ -248,6 +248,15 @@ export class DataSource extends DataSourceWithBackend<MeshIqQuery, MeshIqDataSou
 // parse. Single values stay raw, so the query author controls their quoting ('$var' vs $var).
 function formatJkqlVariable(value: unknown): string {
   if (Array.isArray(value)) {
+    if (value.length === 0) {
+      // No selection resolves to zero options (e.g. a query variable that itself returned no
+      // rows). `IN ()` is invalid jKQL syntax and the server rejects it with a parse error, so
+      // interpolate a placeholder instead — degrades to zero rows, not an error. Not an empty
+      // string: some fields can legitimately hold '' as real data. This sentinel follows
+      // Grafana's own '$__'-prefixed convention for internal-only tokens (e.g. $__all), so no
+      // real field value should ever collide with it.
+      return "'$__no_selection__$'";
+    }
     return value.map((v) => quoteJkqlString(String(v))).join(', ');
   }
   return String(value);
