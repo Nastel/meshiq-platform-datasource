@@ -69,6 +69,11 @@ jobs:
             echo "::error::docker-compose.yaml's GO_VERSION default ($COMPOSE_VERSION) doesn't match go.mod's go directive ($MOD_VERSION)."
             exit 1
           fi
+          RELEASE_VERSION=$(sed -n "s/.*go-version: '\([0-9.]*\)'.*/\1/p" .github/workflows/release.yml)
+          if [ "$MOD_VERSION" != "$RELEASE_VERSION" ]; then
+            echo "::error::release.yml's go-version ($RELEASE_VERSION) doesn't match go.mod's go directive ($MOD_VERSION)."
+            exit 1
+          fi
 
       - name: Lint backend
         if: steps.check-for-backend.outputs.has-backend == 'true'
