@@ -6,7 +6,7 @@ import (
 )
 
 // errNotAuthorized is returned for any rejected jKQL statement.
-var errNotAuthorized = errors.New("Specified token is not authorized to execute this statement")
+var errNotAuthorized = errors.New("specified token is not authorized to execute this statement")
 
 // blockedItemTypeLabels are the jKQL item-type labels (canonical name + known aliases) that user
 // queries must not target: LOG, every admin item type, and every reference/catalog item type —
