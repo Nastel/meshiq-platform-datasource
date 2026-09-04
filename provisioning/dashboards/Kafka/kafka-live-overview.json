@@ -23,7 +23,7 @@
         "label": "Cluster",
         "type": "query",
         "datasource": {
-          "type": "meshiq-platform-datasource",
+          "type": "nastel-meshiq-datasource",
           "uid": "meshiq-platform"
         },
         "query": {
@@ -66,7 +66,7 @@
       "type": "stat",
       "title": "Clusters",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -81,7 +81,7 @@
           "format": "table",
           "jkql": "Get Number Of KafkaCluster Where Name In ($cluster)",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -114,7 +114,7 @@
       "type": "stat",
       "title": "Brokers",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -129,7 +129,7 @@
           "format": "table",
           "jkql": "Get Number Of KafkaBroker Where WgsClusterName In ($cluster)",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -162,7 +162,7 @@
       "type": "stat",
       "title": "Topics",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -177,7 +177,7 @@
           "format": "table",
           "jkql": "Get Number Of KafkaTopic Where WgsClusterName In ($cluster) And Name Not Starts With '__'",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -210,7 +210,7 @@
       "type": "stat",
       "title": "Partitions",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -225,7 +225,7 @@
           "format": "table",
           "jkql": "Get Number Of KafkaPartition Where WgsClusterName In ($cluster) And topicName Not Starts With '__'",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -258,7 +258,7 @@
       "type": "stat",
       "title": "Consumer Groups",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -273,7 +273,7 @@
           "format": "table",
           "jkql": "Get Number Of KafkaConsumerGroup Where WgsClusterName In ($cluster)",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -306,7 +306,7 @@
       "type": "stat",
       "title": "Consumers",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -321,7 +321,7 @@
           "format": "table",
           "jkql": "Get Number Of KafkaConsumer Where WgsClusterName In ($cluster)",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -366,7 +366,7 @@
       "type": "table",
       "title": "Top 10 Consumer Lag by Partition",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -381,7 +381,7 @@
           "format": "table",
           "jkql": "Get KafkaConsumer Fields WgsClusterName As 'Cluster', groupId As 'Group', topicName As 'Topic', partitionId As 'Partition', lag As 'Lag', currentOffset As 'Consumer Offset', partitionEndOffset As 'LEO' Where WgsClusterName In ($cluster) And topicName Not Starts With '__' Sort By lag Desc Range 1,10",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -455,7 +455,7 @@
       "type": "piechart",
       "title": "Consumer Group State",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -470,7 +470,7 @@
           "format": "table",
           "jkql": "Get Number Of KafkaConsumerGroup Where WgsClusterName In ($cluster) Group By state",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -606,7 +606,7 @@
       "type": "table",
       "title": "Group Metrics",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -621,7 +621,7 @@
           "format": "table",
           "jkql": "Get KafkaConsumerGroup Fields Name As 'Group', memberCount As 'Members', topicCount As 'Topics' Where WgsClusterName In ($cluster) Sort By Name",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -683,7 +683,7 @@
       "type": "table",
       "title": "Per-Broker State",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -698,7 +698,7 @@
           "format": "table",
           "jkql": "Get KafkaBroker Fields Name As 'Broker', WgsClusterName As 'Cluster', state As 'State', isController As 'Controller', partitionCount As 'Partitions', partitionLeaderReplicaCount As 'Leader Partitions' Where WgsClusterName In ($cluster) Sort By Name",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -772,7 +772,7 @@
       "type": "table",
       "title": "Per-Cluster Aggregates",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -787,7 +787,7 @@
           "format": "table",
           "jkql": "Get KafkaBroker Fields avg(cpuLoad) As 'Avg CPU Load', sum(partitionCount) As 'Total Partitions' Where WgsClusterName In ($cluster) Group By WgsClusterName",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -853,7 +853,7 @@
       "type": "table",
       "title": "Topic Health",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -868,7 +868,7 @@
           "format": "table",
           "jkql": "Get KafkaTopic Fields WgsClusterName As 'Cluster', Name As 'Topic', replicationFactor As 'Replication Factor', notInSyncReplicaPartitions As 'Not In Sync' Where WgsClusterName In ($cluster) And Name Not Starts With '__' Sort By notInSyncReplicaPartitions Desc",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }

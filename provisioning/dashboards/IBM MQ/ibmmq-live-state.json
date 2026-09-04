@@ -23,7 +23,7 @@
         "label": "Queue manager",
         "type": "query",
         "datasource": {
-          "type": "meshiq-platform-datasource",
+          "type": "nastel-meshiq-datasource",
           "uid": "meshiq-platform"
         },
         "query": {
@@ -67,7 +67,7 @@
       "type": "stat",
       "title": "Queue managers",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -82,7 +82,7 @@
           "format": "table",
           "jkql": "Get Number Of IbmmqQueueManager Where nodeType = 'Connection Manager' And Name In ($qmgr)",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -120,7 +120,7 @@
       "type": "stat",
       "title": "Active queue managers",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -135,7 +135,7 @@
           "format": "table",
           "jkql": "Get Number Of IbmmqQueueManager Where nodeType = 'Connection Manager' And Name In ($qmgr) And WgsObjectState = 'ACTIVE'",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -173,7 +173,7 @@
       "type": "stat",
       "title": "Running channels",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -188,7 +188,7 @@
           "format": "table",
           "jkql": "Get Number Of IbmmqChannel Where WgsQueueManagerName In ($qmgr) And WgsChannelStatus = 'RUNNING'",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -226,7 +226,7 @@
       "type": "stat",
       "title": "Retrying channels",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -241,7 +241,7 @@
           "format": "table",
           "jkql": "Get Number Of IbmmqChannel Where WgsQueueManagerName In ($qmgr) And WgsChannelStatus = 'RETRYING'",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -283,7 +283,7 @@
       "type": "stat",
       "title": "Queues with messages",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -298,7 +298,7 @@
           "format": "table",
           "jkql": "Get Number Of IbmmqLocalQueue Where WgsQueueManagerName In ($qmgr) And curQDepth > 0",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -336,7 +336,7 @@
       "type": "stat",
       "title": "Running listeners",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -351,7 +351,7 @@
           "format": "table",
           "jkql": "Get Number Of IbmmqListener Where WgsQueueManagerName In ($qmgr) And WgsServiceStatus = 'RUNNING'",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -402,7 +402,7 @@
       "type": "table",
       "title": "Queue managers",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -417,7 +417,7 @@
           "format": "table",
           "jkql": "Get IbmmqQueueManager Fields Name As 'Queue Manager', WgsNodeName As 'Node', WgsObjectState As 'State', hostName As 'Host', activeChannelCount As 'Active Channels', connCount As 'Connections', deadLetterQName As 'Dead-Letter Queue' Where nodeType = 'Connection Manager' And Name In ($qmgr) Sort By Name",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -479,7 +479,7 @@
       "type": "piechart",
       "title": "Queue managers by state",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -494,7 +494,7 @@
           "format": "table",
           "jkql": "Get Number Of IbmmqQueueManager Where nodeType = 'Connection Manager' And Name In ($qmgr) Group By WgsObjectState",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -660,7 +660,7 @@
       "type": "piechart",
       "title": "Channels by status",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -675,7 +675,7 @@
           "format": "table",
           "jkql": "Get Number Of IbmmqChannel Where WgsQueueManagerName In ($qmgr) Group By WgsChannelStatus",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -915,7 +915,7 @@
       "title": "Deepest queues",
       "description": "Click a bar to open the queue-detail dashboard.",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -930,7 +930,7 @@
           "format": "table",
           "jkql": "Get IbmmqLocalQueue Fields Name As 'Queue', WgsQueueManagerName As 'Queue Manager', curQDepth As 'Depth' Where WgsQueueManagerName In ($qmgr) And curQDepth > 0 Sort By 'Depth' Desc Range 1,10",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -994,7 +994,7 @@
       "title": "Queues near capacity",
       "description": "Top queues by used depth (% of maxDepth), computed by jKQL. Click a row to open the queue-detail dashboard.",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -1009,7 +1009,7 @@
           "format": "table",
           "jkql": "Get IbmmqLocalQueue Fields Name As 'Queue', WgsQueueManagerName As 'Queue Manager', curQDepth As 'Current Depth', maxDepth As 'Max Depth', curQDepth * 100 / maxDepth As '% Full' Where WgsQueueManagerName In ($qmgr) And maxDepth > 0 Sort By '% Full' Desc Range 1,10",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -1134,7 +1134,7 @@
       "type": "table",
       "title": "Channels (not inactive)",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -1149,7 +1149,7 @@
           "format": "table",
           "jkql": "Get IbmmqChannel Fields Name As 'Channel', WgsQueueManagerName As 'Queue Manager', WgsChannelType As 'Type', WgsChannelStatus As 'Status', connectionName As 'Connection Name', msgsSent As 'Messages Sent', msgsRcvd As 'Messages Received', bytesSent As 'Bytes Sent', bytesRecvd As 'Bytes Received' Where WgsQueueManagerName In ($qmgr) And WgsChannelStatus != 'INACTIVE' Sort By Name",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -1255,7 +1255,7 @@
       "type": "table",
       "title": "Running listeners",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -1270,7 +1270,7 @@
           "format": "table",
           "jkql": "Get IbmmqListener Fields Name As 'Listener', WgsQueueManagerName As 'Queue Manager', WgsServiceStatus As 'Status', xmitProtocolType As 'Protocol', ipPort As 'Port', connCount As 'Connections', sessions As 'Sessions', backlog As 'Backlog', startDate As 'Started', startTime As 'Start Time' Where WgsQueueManagerName In ($qmgr) And WgsServiceStatus = 'RUNNING' Sort By Name",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }

@@ -1,5 +1,5 @@
 {
-  "name": "meshiq-platform-datasource",
+  "name": "nastel-meshiq-datasource",
   "version": "1.0.0",
   "description": "meshIQ Platform datasource plugin for Grafana",
   "scripts": {

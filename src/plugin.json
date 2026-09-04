@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/grafana/grafana/main/docs/sources/developers/plugins/plugin.schema.json",
   "type": "datasource",
   "name": "meshIQ Platform",
-  "id": "meshiq-platform-datasource",
+  "id": "nastel-meshiq-datasource",
   "alerting": true,
   "annotations": true,
   "metrics": true,

@@ -23,7 +23,7 @@
         "label": "Queue manager",
         "type": "query",
         "datasource": {
-          "type": "meshiq-platform-datasource",
+          "type": "nastel-meshiq-datasource",
           "uid": "meshiq-platform"
         },
         "query": {
@@ -43,7 +43,7 @@
         "label": "Queue",
         "type": "query",
         "datasource": {
-          "type": "meshiq-platform-datasource",
+          "type": "nastel-meshiq-datasource",
           "uid": "meshiq-platform"
         },
         "query": {
@@ -79,7 +79,7 @@
       "type": "gauge",
       "title": "Depth used",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -94,7 +94,7 @@
           "format": "table",
           "jkql": "Get IbmmqLocalQueue Fields curQDepth * 100 / maxDepth As 'Depth Used' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -142,7 +142,7 @@
       "type": "stat",
       "title": "Depth (current / max)",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -157,7 +157,7 @@
           "format": "table",
           "jkql": "Get IbmmqLocalQueue Fields curQDepth As 'Current', maxDepth As 'Max' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -195,7 +195,7 @@
       "type": "stat",
       "title": "Oldest message age",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -210,7 +210,7 @@
           "format": "table",
           "jkql": "Get IbmmqLocalQueue Fields oldestMsgAge As 'Oldest Message Age' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -249,7 +249,7 @@
       "type": "stat",
       "title": "Open handles (input / output)",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -264,7 +264,7 @@
           "format": "table",
           "jkql": "Get IbmmqLocalQueue Fields openInputCount As 'Input', openOutputCount As 'Output' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -302,7 +302,7 @@
       "type": "stat",
       "title": "Uncommitted messages",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -317,7 +317,7 @@
           "format": "table",
           "jkql": "Get IbmmqLocalQueue Fields uncommittedMsgs As 'Uncommitted' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -359,7 +359,7 @@
       "type": "stat",
       "title": "Messages since counter reset (enqueued / dequeued)",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -374,7 +374,7 @@
           "format": "table",
           "jkql": "Get IbmmqLocalQueue Fields msgEnqCount As 'Enqueued', msgDeqCount As 'Dequeued' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -412,7 +412,7 @@
       "type": "table",
       "title": "Last activity",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -427,7 +427,7 @@
           "format": "table",
           "jkql": "Get IbmmqLocalQueue Fields lastPutDate As 'Last Put Date', lastPutTime As 'Last Put Time', lastGetDate As 'Last Get Date', lastGetTime As 'Last Get Time', timeSinceReset As 'Since Reset' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -469,7 +469,7 @@
       "type": "table",
       "title": "Configuration",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -484,7 +484,7 @@
           "format": "table",
           "jkql": "Get IbmmqLocalQueue Fields usage As 'Usage', defPersistence As 'Default Persistence', inhibitGet As 'Get Inhibited', inhibitPut As 'Put Inhibited', maxMsgLength As 'Max Message Length', depthHighLimit As 'Depth High Limit', triggerType As 'Trigger Type', backoutThreshold As 'Backout Threshold', backoutReQName As 'Backout Requeue Queue' Where WgsQueueManagerName = '$qmgr' And Name = '$queue'",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -604,7 +604,7 @@
       "title": "Queues with messages",
       "description": "Click a row to switch this dashboard to that queue.",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -619,7 +619,7 @@
           "format": "table",
           "jkql": "Get IbmmqLocalQueue Fields Name As 'Queue', curQDepth As 'Current Depth', maxDepth As 'Max Depth', openInputCount As 'Open Input', openOutputCount As 'Open Output', oldestMsgAge As 'Oldest Message Age', uncommittedMsgs As 'Uncommitted' Where WgsQueueManagerName = '$qmgr' And curQDepth > 0 Sort By 'Current Depth' Desc",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }

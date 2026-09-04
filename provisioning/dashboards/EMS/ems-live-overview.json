@@ -23,7 +23,7 @@
         "label": "EMS Server",
         "type": "query",
         "datasource": {
-          "type": "meshiq-platform-datasource",
+          "type": "nastel-meshiq-datasource",
           "uid": "meshiq-platform"
         },
         "query": {
@@ -66,7 +66,7 @@
       "type": "stat",
       "title": "EMS Servers",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -81,7 +81,7 @@
           "format": "table",
           "jkql": "Get Number Of EmsServer Where Name In ($server)",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -114,7 +114,7 @@
       "type": "stat",
       "title": "Connections",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -129,7 +129,7 @@
           "format": "table",
           "jkql": "Get Number Of EmsConnection Where WgsManagerName In ($server)",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -162,7 +162,7 @@
       "type": "stat",
       "title": "Sessions",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -177,7 +177,7 @@
           "format": "table",
           "jkql": "Get EmsServer Fields sum(sessionCount) As 'Sessions' Where Name In ($server)",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -210,7 +210,7 @@
       "type": "stat",
       "title": "Queues",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -225,7 +225,7 @@
           "format": "table",
           "jkql": "Get Number Of EmsQueue Where WgsManagerName In ($server)",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -258,7 +258,7 @@
       "type": "stat",
       "title": "Topics",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -273,7 +273,7 @@
           "format": "table",
           "jkql": "Get Number Of EmsTopic Where WgsManagerName In ($server)",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -318,7 +318,7 @@
       "type": "table",
       "title": "Server Status",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -333,7 +333,7 @@
           "format": "table",
           "jkql": "Get EmsServer Fields Name As 'Server Name', WgsEmsState As 'Server State', connectionCount As 'Connections', pendingMsgCount As 'Pending Messages', inboundMsgRate As 'In Rate (msg/s)', outboundMsgRate As 'Out Rate (msg/s)' Where Name In ($server) Sort By Name",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -423,7 +423,7 @@
       "type": "piechart",
       "title": "Server State Distribution",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -438,7 +438,7 @@
           "format": "table",
           "jkql": "Get Number Of EmsServer Where Name In ($server) Group By WgsEmsState",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }
@@ -616,7 +616,7 @@
       "type": "table",
       "title": "Top 10 Queues by Pending Messages (No Consumers)",
       "datasource": {
-        "type": "meshiq-platform-datasource",
+        "type": "nastel-meshiq-datasource",
         "uid": "meshiq-platform"
       },
       "gridPos": {
@@ -631,7 +631,7 @@
           "format": "table",
           "jkql": "Get EmsQueue Fields WgsManagerName As 'Server', Name As 'Queue', pendingMsgCount As 'Pending Messages', consumerCount As 'Consumer Count', inStatMessageRate As 'In Rate (msg/s)', outStatMessageRate As 'Out Rate (msg/s)' Where WgsManagerName In ($server) And consumerCount = 0 Sort By pendingMsgCount Desc Range 1,10",
           "datasource": {
-            "type": "meshiq-platform-datasource",
+            "type": "nastel-meshiq-datasource",
             "uid": "meshiq-platform"
           }
         }

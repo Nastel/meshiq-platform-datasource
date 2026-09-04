@@ -45,7 +45,7 @@ function makeDataSource(): DataSource {
   return new DataSource({
     id: 1,
     uid: 'meshiq-1',
-    type: 'meshiq-platform-datasource',
+    type: 'nastel-meshiq-datasource',
     name: 'meshIQ Platform',
     meta: {} as never,
     jsonData: {},
