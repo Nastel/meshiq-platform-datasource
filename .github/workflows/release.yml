@@ -31,4 +31,4 @@ jobs:
           # defaults to a version older than what go.mod requires — must be pinned explicitly
           # and kept in sync by hand. ci.yml's "Check GO_VERSION matches go.mod" step also
           # checks this value, so a mismatch fails CI instead of silently breaking releases.
-          go-version: '1.26.5'
+          go-version: '1.26.8'
