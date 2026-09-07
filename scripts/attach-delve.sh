@@ -12,11 +12,11 @@ DLV=/tmp/dlv
 # can linger after a reload; the live one is the most recently started. Attaching to the wrong
 # (older) one is exactly why breakpoints don't hit.
 PID=$(for d in /proc/[0-9]*; do
-  grep -qa gpx_platform "$d/cmdline" 2>/dev/null && echo "${d#/proc/}"
+  grep -qa gpx_meshiq_platform "$d/cmdline" 2>/dev/null && echo "${d#/proc/}"
 done | sort -n | tail -1)
 
 if [ -z "$PID" ]; then
-  echo "plugin process (gpx_platform) not found — is Grafana up and the datasource added/queried?"
+  echo "plugin process (gpx_meshiq_platform) not found — is Grafana up and the datasource added/queried?"
   exit 1
 fi
 
