@@ -172,6 +172,22 @@
 
     // ── Check (utilities) ─────────────────────────────────────────────────────
     { "label": "Check: lint", "type": "npm", "script": "lint", "problemMatcher": ["$eslint-stylish"] },
-    { "label": "Check: typecheck", "type": "npm", "script": "typecheck", "problemMatcher": ["$tsc"] }
+    { "label": "Check: typecheck", "type": "npm", "script": "typecheck", "problemMatcher": ["$tsc"] },
+    { "label": "Check: go vet", "type": "shell", "command": "go vet ./...", "problemMatcher": ["$go"] },
+    {
+      // Quick Go-only security scan: gosec (HIGH only, as the catalog review gates on) + govulncheck.
+      "label": "Check: Go security",
+      "type": "shell",
+      "command": "go run github.com/securego/gosec/v2/cmd/gosec@latest -severity high ./... && go run golang.org/x/vuln/cmd/govulncheck@latest ./...",
+      "problemMatcher": []
+    },
+    {
+      // The full Grafana plugin validator (same report as the catalog review), on a fresh build.
+      "label": "Check: plugin validator",
+      "type": "shell",
+      "command": "sh scripts/validate-plugin.sh",
+      "dependsOn": ["Build: all (backend + frontend)"],
+      "problemMatcher": []
+    }
   ]
 }
