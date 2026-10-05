@@ -16,6 +16,11 @@ FROM mcr.microsoft.com/devcontainers/go:1.26-trixie
 # 1.26.5), and every build then fails with "go.mod requires go >= X (running go Y;
 # GOTOOLCHAIN=local)" until the image itself catches up. Restore the normal auto-download behavior.
 ENV GOTOOLCHAIN=auto
+# The base image also pins GOROOT=/usr/local/go. Once a newer toolchain is in use (auto-download
+# above, or the Go extension putting one on PATH), that pin makes it run the image's older
+# compiler: "compile: version goX does not match go tool version goY". Empty = unset, so each
+# go binary finds its own GOROOT.
+ENV GOROOT=
 
 # Pinned for reproducibility. delve must support the Go toolchain (1.26) — bump these together
 # with the `go` directive in go.mod / the base image tag.
