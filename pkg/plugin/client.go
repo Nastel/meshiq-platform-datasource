@@ -131,6 +131,7 @@ var errResponseTooLarge = fmt.Errorf("meshIQ Platform response exceeded the %d M
 // doGetRequest performs a GET bound to ctx (so panel cancels and alert deadlines propagate).
 // apiKey, when non-empty, is sent as the X-API-Key header (the dataservice access token).
 func doGetRequest(ctx context.Context, httpClient *http.Client, requestUrl string, apiKey string) ([]byte, int, error) {
+	// #nosec G704 -- requestUrl is built from the admin-configured datasource URL, not end-user input.
 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, requestUrl, nil)
 	if err != nil {
 		return nil, 0, err
@@ -158,7 +159,7 @@ func doRequest(ctx context.Context, httpClient *http.Client, request *http.Reque
 		request.Header.Set(HDR_API_KEY, apiKey)
 	}
 
-	response, err := httpClient.Do(request)
+	response, err := httpClient.Do(request) // #nosec G704 -- see doGetRequest; cross-host redirects are refused
 	if err != nil {
 		return nil, 0, err
 	}

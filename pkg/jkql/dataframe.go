@@ -349,7 +349,7 @@ func addEnumColumn(frame *data.Frame, model DataModel, x *int, header string, en
 				model.Issues.Add(fmt.Sprintf("column %s: enum ordinal %d is outside the resolved value table (%d values)", header, enum.Ordinal, len(text)))
 				continue
 			}
-			v := data.EnumItemIndex(enum.Ordinal)
+			v := data.EnumItemIndex(enum.Ordinal) // #nosec G115 -- bounds-checked against len(text) above; jKQL enums have a dozen of values at most
 			values[y] = &v
 		}
 		appendEnumField(frame, columnFieldName(model, header), model.Label[header], values, text)
@@ -370,7 +370,7 @@ func addEnumColumn(frame *data.Frame, model DataModel, x *int, header string, en
 		}
 		index, seen := compact[enum]
 		if !seen {
-			index = data.EnumItemIndex(len(text))
+			index = data.EnumItemIndex(len(text)) // #nosec G115 -- one slot per distinct enum value; jKQL enums have a handful of values
 			compact[enum] = index
 			text = append(text, enum.Name)
 		}
