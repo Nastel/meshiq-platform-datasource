@@ -173,6 +173,14 @@
     // ── Check (utilities) ─────────────────────────────────────────────────────
     { "label": "Check: lint", "type": "npm", "script": "lint", "problemMatcher": ["$eslint-stylish"] },
     { "label": "Check: typecheck", "type": "npm", "script": "typecheck", "problemMatcher": ["$tsc"] },
+    {
+      // Update the managed scaffold (.config/, tooling deps) to the latest create-plugin and run its
+      // migrations. Needs node_modules installed (migrations run prettier). Review the diff after.
+      "label": "Check: update scaffold",
+      "type": "shell",
+      "command": "npx -y @grafana/create-plugin@latest update",
+      "problemMatcher": []
+    },
     { "label": "Check: go vet", "type": "shell", "command": "go vet ./...", "problemMatcher": ["$go"] },
     {
       // Quick Go-only security scan: gosec (HIGH only, as the catalog review gates on) + govulncheck.
