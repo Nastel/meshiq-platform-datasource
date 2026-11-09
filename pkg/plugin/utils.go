@@ -11,18 +11,24 @@ import (
 )
 
 // logParseIssues logs, once per result set, any wire-shape violations the converter recorded in
-// model.Issues. The line carries the executed query, its date range, and the repository, so the
-// exact result set can be requested again to reproduce the issue.
+// model.Issues. The Warn line carries the issues, the date range and the repository; the executed
+// query (can be large) goes to a Debug line, so with debug logging the exact result set can be
+// requested again to reproduce the issue.
 func logParseIssues(ctx context.Context, queryModel QueryModel, model jkql.DataModel) {
 	issues := model.Issues.List()
 	if len(issues) == 0 {
 		return
 	}
-	log.DefaultLogger.FromContext(ctx).Warn("result set had unparseable values; they are shown as empty",
+	logger := log.DefaultLogger.FromContext(ctx)
+	logger.Warn("result set had unparseable values; they are shown as empty",
 		"issues", strings.Join(issues, "; "),
-		"query", queryModel.JKQL,
 		"date", queryModel.Date,
 		"repo", queryModel.RepositoryID,
+	)
+	logger.Debug("query with unparseable values",
+		"date", queryModel.Date,
+		"repo", queryModel.RepositoryID,
+		"query", queryModel.JKQL,
 	)
 }
 

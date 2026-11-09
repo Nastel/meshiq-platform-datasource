@@ -141,8 +141,9 @@ func (d *Datasource) query(ctx context.Context, pCtx backend.PluginContext, quer
 	result, err := queryDataService(ctx, d.httpClient, *queryModel, *options)
 	if err != nil {
 		// Error envelope = the service rejected the query (bad request); anything else is a
-		// transport/HTTP failure (bad gateway) — both downstream. Log query+date+repo so a
-		// failure seen on a panel can be found in the server log and reproduced.
+		// transport/HTTP failure (bad gateway) — both downstream. The Warn/Error line stays short;
+		// the full query text (can be large) goes to a Debug line with the same refId, date and
+		// repo, so a failure seen on a panel can still be found and reproduced with debug logging.
 		logger := log.DefaultLogger.FromContext(ctx)
 		status := backend.StatusBadGateway
 		var qe *queryError
@@ -150,11 +151,13 @@ func (d *Datasource) query(ctx context.Context, pCtx backend.PluginContext, quer
 			status = backend.StatusBadRequest
 			// Usually a mistake in the query (or an expired token), not an outage — warn.
 			logger.Warn("dataservice rejected the query",
-				"query", queryModel.JKQL, "date", queryModel.Date, "repo", queryModel.RepositoryID, "error", err)
+				"refId", query.RefID, "date", queryModel.Date, "repo", queryModel.RepositoryID, "error", err)
 		} else {
 			logger.Error("dataservice request failed",
-				"query", queryModel.JKQL, "date", queryModel.Date, "repo", queryModel.RepositoryID, "error", err)
+				"refId", query.RefID, "date", queryModel.Date, "repo", queryModel.RepositoryID, "error", err)
 		}
+		logger.Debug("failed query", "refId", query.RefID, "date", queryModel.Date, "repo", queryModel.RepositoryID,
+			"query", queryModel.JKQL)
 		return backend.ErrDataResponseWithSource(status, backend.ErrorSourceDownstream, err.Error())
 	}
 
