@@ -162,3 +162,27 @@ func TestDoGetRequest_UsesTheRealResponseSizeLimit(t *testing.T) {
 		t.Errorf("body = %s, want it to carry the response verbatim (well under the size limit)", body)
 	}
 }
+
+// TestQueryDataService_TransportErrorOmitsQueryText pins that a transport failure's error text
+// (which ends up in Warn/Error log lines and panel errors) doesn't carry the jKQL text from the
+// request URL, while still unwrapping to the underlying cause.
+func TestQueryDataService_TransportErrorOmitsQueryText(t *testing.T) {
+	// A canceled context fails the request client-side with a *url.Error, before any dialing.
+	const serviceURL = "http://dataservice.invalid"
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	options := MeshIqDataSourceOptions{ServiceUrl: serviceURL, Token: "t"}
+	_, err := queryDataService(ctx, http.DefaultClient, QueryModel{JKQL: "get events where secret-marker"}, options)
+	if err == nil {
+		t.Fatal("a canceled request must fail")
+	}
+	if strings.Contains(err.Error(), "secret-marker") || strings.Contains(err.Error(), REQ_QUERY) {
+		t.Errorf("transport error leaks the query text: %q", err.Error())
+	}
+	if !strings.Contains(err.Error(), serviceURL) {
+		t.Errorf("transport error should still name the service URL: %q", err.Error())
+	}
+	if !errors.Is(err, context.Canceled) {
+		t.Errorf("transport error should still unwrap to its cause: %v", err)
+	}
+}

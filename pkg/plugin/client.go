@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -161,7 +162,7 @@ func doRequest(ctx context.Context, httpClient *http.Client, request *http.Reque
 
 	response, err := httpClient.Do(request) // #nosec G704 -- see doGetRequest; cross-host redirects are refused
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, withoutQueryString(err)
 	}
 	defer func(Body io.ReadCloser) {
 		_ = Body.Close()
@@ -169,6 +170,19 @@ func doRequest(ctx context.Context, httpClient *http.Client, request *http.Reque
 
 	bodyBytes, err := readLimited(response.Body, maxResponseBodyBytes)
 	return bodyBytes, response.StatusCode, err
+}
+
+// withoutQueryString drops the query string from a transport error's URL. *url.Error prints the
+// full request URL, which carries the whole jKQL text (jk_query) — too large for the Warn/Error
+// lines and panel errors it ends up in. Unwrapping still works (errors.Is on context errors).
+func withoutQueryString(err error) error {
+	var urlErr *url.Error
+	if errors.As(err, &urlErr) {
+		if i := strings.IndexByte(urlErr.URL, '?'); i >= 0 {
+			urlErr.URL = urlErr.URL[:i]
+		}
+	}
+	return err
 }
 
 // readLimited reads all of body, up to limit bytes, and fails with errResponseTooLarge if there
