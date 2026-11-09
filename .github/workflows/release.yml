@@ -32,3 +32,6 @@ jobs:
           # and kept in sync by hand. ci.yml's "Check GO_VERSION matches go.mod" step also
           # checks this value, so a mismatch fails CI instead of silently breaking releases.
           go-version: '1.26.10'
+          # The action defaults to Node 20, but the scaffold's bundler uses fs.glob (Node 22+), and
+          # package.json requires Node 22. Same version as ci.yml.
+          node-version: '22'
