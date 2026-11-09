@@ -196,6 +196,19 @@
       "command": "sh scripts/validate-plugin.sh",
       "dependsOn": ["Build: all (backend + frontend)"],
       "problemMatcher": []
+    },
+
+    // ── Clean ─────────────────────────────────────────────────────────────────
+    {
+      // Clear the Go build/test/module caches and the npm cache, empty node_modules, remove dist,
+      // .cache and the eslint cache, then reinstall from the lockfile. Use after a dependency or
+      // scaffold change when a build fails on a missing module. The next build downloads everything
+      // again.
+      // node_modules is only emptied, not removed: in the dev container it is a volume mount point.
+      "label": "Clean: all caches",
+      "type": "shell",
+      "command": "go clean -cache -testcache -modcache && npm cache clean --force && mkdir -p node_modules && find node_modules -mindepth 1 -delete && rm -rf dist .eslintcache .cache && npm ci",
+      "problemMatcher": []
     }
   ]
 }

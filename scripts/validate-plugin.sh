@@ -26,6 +26,19 @@ cp -r dist "$WORK/$PLUGIN_ID"
 mkdir "$WORK/source"
 git ls-files -z --cached --others --exclude-standard | xargs -0 cp --parents -t "$WORK/source"
 
+# The build manifest lists every .go file under the plugin folder, gitignored ones too (only
+# node_modules is skipped), but the source copy leaves gitignored files out. A stray .go file (for
+# example in a leftover npx cache) fails the validator's go-manifest check, so catch it here.
+MISSING=$(cut -d: -f2- dist/go_plugin_build_manifest | while read -r f; do
+  [ -f "$WORK/source/$f" ] || echo "  $f"
+done)
+if [ -n "$MISSING" ]; then
+  echo "dist/go_plugin_build_manifest lists files that are not in the source code:"
+  echo "$MISSING"
+  echo "Remove them (or the folder they are in) and run the \"Build: all\" task again."
+  exit 1
+fi
+
 docker run --pull=always --rm \
   -v "$WORK/$PLUGIN_ID-$VERSION.zip:/archive.zip" \
   -v "$WORK/source:/source_code" \
