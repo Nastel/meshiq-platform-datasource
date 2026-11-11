@@ -43,11 +43,12 @@ func queryDataService(ctx context.Context, httpClient *http.Client, queryModel Q
 	response, err := parseServiceResponse(bodyBytes)
 	if err != nil {
 		// The body wasn't JSON — usually an HTML login/redirect or a proxy error page,
-		// meaning the request didn't reach the jKQL endpoint. Log the raw body server-side
-		// (it can contain proxy/login-page HTML not fit for a panel error) and surface the
-		// HTTP status instead of a cryptic "invalid character '<'" JSON error.
-		log.DefaultLogger.FromContext(ctx).Warn("dataservice returned a non-JSON response",
-			"status", statusCode, "body", bodySnippet(bodyBytes))
+		// meaning the request didn't reach the jKQL endpoint. Surface the HTTP status instead of
+		// a cryptic "invalid character '<'" JSON error. The body is raw upstream content, so it
+		// is logged at Debug only.
+		logger := log.DefaultLogger.FromContext(ctx)
+		logger.Warn("dataservice returned a non-JSON response", "status", statusCode)
+		logger.Debug("non-JSON response body", "status", statusCode, "body", bodySnippet(bodyBytes))
 		return nil, &statusError{target: targetDataService, statusCode: statusCode, nonJSON: true, hint: "check the Service URL and access token"}
 	}
 
@@ -67,7 +68,7 @@ func queryDataService(ctx context.Context, httpClient *http.Client, queryModel Q
 	return response, nil
 }
 
-// bodySnippet condenses a response body into a short single-line snippet for error messages.
+// bodySnippet condenses a response body into a short single-line snippet for the debug log.
 func bodySnippet(body []byte) string {
 	snippet := strings.TrimSpace(string(body))
 	snippet = strings.Join(strings.Fields(snippet), " ") // collapse whitespace/newlines
