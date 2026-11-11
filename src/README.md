@@ -22,20 +22,10 @@ ActiveMQ, Artemis, and others.
 - Grafana 12.3 or newer.
 - A meshIQ Platform endpoint and an access token.
 
-## Install
-
-Install from the Grafana plugin catalog (**Administration → Plugins and data → Plugins**, search
-for "meshIQ Platform"), or manually with the Grafana CLI:
-
-```bash
-grafana-cli plugins install meshiq-platform-datasource
-```
-
-Then add a data source: **Connections → Add new connection → meshIQ Platform**.
-
 ## Configuration
 
-Fill in the data source settings:
+Add a data source (**Connections → Add new connection → meshIQ Platform**) and fill in the
+settings:
 
 | Field | Required | Meaning |
 |---|---|---|
@@ -53,19 +43,24 @@ result-rows limit.
 > **"service URL is required" / "access token is required"**
 > Shown only when the field is empty — fill it in and save again.
 
-> **"meshIQ Platform returned a non-JSON response"**
+> **"meshIQ Platform service returned a non-JSON response"**
 > The Service URL didn't reach the jKQL endpoint — usually a wrong URL, a login/redirect page from
 > a reverse proxy, or a proxy error page in front of the real service. Double check the Service URL
 > (including any base path your deployment uses) and that the access token is valid.
 
-> **"meshIQ Platform returned HTTP 4xx/5xx"**
+> **"meshIQ Platform service returned HTTP 4xx/5xx"** / **"The access token is undefined, invalid or expired"**
 > The request reached the service but was rejected — check the access token and that it's
 > authorized for the repository you're querying.
+
+> **"could not resolve …" / "connection to … was refused" / "the request to … timed out" / "could not reach …" / "TLS handshake with … failed"**
+> The service could not be reached at the configured URL. Check the host name, port and scheme
+> (`http` or `https`), and that the service is running and reachable from the Grafana server.
+> The Grafana server log has the full error.
 
 > **"completion is enabled but no completion service URL is set"**
 > Fill in the Completion service URL, or turn Enable completion off.
 
-> **"could not reach the completion service" / "completion service returned HTTP ..."**
+> **"meshIQ jKQL completion service returned HTTP …" / "… the meshIQ jKQL completion service …"**
 > The Completion service URL is unreachable or misconfigured. jKQL queries still run normally —
 > only autocomplete is affected.
 
