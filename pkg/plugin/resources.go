@@ -236,10 +236,15 @@ func writeResourceErrorQuiet(r *http.Request, w http.ResponseWriter, status int,
 	writeResourceErrorBody(r, w, status, err)
 }
 
+// writeResourceErrorBody writes the JSON error body with a user-safe message (userErrorMessage).
 func writeResourceErrorBody(r *http.Request, w http.ResponseWriter, status int, err error) {
+	target := targetDataService
+	if r.URL.Path == "/suggestions" {
+		target = targetCompletionService
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	body, _ := json.Marshal(map[string]string{"error": err.Error()})
+	body, _ := json.Marshal(map[string]string{"error": userErrorMessage(err, target)})
 	if _, werr := w.Write(body); werr != nil {
 		log.DefaultLogger.FromContext(r.Context()).Error("failed to write resource error", "path", r.URL.Path, "error", werr)
 	}

@@ -9,7 +9,6 @@ import (
 	"strconv"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
-	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 )
 
 // Autocomplete-service query-param names. Together with the /suggestions path and the response
@@ -81,12 +80,12 @@ func requestSuggestions(ctx context.Context, httpClient *http.Client, requestUrl
 		return nil, err
 	}
 	if statusCode >= http.StatusBadRequest {
-		return nil, fmt.Errorf("completion service returned HTTP %d", statusCode)
+		return nil, &statusError{target: targetCompletionService, statusCode: statusCode}
 	}
 
 	var items []completionItem
 	if err := json.Unmarshal(bodyBytes, &items); err != nil {
-		return nil, fmt.Errorf("completion service returned a non-JSON response (HTTP %d)", statusCode)
+		return nil, &statusError{target: targetCompletionService, statusCode: statusCode, nonJSON: true}
 	}
 	return items, nil
 }
@@ -125,12 +124,10 @@ func testCompletionService(ctx context.Context, httpClient *http.Client, options
 	base := RemoveEndingSlash(options.CompletionServiceUrl)
 	_, statusCode, err := doGetRequest(ctx, httpClient, base+"/version", "") // no token on this service
 	if err != nil {
-		// Log the raw network error server-side, but don't expose internal hostnames to the user.
-		log.DefaultLogger.FromContext(ctx).Warn("could not reach the completion service", "error", err)
-		return fmt.Errorf("could not reach the completion service")
+		return err
 	}
 	if statusCode >= http.StatusBadRequest {
-		return fmt.Errorf("completion service returned HTTP %d; check the completion service URL", statusCode)
+		return &statusError{target: targetCompletionService, statusCode: statusCode, hint: "check the completion service URL"}
 	}
 	return nil
 }

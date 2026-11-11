@@ -158,7 +158,7 @@ func (d *Datasource) query(ctx context.Context, pCtx backend.PluginContext, quer
 		}
 		logger.Debug("failed query", "refId", query.RefID, "date", queryModel.Date, "repo", queryModel.RepositoryID,
 			"query", queryModel.JKQL)
-		return backend.ErrDataResponseWithSource(status, backend.ErrorSourceDownstream, err.Error())
+		return backend.ErrDataResponseWithSource(status, backend.ErrorSourceDownstream, userErrorMessage(err, targetDataService))
 	}
 
 	dataModel := jkql.BuildDataModel(result, d.functionCatalog(ctx, *options))
@@ -183,22 +183,22 @@ func (d *Datasource) query(ctx context.Context, pCtx backend.PluginContext, quer
 func (d *Datasource) CheckHealth(ctx context.Context, req *backend.CheckHealthRequest) (*backend.CheckHealthResult, error) {
 	options, err := BuildMeshIqDataSourceOptions(req.PluginContext.DataSourceInstanceSettings)
 	if err != nil {
-		return newHealthError(err), nil
+		return newHealthError(ctx, err, targetDataService), nil
 	}
 
 	response, err := testDataService(ctx, d.httpClient, *options)
 	if err != nil {
-		return newHealthError(err), nil
+		return newHealthError(ctx, err, targetDataService), nil
 	}
 
 	if options.EnableCompletion {
 		if options.CompletionServiceUrl == "" {
 			// Completion is turned on but has nowhere to call — without this, Save & Test would
 			// report a healthy datasource while the query editor silently gets no suggestions.
-			return newHealthError(errors.New("completion is enabled but no completion service URL is set")), nil
+			return newHealthError(ctx, errors.New("completion is enabled but no completion service URL is set"), targetCompletionService), nil
 		}
 		if err := testCompletionService(ctx, d.httpClient, *options); err != nil {
-			return newHealthError(err), nil
+			return newHealthError(ctx, err, targetCompletionService), nil
 		}
 	}
 
@@ -206,7 +206,7 @@ func (d *Datasource) CheckHealth(ctx context.Context, req *backend.CheckHealthRe
 	logParseIssues(ctx, BuildParamsQueryModel(), dataModel)
 	details, err := json.Marshal(buildCheckHealthResult(dataModel))
 	if err != nil {
-		return newHealthError(err), nil
+		return newHealthError(ctx, err, targetDataService), nil
 	}
 
 	return &backend.CheckHealthResult{
@@ -237,9 +237,11 @@ func buildCheckHealthResult(dataModel jkql.DataModel) Params {
 	return params
 }
 
-func newHealthError(err error) *backend.CheckHealthResult {
+// newHealthError logs err and returns a failed health result with a user-safe message.
+func newHealthError(ctx context.Context, err error, target string) *backend.CheckHealthResult {
+	log.DefaultLogger.FromContext(ctx).Warn("health check failed", "error", err)
 	return &backend.CheckHealthResult{
 		Status:  backend.HealthStatusError,
-		Message: err.Error(),
+		Message: userErrorMessage(err, target),
 	}
 }

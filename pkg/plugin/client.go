@@ -48,7 +48,7 @@ func queryDataService(ctx context.Context, httpClient *http.Client, queryModel Q
 		// HTTP status instead of a cryptic "invalid character '<'" JSON error.
 		log.DefaultLogger.FromContext(ctx).Warn("dataservice returned a non-JSON response",
 			"status", statusCode, "body", bodySnippet(bodyBytes))
-		return nil, buildNonJSONError(statusCode)
+		return nil, &statusError{target: targetDataService, statusCode: statusCode, nonJSON: true, hint: "check the Service URL and access token"}
 	}
 
 	if response[RESP_CCODE] == jkql.ERROR {
@@ -57,17 +57,14 @@ func queryDataService(ctx context.Context, httpClient *http.Client, queryModel Q
 
 	// A JSON body without the error envelope can still ride an HTTP error status — a gateway
 	// or proxy answering for the dataservice. Don't let it pass as an empty result.
+	if statusCode == http.StatusUnauthorized || statusCode == http.StatusForbidden {
+		return nil, &statusError{target: targetDataService, statusCode: statusCode, hint: "check the access token"}
+	}
 	if statusCode >= http.StatusBadRequest {
-		return nil, fmt.Errorf("meshIQ Platform returned HTTP %d", statusCode)
+		return nil, &statusError{target: targetDataService, statusCode: statusCode}
 	}
 
 	return response, nil
-}
-
-// buildNonJSONError produces a readable error when the dataservice returns something other than
-// the expected JSON result set (wrong Service URL, authentication redirect, reverse-proxy page…).
-func buildNonJSONError(statusCode int) error {
-	return fmt.Errorf("meshIQ Platform returned a non-JSON response (HTTP %d) — check the Service URL and access token", statusCode)
 }
 
 // bodySnippet condenses a response body into a short single-line snippet for error messages.
@@ -127,7 +124,7 @@ func buildUrlParams(queryModel QueryModel) url.Values {
 const maxResponseBodyBytes = 100 * 1024 * 1024 // 100 MB
 
 // errResponseTooLarge is returned when a response body exceeds maxResponseBodyBytes.
-var errResponseTooLarge = fmt.Errorf("meshIQ Platform response exceeded the %d MB limit", maxResponseBodyBytes/(1024*1024))
+var errResponseTooLarge = fmt.Errorf("response exceeded the %d MB limit", maxResponseBodyBytes/(1024*1024))
 
 // doGetRequest performs a GET bound to ctx (so panel cancels and alert deadlines propagate).
 // apiKey, when non-empty, is sent as the X-API-Key header (the dataservice access token).
