@@ -84,5 +84,11 @@ func fetchFunctionCatalog(ctx context.Context, httpClient *http.Client, options 
 			"repo", queryModel.RepositoryID)
 		return nil, nil // a real negative answer (the dataservice responded, just with nothing usable): cacheable
 	}
-	return jkql.NewFunctionCatalog(aggregate, analytic, scalar), nil
+	cat, err := jkql.NewFunctionCatalog(aggregate, analytic, scalar)
+	if err != nil {
+		log.DefaultLogger.FromContext(ctx).Warn("could not build the jKQL function catalog; using built-in fallback",
+			"repo", queryModel.RepositoryID, "error", err)
+		return nil, nil // the server's answer won't change on retry: cacheable
+	}
+	return cat, nil
 }

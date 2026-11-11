@@ -62,6 +62,27 @@ func TestFetchFunctionCatalog_GroupsByType(t *testing.T) {
 	}
 }
 
+// TestFetchFunctionCatalog_RegexCharactersInNames pins that a server-reported name with regex
+// characters gives a working catalog instead of a panic.
+func TestFetchFunctionCatalog_RegexCharactersInNames(t *testing.T) {
+	const raw = `{
+		"row-count": 2, "total-row-count": 2, "status": "SUCCESS",
+		"colhdr": ["Name", "Type"],
+		"coltype": {"Name": "STRING", "Type": "STRING"},
+		"collabel": {"Name": "Name", "Type": "Type"},
+		"rows": [{"Name": "Avg(", "Type": "Aggregate"}, {"Name": "[Len", "Type": "Scalar"}]
+	}`
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write([]byte(raw))
+	}))
+	defer server.Close()
+
+	cat, err := fetchFunctionCatalog(context.Background(), server.Client(), MeshIqDataSourceOptions{ServiceUrl: server.URL, Token: "t"})
+	if err != nil || cat == nil {
+		t.Fatalf("fetchFunctionCatalog = %v, %v; want a catalog", cat, err)
+	}
+}
+
 // TestFetchFunctionCatalog_FallsBackOnError verifies a transport failure or an empty/unusable
 // response returns nil, so the caller falls back to the hardcoded default catalog. It also
 // returns the underlying error, which the caller (functionCatalog) uses to decide whether the

@@ -48,11 +48,11 @@ func TestNameSet(t *testing.T) {
 // stray/blank entry from the server's function set) must not make aggregateRe match a
 // paren-leading header like "(abc)", while a real name in the same group still matches.
 func TestNewFunctionCatalog_EmptyNameSkipped(t *testing.T) {
-	cat := NewFunctionCatalog(
+	cat := mustFunctionCatalog(NewFunctionCatalog(
 		[]string{"Avg", ""}, // aggregate group carries a stray empty name
 		[]string{},
 		[]string{},
-	)
+	))
 
 	if cat.aggregateRe.MatchString("(abc)") {
 		t.Error("aggregateRe must not match a paren-leading header when a group holds an empty name")
@@ -68,11 +68,11 @@ func TestNewFunctionCatalog_EmptyNameSkipped(t *testing.T) {
 // default). aggregateRe is built from the Aggregate group alone (see NewFunctionCatalog), so it
 // must not become a match-everything regex just because that one group came back empty.
 func TestNewFunctionCatalog_EmptyAggregateGroupMatchesNoAggregateHeader(t *testing.T) {
-	cat := NewFunctionCatalog(
+	cat := mustFunctionCatalog(NewFunctionCatalog(
 		[]string{}, // aggregate: empty
 		[]string{"HoltWintersPrediction"},
 		[]string{"Length", "Round"},
-	)
+	))
 
 	if cat.aggregateRe.MatchString("AnythingAtAll(x)") {
 		t.Errorf("aggregateRe with an empty aggregate group must not match any header, matched %q", "AnythingAtAll(x)")
@@ -82,12 +82,27 @@ func TestNewFunctionCatalog_EmptyAggregateGroupMatchesNoAggregateHeader(t *testi
 	}
 }
 
+// TestNewFunctionCatalog_RegexCharactersInNames pins that names are matched literally: a name
+// with regex characters must neither fail to build nor match other headers.
+func TestNewFunctionCatalog_RegexCharactersInNames(t *testing.T) {
+	cat, err := NewFunctionCatalog([]string{"Avg", "Sum("}, []string{"a|b"}, []string{"[x", "Len.th"})
+	if err != nil {
+		t.Fatalf("NewFunctionCatalog: %v", err)
+	}
+	if !cat.aggregateRe.MatchString("Sum((x)") || !cat.functionRe.MatchString("a|b(x)") || !cat.functionRe.MatchString("[x(y)") {
+		t.Error("names with regex characters should match literally")
+	}
+	if cat.functionRe.MatchString("a(x)") || cat.functionRe.MatchString("Length(x)") {
+		t.Error("regex characters in a name must not match other headers")
+	}
+}
+
 func TestNewFunctionCatalog(t *testing.T) {
-	cat := NewFunctionCatalog(
+	cat := mustFunctionCatalog(NewFunctionCatalog(
 		[]string{"Avg", "Sum"},            // aggregate
 		[]string{"HoltWintersPrediction"}, // analytic
 		[]string{"Length", "Round"},       // scalar
-	)
+	))
 
 	// aggregateRe matches aggregate headers and captures name + inner args; not the others.
 	if !cat.aggregateRe.MatchString("Avg(x)") {

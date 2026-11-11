@@ -57,17 +57,30 @@ type FunctionCatalog struct {
 }
 
 // NewFunctionCatalog builds a catalog from the three function-name groups — the categories the
-// server's function set is organized into (Aggregate / Analytic / Scalar).
-func NewFunctionCatalog(aggregate, analytic, scalar []string) *FunctionCatalog {
-	return &FunctionCatalog{
-		aggregateRe: regexp.MustCompile(`^(` + orNames(aggregate) + `)\((.+)\)$`),
-		functionRe:  regexp.MustCompile(`^(?:` + orNames(analytic, scalar) + `)\(.+\)$`),
-		names:       nameSet(aggregate, analytic, scalar),
+// server's function set is organized into (Aggregate / Analytic / Scalar). The names come from
+// the server, so the error is returned rather than panicking; the caller falls back to the
+// default catalog.
+func NewFunctionCatalog(aggregate, analytic, scalar []string) (*FunctionCatalog, error) {
+	aggregateRe, err := regexp.Compile(`^(` + orNames(aggregate) + `)\((.+)\)$`)
+	if err != nil {
+		return nil, err
 	}
+	functionRe, err := regexp.Compile(`^(?:` + orNames(analytic, scalar) + `)\(.+\)$`)
+	if err != nil {
+		return nil, err
+	}
+	return &FunctionCatalog{aggregateRe: aggregateRe, functionRe: functionRe, names: nameSet(aggregate, analytic, scalar)}, nil
 }
 
 // defaultFunctionCatalog is the built-in fallback, from the hardcoded canonical lists above.
-var defaultFunctionCatalog = NewFunctionCatalog(aggregateFunctions, analyticFunctions, scalarFunctions)
+var defaultFunctionCatalog = mustFunctionCatalog(NewFunctionCatalog(aggregateFunctions, analyticFunctions, scalarFunctions))
+
+func mustFunctionCatalog(cat *FunctionCatalog, err error) *FunctionCatalog {
+	if err != nil {
+		panic(err)
+	}
+	return cat
+}
 
 // DefaultFunctionCatalog returns the built-in fallback catalog.
 func DefaultFunctionCatalog() *FunctionCatalog { return defaultFunctionCatalog }
@@ -80,7 +93,8 @@ func DefaultFunctionCatalog() *FunctionCatalog { return defaultFunctionCatalog }
 // regex match everything instead of nothing.
 const noNameMatches = `a^`
 
-// orNames joins the given name groups into a regex alternation (a|b|c). Empty names are skipped,
+// orNames joins the given name groups into a regex alternation (a|b|c), quoting each name so
+// regex characters in a server-reported name match literally. Empty names are skipped,
 // so a stray blank entry in a group can't turn into an empty alternative that matches at any
 // position in the caller's regex; if every group is empty, returns noNameMatches instead of an
 // empty string, so the caller's regex can't degenerate into one that matches any input.
@@ -89,7 +103,7 @@ func orNames(groups ...[]string) string {
 	for _, g := range groups {
 		for _, n := range g {
 			if n != "" {
-				all = append(all, n)
+				all = append(all, regexp.QuoteMeta(n))
 			}
 		}
 	}
