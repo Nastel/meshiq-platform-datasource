@@ -1,6 +1,6 @@
 module github.com/Nastel/meshiq-platform-datasource
 
-go 1.26.11
+go 1.27.4
 
 require github.com/grafana/grafana-plugin-sdk-go v0.296.5
 
