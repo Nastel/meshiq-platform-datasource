@@ -27,10 +27,23 @@ const (
 	targetCompletionService = "meshIQ jKQL completion service"
 )
 
+// safeError is a message written by the plugin itself, safe to show to the user as is.
+type safeError struct{ message string }
+
+func (e *safeError) Error() string { return e.message }
+
+// newSafeError returns an error whose message userErrorMessage shows to the user unchanged.
+func newSafeError(format string, args ...any) error {
+	return &safeError{fmt.Sprintf(format, args...)}
+}
+
 // userErrorMessage returns a message for err that is safe to show to the user. Transport errors
 // carry the request URL, IPs and ports; since the service URL is user-configurable, showing them
 // would let a user probe internal addresses. They become a fixed message per failure kind, and
-// the caller logs the full error. Other errors are the plugin's own or jKQL errors and are kept.
+// the caller logs the full error. jKQL errors, status errors and the plugin's own messages
+// (safeError) are shown by their own text, without what any wrapper added. Any other error, such
+// as a failed read of the response body, becomes a fixed message too, since its text is not known
+// to be safe.
 func userErrorMessage(err error, target string) string {
 	var dnsErr *net.DNSError
 	var netErr net.Error
@@ -53,9 +66,19 @@ func userErrorMessage(err error, target string) string {
 		return fmt.Sprintf("the request to the %s timed out", target)
 	case errors.As(err, &netErr):
 		return fmt.Sprintf("could not reach the %s; check the URL", target)
-	default:
-		return err.Error()
 	}
+	var qe *queryError
+	var se *statusError
+	var safeErr *safeError
+	switch {
+	case errors.As(err, &qe):
+		return qe.Error()
+	case errors.As(err, &se):
+		return se.Error()
+	case errors.As(err, &safeErr):
+		return safeErr.Error()
+	}
+	return fmt.Sprintf("the request to the %s failed", target)
 }
 
 // isTimeout reports whether any error in the chain is a timeout. errors.As would stop at the

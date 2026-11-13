@@ -5,6 +5,8 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"errors"
+	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -88,7 +90,11 @@ func TestUserErrorMessage_KeepsOtherErrors(t *testing.T) {
 		want string
 	}{
 		{&queryError{"Syntax error at line 1"}, "Syntax error at line 1"},
-		{errors.New("service URL is required"), "service URL is required"},
+		{newSafeError("service URL is required"), "service URL is required"},
+		// A wrapper's text is for the log only; the user sees the plugin's own message.
+		{fmt.Errorf("%w: %w", errInvalidOptions, newSafeError("access token is required")), "access token is required"},
+		{fmt.Errorf("%w: %w", newSafeError("could not read the datasource settings"), errors.New("json: cannot unmarshal")),
+			"could not read the datasource settings"},
 		{&statusError{target: targetDataService, statusCode: 401, hint: "check the access token"},
 			"meshIQ Platform service returned HTTP 401; check the access token"},
 		{&statusError{target: targetCompletionService, statusCode: 502, nonJSON: true},
@@ -98,6 +104,19 @@ func TestUserErrorMessage_KeepsOtherErrors(t *testing.T) {
 	for _, tt := range tests {
 		if got := userErrorMessage(tt.err, targetDataService); got != tt.want {
 			t.Errorf("userErrorMessage(%v) = %q, want %q", tt.err, got, tt.want)
+		}
+	}
+}
+
+// TestUserErrorMessage_HidesUnknownErrors pins that an error which is not one of the plugin's own
+// types, such as a failed read of the response body, becomes a fixed message.
+func TestUserErrorMessage_HidesUnknownErrors(t *testing.T) {
+	for _, err := range []error{
+		errors.New("unexpected EOF reading body from 10.1.2.3:8080"),
+		fmt.Errorf("read body: %w", io.ErrUnexpectedEOF),
+	} {
+		if got, want := userErrorMessage(err, targetDataService), "the request to the meshIQ Platform service failed"; got != want {
+			t.Errorf("userErrorMessage(%v) = %q, want %q", err, got, want)
 		}
 	}
 }

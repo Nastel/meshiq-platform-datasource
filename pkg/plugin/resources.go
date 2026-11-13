@@ -118,7 +118,7 @@ func (d *Datasource) handleTables(w http.ResponseWriter, r *http.Request) {
 func (d *Datasource) handleFields(w http.ResponseWriter, r *http.Request) {
 	itemType := r.URL.Query().Get("table")
 	if !jkql.IdentifierRegExp.MatchString(itemType) {
-		writeResourceError(r, w, http.StatusBadRequest, fmt.Errorf("missing or invalid 'table' parameter"))
+		writeResourceError(r, w, http.StatusBadRequest, newSafeError("missing or invalid 'table' parameter"))
 		return
 	}
 

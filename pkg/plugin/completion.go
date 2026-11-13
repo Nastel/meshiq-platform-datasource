@@ -3,7 +3,6 @@ package plugin
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -101,7 +100,7 @@ func buildSuggestionsRequest(options MeshIqDataSourceOptions, query url.Values) 
 
 	if position := query.Get(REQ_POSITION); position != "" {
 		if _, err := strconv.Atoi(position); err != nil {
-			return "", nil, fmt.Errorf("invalid %s %q: must be an integer", REQ_POSITION, position)
+			return "", nil, newSafeError("invalid %s %q: must be an integer", REQ_POSITION, position)
 		}
 		params.Set(REQ_POSITION, position)
 	}

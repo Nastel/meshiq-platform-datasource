@@ -195,7 +195,7 @@ func (d *Datasource) CheckHealth(ctx context.Context, req *backend.CheckHealthRe
 		if options.CompletionServiceUrl == "" {
 			// Completion is turned on but has nowhere to call — without this, Save & Test would
 			// report a healthy datasource while the query editor silently gets no suggestions.
-			return newHealthError(ctx, errors.New("completion is enabled but no completion service URL is set"), targetCompletionService), nil
+			return newHealthError(ctx, newSafeError("completion is enabled but no completion service URL is set"), targetCompletionService), nil
 		}
 		if err := testCompletionService(ctx, d.httpClient, *options); err != nil {
 			return newHealthError(ctx, err, targetCompletionService), nil

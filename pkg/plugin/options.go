@@ -2,7 +2,7 @@ package plugin
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 )
@@ -25,7 +25,7 @@ type MeshIqDataSourceOptions struct {
 func BuildMeshIqDataSourceOptions(settings *backend.DataSourceInstanceSettings) (*MeshIqDataSourceOptions, error) {
 	var options MeshIqDataSourceOptions
 	if err := json.Unmarshal(settings.JSONData, &options); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%w: %w", newSafeError("could not read the datasource settings"), err)
 	}
 
 	options.Token = settings.DecryptedSecureJSONData["accessToken"]
@@ -39,10 +39,10 @@ func BuildMeshIqDataSourceOptions(settings *backend.DataSourceInstanceSettings) 
 
 func validateMeshIqDataSourceOptions(options *MeshIqDataSourceOptions) error {
 	if options.ServiceUrl == "" {
-		return errors.New("service URL is required")
+		return newSafeError("service URL is required")
 	}
 	if options.Token == "" {
-		return errors.New("access token is required")
+		return newSafeError("access token is required")
 	}
 	return nil
 }
