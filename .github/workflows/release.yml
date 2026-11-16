@@ -19,7 +19,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: grafana/plugin-actions/build-plugin@build-plugin/v1.2.0
+      - uses: grafana/plugin-actions/build-plugin@build-plugin/v2.0.1
         # Requires a Grafana Cloud access policy token with the plugins:write scope,
         # saved as the GRAFANA_ACCESS_POLICY_TOKEN repository secret.
         # https://grafana.com/developers/plugin-tools/publish-a-plugin/sign-a-plugin#generate-an-access-policy-token
